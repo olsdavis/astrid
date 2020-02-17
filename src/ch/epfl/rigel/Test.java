@@ -1,4 +1,4 @@
-package ch.epfl.astrid;
+package ch.epfl.rigel;
 
 /**
  * @author Oscar Davis
