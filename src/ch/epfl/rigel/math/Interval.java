@@ -1,6 +1,8 @@
 package ch.epfl.rigel.math;
 
 /**
+ * Represents an interval.
+ *
  * @author Oscar Davis
  * Creation date: 17/02/2020
  */
