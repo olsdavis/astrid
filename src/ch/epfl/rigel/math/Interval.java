@@ -1,6 +1,8 @@
 package ch.epfl.rigel.math;
 
 /**
+ * Represents an interval.
+ *
  * @author Oscar Davis
  * Creation date: 17/02/2020
  */
@@ -24,7 +26,7 @@ public abstract class Interval {
     /**
      * @return the lower bound of the interval.
      */
-    public double high() {
+    public final double high() {
         return high;
     }
 
@@ -40,5 +42,15 @@ public abstract class Interval {
      * @return {@code true} if the given double {@code d} is inside the interval.
      */
     public abstract boolean contains(double d);
+
+    @Override
+    public final boolean equals(Object obj) {
+        throw new UnsupportedOperationException("unsupported operation");
+    }
+
+    @Override
+    public final int hashCode() {
+        throw new UnsupportedOperationException("unsupported operation");
+    }
 
 }
