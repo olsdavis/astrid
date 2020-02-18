@@ -41,7 +41,7 @@ public final class Angle {
      * @param sec the arcsec component of the angle to convert
      * @return the converted angle in radians
      */
-    public static double ofDMS(int deg, int min, int sec) {
+    public static double ofDMS(int deg, int min, double sec) {
         RightOpenInterval interv = RightOpenInterval.of(0, 60);
         checkArgument(interv.contains(min));
         checkArgument(interv.contains(sec));
