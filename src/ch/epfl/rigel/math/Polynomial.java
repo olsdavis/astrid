@@ -53,10 +53,10 @@ public class Polynomial {
         for (int i = 0; i < coefficients.length; i++) {
             if (!(coefficients[i] == 0)) {
                 builder.append(coefficients[i]);
+                builder.append("x^");
+                builder.append(coefficients.length - 1 - i);
+                builder.append(' ');
             }
-            builder.append("x^");
-            builder.append(i);
-            builder.append(' ');
             if (i < coefficients.length - 1 && coefficients[i + 1] > 0) {
                 builder.append('+');
             }
