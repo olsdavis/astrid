@@ -31,7 +31,7 @@ public final class Angle {
     public static double ofArcsec(double sec) {
         double res = sec / 3600; // to convert to degrees
         res *= TAU / 360; // to convert from degrees to radians
-        return normalizePositive(res);
+        return res;
     }
 
     /**
@@ -46,8 +46,8 @@ public final class Angle {
         RightOpenInterval interv = RightOpenInterval.of(0, 60);
         checkArgument(interv.contains(min));
         checkArgument(interv.contains(sec));
-        double res = deg + min / 60. + sec / 3600.;
-        return normalizePositive(ofDeg(res));
+        double res = deg + (min / 60d) + (sec / 3600d);
+        return ofDeg(res);
     }
 
     /**
@@ -57,8 +57,7 @@ public final class Angle {
      * @return the angle converted in radians.
      */
     public static double ofDeg(double deg) {
-        return normalizePositive(Math.toRadians(deg));
-        // Considering the Math.toRadians method doesn't normalize angle, we are to do it ourselves
+        return Math.toRadians(deg);
     }
 
     /**
@@ -71,12 +70,20 @@ public final class Angle {
         return Math.toDegrees(rad);
     }
 
+    /**
+     * @param hr the angle to convert
+     * @return the given angle in hours converted in {@code rad}.
+     */
     public static double ofHr(double hr) {
-        return normalizePositive(hr * RAD_PER_HR);
+        return hr * RAD_PER_HR;
     }
 
+    /**
+     * @param rad the angle to convert
+     * @return the given angle in {@code rad} converted in hours.
+     */
     public static double toHr(double rad) {
-        return normalizePositive(rad) * 1 / RAD_PER_HR;
+        return rad / RAD_PER_HR;
     }
 
 }
