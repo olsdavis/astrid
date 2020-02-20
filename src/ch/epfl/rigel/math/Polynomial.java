@@ -16,11 +16,11 @@ public class Polynomial {
     }
 
     /**
-     * Public method to initialize
+     * Public method to initialize a Polynomial instance.
      *
-     * @param coeffDom     Corresponds to the dominant coefficient of the polynom.
+     * @param coeffDom     The dominant coefficient of the polynomial function.
      *                     Will be placed at the start of the coefficients list.
-     * @param c The rest of the coefficients. Will be placed after coeffDom
+     * @param c The rest of the coefficients. Will be placed after coeffDom.
      * @return a new Polynomial instance with given coefficients.
      */
     public static Polynomial of(double coeffDom, double... c) {
@@ -32,10 +32,10 @@ public class Polynomial {
     }
 
     /**
-     * Evaluates the value of the polynomial function at a given point
+     * Evaluates the value of the Polynomial instance at a given point.
      *
-     * @param x the value at which we evaluate the function
-     * @return the value the function attains at the given parameter value
+     * @param x the value at which we evaluate the function.
+     * @return the value the function attains at the given parameter value.
      */
     public double at(double x) {
         double res = 0;
@@ -48,7 +48,7 @@ public class Polynomial {
     }
 
     /**
-     * @return A visual representation of a polynomial expression
+     * @return a visual representation of the associated polynomial expression.
      */
     @Override
     public String toString() {
