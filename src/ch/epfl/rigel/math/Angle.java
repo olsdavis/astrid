@@ -4,6 +4,9 @@ import static ch.epfl.rigel.Preconditions.checkArgument;
 
 /**
  * Class containing utils methods for angle manipulations.
+ *
+ * @author Alexandre Doukhan (SCIPER : 316706)
+ * @author Oscar Davis (SCIPER: 311193)
  */
 public final class Angle {
     public static final double TAU = 2 * Math.PI;

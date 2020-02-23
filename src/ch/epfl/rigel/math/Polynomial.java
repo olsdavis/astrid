@@ -5,8 +5,9 @@ import static ch.epfl.rigel.Preconditions.checkArgument;
 /**
  * Class used for the representation of a polynomial with positive integer exponents.
  *
- * @author Alexandre Doukhan
- * @author Oscar Davis
+ * @author Alexandre Doukhan (SCIPER: 316706)
+ * @author Oscar Davis (SCIPER: 311193)
+ * Creation date: 17/02/2020
  */
 public class Polynomial {
     private final double[] coefficients;

@@ -8,7 +8,8 @@ import static ch.epfl.rigel.Preconditions.*;
  * Represents an interval closed on the left and open
  * on the right.
  *
- * @author Oscar Davis
+ * @author Oscar Davis (SCIPER: 311193)
+ * @author Alexandre Doukhan (SCIPER: 316706)
  * Creation date: 17/02/2020
  */
 public class RightOpenInterval extends Interval {

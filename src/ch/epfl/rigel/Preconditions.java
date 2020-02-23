@@ -3,7 +3,8 @@ package ch.epfl.rigel;
 import ch.epfl.rigel.math.Interval;
 
 /**
- * @author Oscar Davis
+ * @author Oscar Davis (SCIPER: 311193)
+ * @author Alexandre Doukhan (SCIPER: 316706)
  * Creation date: 17/02/2020
  */
 public class Preconditions {

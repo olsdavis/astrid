@@ -2,8 +2,8 @@ package ch.epfl.rigel.math;
 
 /**
  * Represents an interval.
- *
- * @author Oscar Davis
+ * @author Oscar Davis (SCIPER: 311193)
+ * @author Alexandre Doukhan (SCIPER : 316706)
  * Creation date: 17/02/2020
  */
 public abstract class Interval {

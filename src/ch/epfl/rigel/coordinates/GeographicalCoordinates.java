@@ -7,9 +7,9 @@ import java.util.Locale;
 import static ch.epfl.rigel.Preconditions.*;
 
 /**
- * Implementation of spherical coordinates for the geographical coordinates system.
- *
- * @author Alexandre Doukhan
+ * Implementation of SphericalCoordinates for the geographical coordinates system.
+ * @author Alexandre Doukhan (SCIPER : 316706)
+ * @author Oscar Davis (SCIPER: 311193)
  * Creation date: 20/02/2020
  **/
 public final class GeographicalCoordinates extends SphericalCoordinates {
@@ -26,8 +26,8 @@ public final class GeographicalCoordinates extends SphericalCoordinates {
      * @return a new instance of GeographicalCoordinates with given parameters.
      */
     public static GeographicalCoordinates of(double lon, double lat) {
-        checkInInterval(RightOpenInterval.symmetric(360), lon);
-        checkInInterval(RightOpenInterval.symmetric(180), lat);
+        checkInInterval(RightOpenInterval.symmetric(2*Math.PI), lon);
+        checkInInterval(RightOpenInterval.symmetric(Math.PI), lat);
         return new GeographicalCoordinates(lon, lat);
     }
 
@@ -47,18 +47,30 @@ public final class GeographicalCoordinates extends SphericalCoordinates {
         return RightOpenInterval.symmetric(180).contains(latDeg);
     }
 
+    /**
+     * @return the longitude in radians.
+     */
     public double lon(){
         return super.lon();
     }
 
+    /**
+     * @return the latitude in radians.
+     */
     public double lat(){
         return super.lat();
     }
 
+    /**
+     * @return the longitude in degrees.
+     */
     public double lonDeg(){
         return super.lonDeg();
     }
 
+    /**
+     * @return the latitude in degrees.
+     */
     public double latDeg(){
         return super.latDeg();
     }
