@@ -21,8 +21,8 @@ public final class GeographicalCoordinates extends SphericalCoordinates {
     /**
      * Public method to initialize a GeographicalCoordinates instance.
      *
-     * @param lon Longitude in degrees. Must be in the interval [-180, 180[.
-     * @param lat Latitude in degrees. Must be in the interval [-90, 90[.
+     * @param lon Longitude in radians. Must be in the interval [-PI, PI[.
+     * @param lat Latitude in radians. Must be in the interval [-PI/2, PI/2[.
      * @return a new instance of GeographicalCoordinates with given parameters.
      */
     public static GeographicalCoordinates of(double lon, double lat) {
