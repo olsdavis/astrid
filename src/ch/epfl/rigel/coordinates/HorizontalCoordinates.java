@@ -35,9 +35,9 @@ public final class HorizontalCoordinates extends SphericalCoordinates {
     /**
      * Public method for initialization.
      *
-     * @param azDeg azimut (longitude) in degrees
-     * @param altDeg (latitude) in degrees
-     * @return a new instance of HorizontalCoordinates with given parameters.
+     * @param azDeg  Azimut (longitude) in degrees
+     * @param altDeg Altitude (latitude) in degrees
+     * @return a new instance of HorizontalCoordinates with given parameters converted to radians.
      */
     public static HorizontalCoordinates ofDeg(double azDeg, double altDeg) {
         return HorizontalCoordinates.of(Angle.ofDeg(azDeg), Angle.ofDeg(altDeg));
@@ -80,9 +80,10 @@ public final class HorizontalCoordinates extends SphericalCoordinates {
      * @return the string corresponding to the octant in which lies the current instance's azimut.
      */
     public String azOctantName(String n, String e, String s, String w) {
+        double redAz = this.az() * 8 / Math.PI;
         int marker = 0;
         for (int i = 1; i < 8; i++) {
-            if (RightOpenInterval.of(i, i + 1).contains(this.az() * 8 / Math.PI)) {
+            if (RightOpenInterval.of(i, i + 1).contains(redAz)) {
                 marker = i;
                 break;
             }
@@ -110,12 +111,13 @@ public final class HorizontalCoordinates extends SphericalCoordinates {
 
     /**
      * Calculates the angular distance between the current instance and a given HorizontalCoordinates parameter.
+     *
      * @param that HorizontalCoordinates object to which we measure the angular distance.
      * @return the value of the angular distance.
      */
     public double angularDistanceTo(HorizontalCoordinates that) {
-        return Math.acos(Math.sin(this.lat()) * Math.sin(that.lat()) +
-                Math.cos(this.lat()) * Math.cos(that.lat()) * Math.cos(this.lon() - that.lon()));
+        return Math.acos(Math.sin(lat()) * Math.sin(that.lat()) +
+                Math.cos(lat()) * Math.cos(that.lat()) * Math.cos(lon() - that.lon()));
     }
 
     @Override

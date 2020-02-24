@@ -8,6 +8,7 @@ import static ch.epfl.rigel.Preconditions.checkInInterval;
 
 /**
  * Implementation of SphericalCoordinates for the ecliptic coordinates system.
+ *
  * @author Alexandre Doukhan (SCIPER : 316706)
  * @author Oscar Davis (SCIPER: 311193)
  * Creation date: 20/02/2020
@@ -26,7 +27,7 @@ public final class EclipticCoordinates extends SphericalCoordinates {
      * @return a new instance of GeographicalCoordinates with given parameters.
      */
     public static EclipticCoordinates of(double lon, double lat) {
-        checkInInterval(RightOpenInterval.of(0,2*Math.PI), lon);
+        checkInInterval(RightOpenInterval.of(0, 2 * Math.PI), lon);
         checkInInterval(RightOpenInterval.symmetric(Math.PI), lat);
         return new EclipticCoordinates(lon, lat);
     }
@@ -34,28 +35,28 @@ public final class EclipticCoordinates extends SphericalCoordinates {
     /**
      * @return the longitude in radians.
      */
-    public double lon(){
+    public double lon() {
         return super.lon();
     }
 
     /**
      * @return the latitude in radians.
      */
-    public double lat(){
+    public double lat() {
         return super.lat();
     }
 
     /**
      * @return the longitude in degrees.
      */
-    public double lonDeg(){
+    public double lonDeg() {
         return super.lonDeg();
     }
 
     /**
      * @return the latitude in degrees.
      */
-    public double latDeg(){
+    public double latDeg() {
         return super.latDeg();
     }
 

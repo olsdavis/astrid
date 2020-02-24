@@ -9,6 +9,7 @@ import static ch.epfl.rigel.Preconditions.checkInInterval;
 
 /**
  * Implementation of SphericalCoordinates for the equatorial coordinates system.
+ *
  * @author Alexandre Doukhan (SCIPER : 316706)
  * @author Oscar Davis (SCIPER: 311193)
  * Creation date: 20/02/2020
@@ -22,12 +23,12 @@ public final class EquatorialCoordinates extends SphericalCoordinates {
     /**
      * Public method to initialize a EquatorialCoordinates instance.
      *
-     * @param ra Right ascension in radians. Must be in the interval [0, 2*PI[.
+     * @param ra  Right ascension in radians. Must be in the interval [0, 2*PI[.
      * @param dec Declination in radians. Must be in the interval [-PI/2, PI/2[.
      * @return a new instance of EquatorialCoordinates with given parameters.
      */
     public static EquatorialCoordinates of(double ra, double dec) {
-        checkInInterval(RightOpenInterval.of(0, 2*Math.PI), ra);
+        checkInInterval(RightOpenInterval.of(0, 2 * Math.PI), ra);
         checkInInterval(RightOpenInterval.symmetric(Math.PI), dec);
         return new EquatorialCoordinates(ra, dec);
     }
@@ -35,28 +36,28 @@ public final class EquatorialCoordinates extends SphericalCoordinates {
     /**
      * @return the longitude in radians.
      */
-    public double ra(){
+    public double ra() {
         return super.lon();
     }
 
     /**
      * @return the latitude in radians.
      */
-    public double dec(){
+    public double dec() {
         return super.lat();
     }
 
     /**
      * @return the longitude in degrees.
      */
-    public double raHr(){
+    public double raHr() {
         return Angle.toHr(super.lon());
     }
 
     /**
      * @return the latitude in degrees.
      */
-    public double decDeg(){
+    public double decDeg() {
         return super.latDeg();
     }
 

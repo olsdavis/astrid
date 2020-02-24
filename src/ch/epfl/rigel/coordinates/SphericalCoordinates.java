@@ -4,6 +4,7 @@ import ch.epfl.rigel.math.Angle;
 
 /**
  * Mother class for all spherical coordinates systems used.
+ *
  * @author Alexandre Doukhan (SCIPER : 316706)
  * @author Oscar Davis (SCIPER: 311193)
  * Creation date: 20/02/2020
