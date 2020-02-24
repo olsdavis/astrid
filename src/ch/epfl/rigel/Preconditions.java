@@ -28,7 +28,7 @@ public class Preconditions {
      */
     public static double checkInInterval(Interval interval, double value) {
         if (!interval.contains(value)) {
-            throw new IllegalArgumentException("value out of bounds: " + value);
+            throw new IllegalArgumentException("value out of bounds: " + value + " not in " + interval.toString());
         }
         return value;
     }

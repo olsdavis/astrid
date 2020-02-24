@@ -1,40 +1,49 @@
 package ch.epfl.rigel.coordinates;
 
+import ch.epfl.rigel.math.Angle;
+import ch.epfl.rigel.math.ClosedInterval;
 import ch.epfl.rigel.math.RightOpenInterval;
 
 import java.util.Locale;
 
-import static ch.epfl.rigel.Preconditions.*;
+import static ch.epfl.rigel.Preconditions.checkInInterval;
 
 /**
  * Implementation of SphericalCoordinates for the geographical coordinates system.
  *
- * @author Alexandre Doukhan (SCIPER : 316706)
+ * @author Alexandre Doukhan (SCIPER: 316706)
  * @author Oscar Davis (SCIPER: 311193)
  * Creation date: 20/02/2020
- **/
-public final class GeographicalCoordinates extends SphericalCoordinates {
-
-    private GeographicalCoordinates(double lon, double lat) {
-        super(lon, lat);
-    }
+ */
+public final class GeographicCoordinates extends SphericalCoordinates {
 
     /**
      * Public method to initialize a GeographicalCoordinates instance.
      *
      * @param lon Longitude in radians. Must be in the interval [-PI, PI[.
-     * @param lat Latitude in radians. Must be in the interval [-PI/2, PI/2[.
+     * @param lat Latitude in radians. Must be in the interval [-PI/2, PI/2].
      * @return a new instance of GeographicalCoordinates with given parameters.
      */
-    public static GeographicalCoordinates of(double lon, double lat) {
+    public static GeographicCoordinates of(double lon, double lat) {
         checkInInterval(RightOpenInterval.symmetric(2 * Math.PI), lon);
-        checkInInterval(RightOpenInterval.symmetric(Math.PI), lat);
-        return new GeographicalCoordinates(lon, lat);
+        checkInInterval(ClosedInterval.symmetric(Math.PI), lat);
+        return new GeographicCoordinates(lon, lat);
+    }
+
+    /**
+     * Public method to initialize a GeographicalCoordinates instance.
+     *
+     * @param lon Longitude in radians. Must be in the interval [-180, 180[.
+     * @param lat Latitude in radians. Must be in the interval [-90, 90].
+     * @return a new instance of GeographicalCoordinates with given parameters.
+     */
+    public static GeographicCoordinates ofDeg(double lon, double lat) {
+        return of(Angle.ofDeg(lon), Angle.ofDeg(lat));
     }
 
     /**
      * @param lonDeg Longitude given in degrees.
-     * @return true iff the parameter is in [-180, 180[.
+     * @return true if and only if the parameter is in [-180, 180[.
      */
     public static boolean isValidLonDeg(double lonDeg) {
         return RightOpenInterval.symmetric(360).contains(lonDeg);
@@ -42,15 +51,20 @@ public final class GeographicalCoordinates extends SphericalCoordinates {
 
     /**
      * @param latDeg Latitude given in degrees.
-     * @return true iff the parameter is in [-90, 90[.
+     * @return true if and only if the parameter is in [-90, 90].
      */
     public static boolean isValidLatDeg(double latDeg) {
-        return RightOpenInterval.symmetric(180).contains(latDeg);
+        return ClosedInterval.symmetric(180).contains(latDeg);
+    }
+
+    private GeographicCoordinates(double lon, double lat) {
+        super(lon, lat);
     }
 
     /**
      * @return the longitude in radians.
      */
+    @Override
     public double lon() {
         return super.lon();
     }
@@ -58,6 +72,7 @@ public final class GeographicalCoordinates extends SphericalCoordinates {
     /**
      * @return the latitude in radians.
      */
+    @Override
     public double lat() {
         return super.lat();
     }
@@ -65,6 +80,7 @@ public final class GeographicalCoordinates extends SphericalCoordinates {
     /**
      * @return the longitude in degrees.
      */
+    @Override
     public double lonDeg() {
         return super.lonDeg();
     }
@@ -72,6 +88,7 @@ public final class GeographicalCoordinates extends SphericalCoordinates {
     /**
      * @return the latitude in degrees.
      */
+    @Override
     public double latDeg() {
         return super.latDeg();
     }

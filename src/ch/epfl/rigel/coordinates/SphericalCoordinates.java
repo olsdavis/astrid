@@ -5,10 +5,10 @@ import ch.epfl.rigel.math.Angle;
 /**
  * Mother class for all spherical coordinates systems used.
  *
- * @author Alexandre Doukhan (SCIPER : 316706)
+ * @author Alexandre Doukhan (SCIPER: 316706)
  * @author Oscar Davis (SCIPER: 311193)
  * Creation date: 20/02/2020
- **/
+ */
 abstract class SphericalCoordinates {
     private double lon;
     private double lat;
@@ -16,7 +16,6 @@ abstract class SphericalCoordinates {
     SphericalCoordinates(double lon, double lat) {
         this.lon = lon;
         this.lat = lat;
-
     }
 
     /**
@@ -48,12 +47,12 @@ abstract class SphericalCoordinates {
     }
 
     @Override
-    public int hashCode() {
+    public final int hashCode() {
         throw new UnsupportedOperationException("unsupported operation");
     }
 
     @Override
-    public boolean equals(Object o) {
+    public final boolean equals(Object o) {
         throw new UnsupportedOperationException("unsupported operation");
     }
 }

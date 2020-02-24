@@ -40,7 +40,7 @@ public class Polynomial {
      */
     public double at(double x) {
         double res = 0;
-        for (int i = 0; i < coefficients.length - 1; i++) {
+        for (int i = 0; i < coefficients.length - 1; ++i) {
             res += coefficients[i];
             res *= x;
         }
@@ -54,7 +54,7 @@ public class Polynomial {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < coefficients.length; i++) {
+        for (int i = 0; i < coefficients.length; ++i) {
             // do not write 0x^c
             if (coefficients[i] != 0) {
                 double coefficient = coefficients[i];

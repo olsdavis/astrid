@@ -7,7 +7,7 @@ import static ch.epfl.rigel.Preconditions.checkArgument;
 /**
  * Represents a closed interval.
  * @author Oscar Davis (SCIPER: 311193)
- * @author Alexandre Doukhan (SCIPER : 316706)
+ * @author Alexandre Doukhan (SCIPER: 316706)
  * Creation date: 17/02/2020
  */
 public final class ClosedInterval extends Interval {
@@ -43,8 +43,11 @@ public final class ClosedInterval extends Interval {
      */
     public double clip(double v) {
         /*
-        if I were a hacker
+        we could have also written:
+
         return Math.max(low(), Math.min(high(), v));
+
+        yet, it is much clearer to write it explicitly with conditions
         */
         if (v >= high()) {
             return high();

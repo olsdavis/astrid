@@ -9,10 +9,10 @@ import static ch.epfl.rigel.Preconditions.checkInInterval;
 /**
  * Implementation of SphericalCoordinates for the ecliptic coordinates system.
  *
- * @author Alexandre Doukhan (SCIPER : 316706)
+ * @author Alexandre Doukhan (SCIPER: 316706)
  * @author Oscar Davis (SCIPER: 311193)
  * Creation date: 20/02/2020
- **/
+ */
 public final class EclipticCoordinates extends SphericalCoordinates {
 
     private EclipticCoordinates(double lon, double lat) {

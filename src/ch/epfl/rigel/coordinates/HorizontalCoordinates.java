@@ -2,6 +2,7 @@ package ch.epfl.rigel.coordinates;
 
 import ch.epfl.rigel.Preconditions;
 import ch.epfl.rigel.math.Angle;
+import ch.epfl.rigel.math.ClosedInterval;
 import ch.epfl.rigel.math.RightOpenInterval;
 
 import java.util.Locale;
@@ -9,15 +10,11 @@ import java.util.Locale;
 /**
  * Implementation of SphericalCoordinates for the horizontal coordinates system.
  *
- * @author Alexandre Doukhan (SCIPER : 316706)
+ * @author Alexandre Doukhan (SCIPER: 316706)
  * @author Oscar Davis (SCIPER: 311193)
  * Creation date: 21/02/2020
- **/
+ */
 public final class HorizontalCoordinates extends SphericalCoordinates {
-
-    private HorizontalCoordinates(double az, double alt) {
-        super(az, alt);
-    }
 
     /**
      * Public method for initialization.
@@ -28,7 +25,7 @@ public final class HorizontalCoordinates extends SphericalCoordinates {
      */
     public static HorizontalCoordinates of(double az, double alt) {
         Preconditions.checkInInterval(RightOpenInterval.of(0, 2 * Math.PI), az);
-        Preconditions.checkInInterval(RightOpenInterval.symmetric(Math.PI), alt);
+        Preconditions.checkInInterval(ClosedInterval.symmetric(Math.PI), alt);
         return new HorizontalCoordinates(az, alt);
     }
 
@@ -40,7 +37,11 @@ public final class HorizontalCoordinates extends SphericalCoordinates {
      * @return a new instance of HorizontalCoordinates with given parameters converted to radians.
      */
     public static HorizontalCoordinates ofDeg(double azDeg, double altDeg) {
-        return HorizontalCoordinates.of(Angle.ofDeg(azDeg), Angle.ofDeg(altDeg));
+        return of(Angle.ofDeg(azDeg), Angle.ofDeg(altDeg));
+    }
+
+    private HorizontalCoordinates(double az, double alt) {
+        super(az, alt);
     }
 
     /**
@@ -71,7 +72,6 @@ public final class HorizontalCoordinates extends SphericalCoordinates {
         return latDeg();
     }
 
-
     /**
      * @param n String indicating the North cardinal point.
      * @param e String indicating the East cardinal point.
@@ -80,10 +80,9 @@ public final class HorizontalCoordinates extends SphericalCoordinates {
      * @return the string corresponding to the octant in which lies the current instance's azimut.
      */
     public String azOctantName(String n, String e, String s, String w) {
-        double redAz = this.az() * 8 / Math.PI;
         int marker = 0;
-        for (int i = 1; i < 8; i++) {
-            if (RightOpenInterval.of(i, i + 1).contains(redAz)) {
+        for (int i = 0; i < 8; i++) {
+            if (RightOpenInterval.of(-Math.PI / 8d + (Math.PI / 4d * i), Math.PI / 8d + (Math.PI / 4d * i)).contains(az())) {
                 marker = i;
                 break;
             }
@@ -108,7 +107,6 @@ public final class HorizontalCoordinates extends SphericalCoordinates {
         }
     }
 
-
     /**
      * Calculates the angular distance between the current instance and a given HorizontalCoordinates parameter.
      *
@@ -122,6 +120,6 @@ public final class HorizontalCoordinates extends SphericalCoordinates {
 
     @Override
     public String toString() {
-        return String.format(Locale.ROOT, "(az=%.6f° , alt=%.6f°)", lonDeg(), latDeg());
+        return String.format(Locale.ROOT, "(az=%.4f° , alt=%.4f°)", lonDeg(), latDeg());
     }
 }

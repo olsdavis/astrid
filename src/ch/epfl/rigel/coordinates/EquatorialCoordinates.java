@@ -10,10 +10,10 @@ import static ch.epfl.rigel.Preconditions.checkInInterval;
 /**
  * Implementation of SphericalCoordinates for the equatorial coordinates system.
  *
- * @author Alexandre Doukhan (SCIPER : 316706)
+ * @author Alexandre Doukhan (SCIPER: 316706)
  * @author Oscar Davis (SCIPER: 311193)
  * Creation date: 20/02/2020
- **/
+ */
 public final class EquatorialCoordinates extends SphericalCoordinates {
 
     private EquatorialCoordinates(double lon, double lat) {
@@ -52,6 +52,11 @@ public final class EquatorialCoordinates extends SphericalCoordinates {
      */
     public double raHr() {
         return Angle.toHr(super.lon());
+    }
+
+    public double raDeg() {
+        //TODO:
+        throw new UnsupportedOperationException("need to implement");
     }
 
     /**
