@@ -55,6 +55,10 @@ public final class EquatorialCoordinates extends SphericalCoordinates {
         return Angle.toHr(super.lon());
     }
 
+    /**
+     *
+     * @return the latitude in degress.
+     */
     public double raDeg() {
         return super.lonDeg();
     }
