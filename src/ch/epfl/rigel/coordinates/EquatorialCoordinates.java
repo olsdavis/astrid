@@ -1,6 +1,7 @@
 package ch.epfl.rigel.coordinates;
 
 import ch.epfl.rigel.math.Angle;
+import ch.epfl.rigel.math.ClosedInterval;
 import ch.epfl.rigel.math.RightOpenInterval;
 
 import java.util.Locale;
@@ -24,12 +25,12 @@ public final class EquatorialCoordinates extends SphericalCoordinates {
      * Public method to initialize a EquatorialCoordinates instance.
      *
      * @param ra  Right ascension in radians. Must be in the interval [0, 2*PI[.
-     * @param dec Declination in radians. Must be in the interval [-PI/2, PI/2[.
+     * @param dec Declination in radians. Must be in the interval [-PI/2, PI/2].
      * @return a new instance of EquatorialCoordinates with given parameters.
      */
     public static EquatorialCoordinates of(double ra, double dec) {
         checkInInterval(RightOpenInterval.of(0, 2 * Math.PI), ra);
-        checkInInterval(RightOpenInterval.symmetric(Math.PI), dec);
+        checkInInterval(ClosedInterval.symmetric(Math.PI), dec);
         return new EquatorialCoordinates(ra, dec);
     }
 
@@ -55,8 +56,7 @@ public final class EquatorialCoordinates extends SphericalCoordinates {
     }
 
     public double raDeg() {
-        //TODO:
-        throw new UnsupportedOperationException("need to implement");
+        return super.lonDeg();
     }
 
     /**
