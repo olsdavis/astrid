@@ -1,6 +1,7 @@
 package ch.epfl.rigel.coordinates;
 
 import ch.epfl.rigel.math.Angle;
+import ch.epfl.test.Impr;
 import ch.epfl.test.TestRandomizer;
 import org.junit.jupiter.api.Test;
 
@@ -14,6 +15,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * Creation date: 24/02/2020
  */
 public class HorizontalCoordinatesTest {
+
+    @Test
+    void toStringWorks() {
+        assertEquals("(az=350.0000°, alt=7.2000°)", HorizontalCoordinates.ofDeg(350, 7.2d).toString());
+        assertEquals("(az=123.2300°, alt=-85.4567°)", HorizontalCoordinates.ofDeg(123.23, -85.456723).toString());
+    }
 
     @Test
     void ofWorksOnValidParameters() {
@@ -31,7 +38,7 @@ public class HorizontalCoordinatesTest {
         assertEquals(0, trivial.lat());
 
         HorizontalCoordinates untested = HorizontalCoordinates.of(0, Math.PI / 2d);
-        assertEquals(Math.PI / 2d, untested.lat(), 10e-4);
+        assertEquals(Math.PI / 2d, untested.lat(), Impr.DELTA);
     }
 
     @Test
@@ -43,8 +50,8 @@ public class HorizontalCoordinatesTest {
             final double lonDeg = Angle.toDeg(lon);
             final double latDeg = Angle.toDeg(lat);
             HorizontalCoordinates coordinates = HorizontalCoordinates.ofDeg(lonDeg, latDeg);
-            assertEquals(lon, coordinates.lon(), 10e-4);
-            assertEquals(lat, coordinates.lat(), 10e-4);
+            assertEquals(lon, coordinates.lon(), Impr.DELTA);
+            assertEquals(lat, coordinates.lat(), Impr.DELTA);
         }
 
         HorizontalCoordinates trivial = HorizontalCoordinates.ofDeg(0, 0);
@@ -52,7 +59,7 @@ public class HorizontalCoordinatesTest {
         assertEquals(0, trivial.lat());
 
         HorizontalCoordinates untested = HorizontalCoordinates.ofDeg(0, 90);
-        assertEquals(Math.PI / 2d, untested.lat(), 10e-4);
+        assertEquals(Math.PI / 2d, untested.lat(), Impr.DELTA);
     }
 
     @Test
@@ -70,7 +77,15 @@ public class HorizontalCoordinatesTest {
         assertEquals(w, HorizontalCoordinates.ofDeg(270, 0).azOctantName(n, e, s, w));
         assertEquals(n + w, HorizontalCoordinates.ofDeg(315, 0).azOctantName(n, e, s, w));
 
+        assertEquals(n + e, HorizontalCoordinates.ofDeg(22.5d, 0).azOctantName(n, e, s, w));
+
         assertEquals(n + w, HorizontalCoordinates.ofDeg(335, 0).azOctantName(n, e, s, w));
+    }
+
+    @Test
+    void angularDistanceToWorks() {
+        assertEquals(0.0279d, HorizontalCoordinates.ofDeg(6.5682d, 46.5183d)
+                .angularDistanceTo(HorizontalCoordinates.ofDeg(8.5476d, 47.3763d)), Impr.DELTA);
     }
 
 }

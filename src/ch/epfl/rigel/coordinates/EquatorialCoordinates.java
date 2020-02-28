@@ -17,21 +17,18 @@ import static ch.epfl.rigel.Preconditions.checkInInterval;
  */
 public final class EquatorialCoordinates extends SphericalCoordinates {
 
-    private EquatorialCoordinates(double lon, double lat) {
-        super(lon, lat);
-    }
-
     /**
-     * Public method to initialize a EquatorialCoordinates instance.
-     *
      * @param ra  Right ascension in radians. Must be in the interval [0, 2*PI[.
      * @param dec Declination in radians. Must be in the interval [-PI/2, PI/2].
      * @return a new instance of EquatorialCoordinates with given parameters.
      */
     public static EquatorialCoordinates of(double ra, double dec) {
-        checkInInterval(RightOpenInterval.of(0, 2 * Math.PI), ra);
-        checkInInterval(ClosedInterval.symmetric(Math.PI), dec);
-        return new EquatorialCoordinates(ra, dec);
+        return new EquatorialCoordinates(checkInInterval(RightOpenInterval.of(0, 2 * Math.PI), ra),
+                checkInInterval(ClosedInterval.symmetric(Math.PI), dec));
+    }
+
+    private EquatorialCoordinates(double lon, double lat) {
+        super(lon, lat);
     }
 
     /**
@@ -42,10 +39,10 @@ public final class EquatorialCoordinates extends SphericalCoordinates {
     }
 
     /**
-     * @return the latitude in radians.
+     * @return the latitude in degress.
      */
-    public double dec() {
-        return super.lat();
+    public double raDeg() {
+        return super.lonDeg();
     }
 
     /**
@@ -56,11 +53,10 @@ public final class EquatorialCoordinates extends SphericalCoordinates {
     }
 
     /**
-     *
-     * @return the latitude in degress.
+     * @return the latitude in radians.
      */
-    public double raDeg() {
-        return super.lonDeg();
+    public double dec() {
+        return super.lat();
     }
 
     /**

@@ -1,6 +1,7 @@
 package ch.epfl.rigel.coordinates;
 
-import ch.epfl.rigel.Preconditions;
+import static ch.epfl.rigel.Preconditions.*;
+
 import ch.epfl.rigel.math.Angle;
 import ch.epfl.rigel.math.ClosedInterval;
 import ch.epfl.rigel.math.RightOpenInterval;
@@ -17,24 +18,19 @@ import java.util.Locale;
 public final class HorizontalCoordinates extends SphericalCoordinates {
 
     /**
-     * Public method for initialization.
-     *
-     * @param az  azimut (longitude) in radians.
-     * @param alt (latitude) in radians.
-     * @return a new instance of HorizontalCoordinates with given parameters.
+     * @param az  azimut in radians. Must be in the interval [0, 2*PI[.
+     * @param alt altitude in radians. Must be in the interval [-PI/2, PI/2].
+     * @return a new instance of HorizontalCoordinates based on provided parameters.
      */
     public static HorizontalCoordinates of(double az, double alt) {
-        Preconditions.checkInInterval(RightOpenInterval.of(0, 2 * Math.PI), az);
-        Preconditions.checkInInterval(ClosedInterval.symmetric(Math.PI), alt);
-        return new HorizontalCoordinates(az, alt);
+        return new HorizontalCoordinates(checkInInterval(RightOpenInterval.of(0, 2 * Math.PI), az),
+                checkInInterval(ClosedInterval.symmetric(Math.PI), alt));
     }
 
     /**
-     * Public method for initialization.
-     *
-     * @param azDeg  Azimut (longitude) in degrees
-     * @param altDeg Altitude (latitude) in degrees
-     * @return a new instance of HorizontalCoordinates with given parameters converted to radians.
+     * @param azDeg  azimut in degrees. Must be in interval [0, 360[.
+     * @param altDeg altitude in degrees. Must be interval [-90, 90].
+     * @return a new instance of HorizontalCoordinates based on provided parameters (converted to radians).
      */
     public static HorizontalCoordinates ofDeg(double azDeg, double altDeg) {
         return of(Angle.ofDeg(azDeg), Angle.ofDeg(altDeg));
@@ -78,6 +74,7 @@ public final class HorizontalCoordinates extends SphericalCoordinates {
      * @param s String indicating the South cardinal point.
      * @param w String indicating the West cardinal point.
      * @return the string corresponding to the octant in which lies the current instance's azimut.
+     * Note that border coordinates are in the "next" octant (<i>e.g.</i> {@code 22.5} is {@code "NE"}).
      */
     public String azOctantName(String n, String e, String s, String w) {
         int marker = 0;

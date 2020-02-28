@@ -18,27 +18,13 @@ import static ch.epfl.rigel.Preconditions.checkInInterval;
 public final class GeographicCoordinates extends SphericalCoordinates {
 
     /**
-     * Public method to initialize a GeographicalCoordinates instance.
-     *
-     * @param lon Longitude in radians. Must be in the interval [-PI, PI[.
-     * @param lat Latitude in radians. Must be in the interval [-PI/2, PI/2].
-     * @return a new instance of GeographicalCoordinates with given parameters.
-     */
-    public static GeographicCoordinates of(double lon, double lat) {
-        checkInInterval(RightOpenInterval.symmetric(2 * Math.PI), lon);
-        checkInInterval(ClosedInterval.symmetric(Math.PI), lat);
-        return new GeographicCoordinates(lon, lat);
-    }
-
-    /**
-     * Public method to initialize a GeographicalCoordinates instance.
-     *
      * @param lon Longitude in radians. Must be in the interval [-180, 180[.
      * @param lat Latitude in radians. Must be in the interval [-90, 90].
      * @return a new instance of GeographicalCoordinates with given parameters.
      */
     public static GeographicCoordinates ofDeg(double lon, double lat) {
-        return of(Angle.ofDeg(lon), Angle.ofDeg(lat));
+        return new GeographicCoordinates(Angle.ofDeg(checkInInterval(RightOpenInterval.symmetric(360), lon)),
+                Angle.ofDeg(checkInInterval(ClosedInterval.symmetric(180), lat)));
     }
 
     /**

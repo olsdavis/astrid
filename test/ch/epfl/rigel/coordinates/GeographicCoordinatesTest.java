@@ -1,6 +1,7 @@
 package ch.epfl.rigel.coordinates;
 
 import ch.epfl.rigel.math.Angle;
+import ch.epfl.test.Impr;
 import ch.epfl.test.TestRandomizer;
 import org.junit.jupiter.api.Test;
 
@@ -18,33 +19,13 @@ public class GeographicCoordinatesTest {
     @Test
     void ofWorksOnValidParameters() {
         SplittableRandom random = TestRandomizer.newRandom();
+
         for (int i = 0; i < TestRandomizer.RANDOM_ITERATIONS; i++) {
-            final double lon = random.nextDouble(-Math.PI, Math.PI);
-            final double lat = random.nextDouble(-Math.PI / 2, Math.PI / 2);
-            GeographicCoordinates coordinates = GeographicCoordinates.of(lon, lat);
-            assertEquals(lon, coordinates.lon());
-            assertEquals(lat, coordinates.lat());
-        }
-
-        GeographicCoordinates trivial = GeographicCoordinates.of(0, 0);
-        assertEquals(0, trivial.lon());
-        assertEquals(0, trivial.lat());
-
-        GeographicCoordinates untested = GeographicCoordinates.of(0, Math.PI / 2d);
-        assertEquals(Math.PI / 2d, untested.lat(), 10e-4);
-    }
-
-    @Test
-    void ofDegWorksOnValidParameters() {
-        SplittableRandom random = TestRandomizer.newRandom();
-        for (int i = 0; i < TestRandomizer.RANDOM_ITERATIONS; i++) {
-            final double lon = random.nextDouble(-Math.PI, Math.PI);
-            final double lat = random.nextDouble(-Math.PI / 2d, Math.PI / 2d);
-            final double lonDeg = Angle.toDeg(lon);
-            final double latDeg = Angle.toDeg(lat);
-            GeographicCoordinates coordinates = GeographicCoordinates.ofDeg(lonDeg, latDeg);
-            assertEquals(lon, coordinates.lon(), 10e-4);
-            assertEquals(lat, coordinates.lat(), 10e-4);
+            final double lon = random.nextDouble(-180, 180);
+            final double lat = random.nextDouble(-90, 90);
+            GeographicCoordinates coordinates = GeographicCoordinates.ofDeg(lon, lat);
+            assertEquals(Angle.ofDeg(lon), coordinates.lon(), Impr.DELTA);
+            assertEquals(Angle.ofDeg(lat), coordinates.lat(), Impr.DELTA);
         }
 
         GeographicCoordinates trivial = GeographicCoordinates.ofDeg(0, 0);
@@ -52,65 +33,86 @@ public class GeographicCoordinatesTest {
         assertEquals(0, trivial.lat());
 
         GeographicCoordinates untested = GeographicCoordinates.ofDeg(0, 90);
-        assertEquals(Math.PI / 2d, untested.lat(), 10e-4);
+        assertEquals(Math.PI / 2d, untested.lat(), Impr.DELTA);
+    }
+
+    @Test
+    void ofDegWorksOnValidParameters() {
+        SplittableRandom random = TestRandomizer.newRandom();
+
+        for (int i = 0; i < TestRandomizer.RANDOM_ITERATIONS; i++) {
+            final double lon = random.nextDouble(-Math.PI, Math.PI);
+            final double lat = random.nextDouble(-Math.PI / 2d, Math.PI / 2d);
+            final double lonDeg = Angle.toDeg(lon);
+            final double latDeg = Angle.toDeg(lat);
+            GeographicCoordinates coordinates = GeographicCoordinates.ofDeg(lonDeg, latDeg);
+            assertEquals(lon, coordinates.lon(), Impr.DELTA);
+            assertEquals(lat, coordinates.lat(), Impr.DELTA);
+        }
+
+        GeographicCoordinates trivial = GeographicCoordinates.ofDeg(0, 0);
+        assertEquals(0, trivial.lon());
+        assertEquals(0, trivial.lat());
+
+        GeographicCoordinates untested = GeographicCoordinates.ofDeg(0, 90);
+        assertEquals(Math.PI / 2d, untested.lat(), Impr.DELTA);
     }
 
     @Test
     void ofThrowsOnInvalidParameters() {
-        assertThrows(IllegalArgumentException.class, () -> GeographicCoordinates.of(Math.PI, 0));
-        assertThrows(IllegalArgumentException.class, () -> GeographicCoordinates.of(-Math.PI - 10e-4, 0));
-        assertThrows(IllegalArgumentException.class, () -> GeographicCoordinates.of(0, Math.PI / 2 + 10e-4));
-        assertThrows(IllegalArgumentException.class, () -> GeographicCoordinates.of(0, -Math.PI / 2 - 10e-4));
+        assertThrows(IllegalArgumentException.class, () -> GeographicCoordinates.ofDeg(180, 0));
+        assertThrows(IllegalArgumentException.class, () -> GeographicCoordinates.ofDeg(-180 - Impr.DELTA, 0));
+        assertThrows(IllegalArgumentException.class, () -> GeographicCoordinates.ofDeg(0, 90 + Impr.DELTA));
+        assertThrows(IllegalArgumentException.class, () -> GeographicCoordinates.ofDeg(0, -90 - Impr.DELTA));
     }
 
     @Test
     void ofDegThrowsOnInvalidParameters() {
         assertThrows(IllegalArgumentException.class, () -> GeographicCoordinates.ofDeg(180, 0));
-        assertThrows(IllegalArgumentException.class, () -> GeographicCoordinates.ofDeg(-180 - 10e-4, 0));
-        assertThrows(IllegalArgumentException.class, () -> GeographicCoordinates.of(0, 90 + 10e-4));
-        assertThrows(IllegalArgumentException.class, () -> GeographicCoordinates.of(0, -90 - 10e-4));
+        assertThrows(IllegalArgumentException.class, () -> GeographicCoordinates.ofDeg(-180 - Impr.DELTA, 0));
+        assertThrows(IllegalArgumentException.class, () -> GeographicCoordinates.ofDeg(0, 90 + Impr.DELTA));
+        assertThrows(IllegalArgumentException.class, () -> GeographicCoordinates.ofDeg(0, -90 - Impr.DELTA));
     }
 
     @Test
     void degMethodsWork() {
         // trivial coordinates
-        assertEquals(0, GeographicCoordinates.of(0, 0).lonDeg());
-        assertEquals(0, GeographicCoordinates.of(0, 0).lonDeg());
+        assertEquals(0, GeographicCoordinates.ofDeg(0, 0).lonDeg());
+        assertEquals(0, GeographicCoordinates.ofDeg(0, 0).lonDeg());
         // reachable borders (i.e. all combinations of the limits of the intervals, except for PI for the longitude)
-        assertEquals(90, GeographicCoordinates.of(Math.PI / 2d, 0).lonDeg());
-        assertEquals(90, GeographicCoordinates.of(0, Math.PI / 2d).latDeg());
-        assertEquals(-180, GeographicCoordinates.of(-Math.PI, 0).lonDeg());
-        assertEquals(-90, GeographicCoordinates.of(0, -Math.PI / 2d).latDeg());
+        assertEquals(90, GeographicCoordinates.ofDeg(90, 0).lonDeg());
+        assertEquals(90, GeographicCoordinates.ofDeg(0, 90).latDeg());
+        assertEquals(-180, GeographicCoordinates.ofDeg(-180, 0).lonDeg());
+        assertEquals(-90, GeographicCoordinates.ofDeg(0, -90).latDeg());
         // some particular values
-        assertEquals(30, GeographicCoordinates.of(Math.PI / 6d, 0).lonDeg(), 10e-4);
-        assertEquals(-60, GeographicCoordinates.of(0, -Math.PI / 3d).latDeg(), 10e-4);
+        assertEquals(30, GeographicCoordinates.ofDeg(30, 0).lonDeg(), Impr.DELTA);
+        assertEquals(-60, GeographicCoordinates.ofDeg(0, -60).latDeg(), Impr.DELTA);
     }
 
     @Test
     void ofFailsOnInvalidParameters() {
         // the longitude must be smaller than PI
-        assertThrows(IllegalArgumentException.class, () -> GeographicCoordinates.of(Math.PI, Math.PI / 2d));
+        assertThrows(IllegalArgumentException.class, () -> GeographicCoordinates.ofDeg(180, 90));
         // the latitude must be smaller than or equal to PI/2
-        assertThrows(IllegalArgumentException.class, () -> GeographicCoordinates.of(0, Math.PI / 2d + 10e-4));
+        assertThrows(IllegalArgumentException.class, () -> GeographicCoordinates.ofDeg(0, 90 + Impr.DELTA));
         // the longitude must be bigger than or equal to -PI
-        assertThrows(IllegalArgumentException.class, () -> GeographicCoordinates.of(-Math.PI - 10e-4, 0));
+        assertThrows(IllegalArgumentException.class, () -> GeographicCoordinates.ofDeg(-180 - Impr.DELTA, 0));
         // the latitude must be bigger than or equal to -PI/2
-        assertThrows(IllegalArgumentException.class, () -> GeographicCoordinates.of(0, -Math.PI - 10e-4));
+        assertThrows(IllegalArgumentException.class, () -> GeographicCoordinates.ofDeg(0, -90 - Impr.DELTA));
     }
 
     @Test
     void toStringWorks() {
-        assertEquals("(lon=45.0000°, lat=60.0000°)", GeographicCoordinates.of(Math.PI / 4d, Math.PI / 3d).toString());
-        assertEquals("(lon=-32.7326°, lat=75.6846°)", GeographicCoordinates.of(Angle.ofDeg(-32.7326d),
-                Angle.ofDeg(75.6846d)).toString());
+        assertEquals("(lon=45.0000°, lat=60.0000°)", GeographicCoordinates.ofDeg(45, 60).toString());
+        assertEquals("(lon=-32.7326°, lat=75.6846°)", GeographicCoordinates.ofDeg(-32.7326d, 75.6846d).toString());
     }
 
     @Test
     void isValidMethodsWork() {
-        assertFalse(GeographicCoordinates.isValidLatDeg(90 + 10e-4));
-        assertFalse(GeographicCoordinates.isValidLonDeg(180 + 10e-4));
-        assertFalse(GeographicCoordinates.isValidLatDeg(-90 - 10e-4));
-        assertFalse(GeographicCoordinates.isValidLonDeg(-180 - 10e-4));
+        assertFalse(GeographicCoordinates.isValidLatDeg(90 + Impr.DELTA));
+        assertFalse(GeographicCoordinates.isValidLonDeg(180 + Impr.DELTA));
+        assertFalse(GeographicCoordinates.isValidLatDeg(-90 - Impr.DELTA));
+        assertFalse(GeographicCoordinates.isValidLonDeg(-180 - Impr.DELTA));
 
         assertTrue(GeographicCoordinates.isValidLatDeg(90));
         assertTrue(GeographicCoordinates.isValidLatDeg(-90));

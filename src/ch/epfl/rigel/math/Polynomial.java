@@ -17,8 +17,6 @@ public class Polynomial {
     }
 
     /**
-     * Public method to initialize a Polynomial instance.
-     *
      * @param coeffDom     The dominant coefficient of the polynomial function.
      *                     Will be placed at the start of the coefficients list.
      * @param c The rest of the coefficients. Will be placed after coeffDom.

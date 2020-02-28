@@ -1,6 +1,7 @@
 package ch.epfl.rigel.coordinates;
 
 import ch.epfl.rigel.math.Angle;
+import ch.epfl.test.Impr;
 import ch.epfl.test.TestRandomizer;
 import org.junit.jupiter.api.Test;
 
@@ -19,7 +20,7 @@ public class EclipticCoordinatesTest {
     void ofWorksOnValidParameters() {
         SplittableRandom random = TestRandomizer.newRandom();
         for (int i = 0; i < TestRandomizer.RANDOM_ITERATIONS; i++) {
-            final double lon = random.nextDouble(0, 2*Math.PI);
+            final double lon = random.nextDouble(0, 2 * Math.PI);
             final double lat = random.nextDouble(-Math.PI / 2, Math.PI / 2);
             EclipticCoordinates coordinates = EclipticCoordinates.of(lon, lat);
             assertEquals(lon, coordinates.lon());
@@ -31,15 +32,15 @@ public class EclipticCoordinatesTest {
         assertEquals(0, trivial.lat());
 
         EclipticCoordinates untested = EclipticCoordinates.of(0, Math.PI / 2d);
-        assertEquals(Math.PI / 2d, untested.lat(), 10e-4);
+        assertEquals(Math.PI / 2d, untested.lat(), Impr.DELTA);
     }
 
     @Test
     void ofThrowsOnInvalidParameters() {
-        assertThrows(IllegalArgumentException.class, () -> EclipticCoordinates.of(2*Math.PI, 0));
-        assertThrows(IllegalArgumentException.class, () -> EclipticCoordinates.of(-Math.PI - 10e-4, 0));
-        assertThrows(IllegalArgumentException.class, () -> EclipticCoordinates.of(0, Math.PI / 2 + 10e-4));
-        assertThrows(IllegalArgumentException.class, () -> EclipticCoordinates.of(0, -Math.PI / 2 - 10e-4));
+        assertThrows(IllegalArgumentException.class, () -> EclipticCoordinates.of(2 * Math.PI, 0));
+        assertThrows(IllegalArgumentException.class, () -> EclipticCoordinates.of(-Math.PI - Impr.DELTA, 0));
+        assertThrows(IllegalArgumentException.class, () -> EclipticCoordinates.of(0, Math.PI / 2 + Impr.DELTA));
+        assertThrows(IllegalArgumentException.class, () -> EclipticCoordinates.of(0, -Math.PI / 2 - Impr.DELTA));
     }
 
     @Test
@@ -51,7 +52,7 @@ public class EclipticCoordinatesTest {
         assertEquals(90, EclipticCoordinates.of(Math.PI / 2d, 0).lonDeg());
         assertEquals(90, EclipticCoordinates.of(0, Math.PI / 2d).latDeg());
         // some particular values
-        assertEquals(30, EclipticCoordinates.of(Math.PI / 6d, 0).lonDeg(), 10e-4);
+        assertEquals(30, EclipticCoordinates.of(Math.PI / 6d, 0).lonDeg(), Impr.DELTA);
     }
 
     @Test

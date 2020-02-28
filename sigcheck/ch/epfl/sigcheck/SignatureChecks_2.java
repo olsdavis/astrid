@@ -5,9 +5,6 @@ import ch.epfl.rigel.coordinates.EquatorialCoordinates;
 import ch.epfl.rigel.coordinates.GeographicCoordinates;
 import ch.epfl.rigel.coordinates.HorizontalCoordinates;
 
-/*
- * TODO: figure out this thing
- */
 final class SignatureChecks_2 {
     void checkGeographicCoordinates() {
         boolean b;

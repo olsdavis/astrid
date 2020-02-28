@@ -1,5 +1,6 @@
 package ch.epfl.rigel.coordinates;
 
+import ch.epfl.test.Impr;
 import ch.epfl.test.TestRandomizer;
 import org.junit.jupiter.api.Test;
 
@@ -31,7 +32,7 @@ public class EquatorialCoordinatesTest {
         assertEquals(0, trivial.dec());
 
         EquatorialCoordinates untested = EquatorialCoordinates.of(0, Math.PI / 2d);
-        assertEquals(Math.PI / 2d, untested.dec(), 10e-4);
+        assertEquals(Math.PI / 2d, untested.dec(), Impr.DELTA);
     }
 
     @Test
@@ -43,7 +44,7 @@ public class EquatorialCoordinatesTest {
         assertEquals(90, EquatorialCoordinates.of(Math.PI / 2d, 0).raDeg());
         assertEquals(90, EquatorialCoordinates.of(0, Math.PI / 2d).decDeg());
         // some particular values
-        assertEquals(30, EquatorialCoordinates.of(Math.PI / 6d, 0).raDeg(), 10e-4);
+        assertEquals(30, EquatorialCoordinates.of(Math.PI / 6d, 0).raDeg(), Impr.DELTA);
     }
 
     @Test
@@ -51,7 +52,7 @@ public class EquatorialCoordinatesTest {
         // trivial coordinates
         assertEquals(0, EquatorialCoordinates.of(0, 0).raHr());
         // reachable borders
-        assertEquals(12, EquatorialCoordinates.of(Math.PI, 0).raHr(), 10e-4);
+        assertEquals(12, EquatorialCoordinates.of(Math.PI, 0).raHr(), Impr.DELTA);
         // some particular values
         assertEquals(6, EquatorialCoordinates.of(Math.PI / 2, 0).raHr());
         assertEquals(3, EquatorialCoordinates.of(Math.PI / 4, 0).raHr());
@@ -67,4 +68,5 @@ public class EquatorialCoordinatesTest {
         assertEquals("(ra=6.0000h, dec=15.0000°)",
                 EquatorialCoordinates.of(Math.PI / 2, Math.PI / 12).toString());
     }
+
 }
