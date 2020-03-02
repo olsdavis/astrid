@@ -18,7 +18,7 @@ import java.time.temporal.ChronoUnit;
 public final class SiderealTime {
 
     private static final Polynomial S_0 = Polynomial.of(0.000025862d, 2400.051336d, 6.697374558d);
-    private static final Polynomial S_1 = Polynomial.of(1.002737909d, 0d);
+    private static final Polynomial S_1 = Polynomial.of(1.002737909d, 0);
 
     /**
      * @param when a date
@@ -27,8 +27,7 @@ public final class SiderealTime {
     public static double greenwich(ZonedDateTime when) {
         final ZonedDateTime w = when.withZoneSameInstant(ZoneOffset.UTC);
         final double j = Epoch.J2000.julianCenturiesUntil(w.truncatedTo(ChronoUnit.DAYS));
-        final double d = ChronoUnit.HOURS.between(ZonedDateTime.of(w.getYear(), w.getMonthValue(), w.getDayOfMonth(),
-                0, 0, 0, 0, when.getZone()), when);
+        final double d = ChronoUnit.MILLIS.between(when.truncatedTo(ChronoUnit.DAYS), when) / 3_600_000d;
         return Angle.normalizePositive(
                 Angle.ofHr(S_0.at(j) + S_1.at(d))
         );

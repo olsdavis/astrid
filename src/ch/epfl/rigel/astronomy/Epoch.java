@@ -49,7 +49,7 @@ public enum Epoch {
      * and the provided date {@code when}.
      */
     public double julianCenturiesUntil(ZonedDateTime when) {
-        return epochStart.until(when, ChronoUnit.MILLIS) / 1000d / 31_557_600d;
+        return daysUntil(when) / 36525d;
     }
 
 }
