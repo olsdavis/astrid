@@ -34,10 +34,10 @@ public final class SiderealTime {
     }
 
     /**
-     * @param when a date
-     * @param where a position
+     * @param when  a date
+     * @param where the position of the observer
      * @return the local sidereal time (in radians, in the [0, 2*PI[ interval), according to the provided date
-     * {@code when} and the provided position {@code where}.
+     * {@code when} and the provided position of the observer {@code where}.
      */
     public static double local(ZonedDateTime when, GeographicCoordinates where) {
         return Angle.normalizePositive(
