@@ -32,35 +32,35 @@ public final class EquatorialCoordinates extends SphericalCoordinates {
     }
 
     /**
-     * @return the longitude in radians.
+     * @return the right ascension in radians.
      */
     public double ra() {
         return super.lon();
     }
 
     /**
-     * @return the latitude in degress.
+     * @return the right ascension in degrees.
      */
     public double raDeg() {
         return super.lonDeg();
     }
 
     /**
-     * @return the longitude in degrees.
+     * @return the right ascension in hours.
      */
     public double raHr() {
         return Angle.toHr(super.lon());
     }
 
     /**
-     * @return the latitude in radians.
+     * @return the declination in radians.
      */
     public double dec() {
         return super.lat();
     }
 
     /**
-     * @return the latitude in degrees.
+     * @return the declination in degrees.
      */
     public double decDeg() {
         return super.latDeg();

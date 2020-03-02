@@ -39,7 +39,7 @@ public enum Epoch {
      * @param when the other date
      * @return the number of days between the start of the epoch and the provided date {@code when}.
      */
-    double daysUntil(ZonedDateTime when) {
+    public double daysUntil(ZonedDateTime when) {
         return epochStart.until(when, ChronoUnit.MILLIS) / 1000d / 3600d / 24d;
     }
 
@@ -48,7 +48,7 @@ public enum Epoch {
      * @return the number of julian years (365.25 days) between the start of the epoch
      * and the provided date {@code when}.
      */
-    double julianCenturiesUntil(ZonedDateTime when) {
+    public double julianCenturiesUntil(ZonedDateTime when) {
         return epochStart.until(when, ChronoUnit.MILLIS) / 1000d / 31_557_600d;
     }
 
