@@ -3,7 +3,6 @@ package ch.epfl.rigel.astronomy;
 import ch.epfl.rigel.coordinates.GeographicCoordinates;
 import ch.epfl.rigel.math.Angle;
 import ch.epfl.rigel.math.Polynomial;
-import ch.epfl.rigel.math.RightOpenInterval;
 
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -26,8 +25,12 @@ public final class SiderealTime {
      * @return the greenwich sidereal time of the provided date {@code when} (in radians, in the [0, 2*PI[ interval).
      */
     public static double greenwich(ZonedDateTime when) {
+        final ZonedDateTime w = when.withZoneSameInstant(ZoneOffset.UTC);
+        final double j = Epoch.J2000.julianCenturiesUntil(w.truncatedTo(ChronoUnit.DAYS));
+        final double d = ChronoUnit.HOURS.between(ZonedDateTime.of(w.getYear(), w.getMonthValue(), w.getDayOfMonth(),
+                0, 0, 0, 0, when.getZone()), when);
         return Angle.normalizePositive(
-                Angle.ofHr(rawGreenwich(when.withZoneSameInstant(ZoneOffset.UTC)))
+                Angle.ofHr(S_0.at(j) + S_1.at(d))
         );
     }
 
@@ -39,19 +42,8 @@ public final class SiderealTime {
      */
     public static double local(ZonedDateTime when, GeographicCoordinates where) {
         return Angle.normalizePositive(
-                Angle.ofHr(rawGreenwich(when.withZoneSameInstant(ZoneOffset.UTC)) + Angle.toHr(where.lon()))
+                greenwich(when) + Angle.toHr(where.lon())
         );
-    }
-
-    /**
-     * @param when a date
-     * @return the greenwich sidereal time of the provided date {@code when}.
-     */
-    private static double rawGreenwich(ZonedDateTime when) {
-        final double j = Epoch.J2000.julianCenturiesUntil(when);
-        final double d = ChronoUnit.HOURS.between(ZonedDateTime.of(when.getYear(), when.getMonthValue(), when.getDayOfMonth(),
-                0, 0, 0, 0, when.getZone()), when);
-        return S_0.at(j) + S_1.at(d);
     }
 
     private SiderealTime() {
