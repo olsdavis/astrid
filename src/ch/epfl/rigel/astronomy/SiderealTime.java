@@ -26,9 +26,9 @@ public final class SiderealTime {
      * @return the greenwich sidereal time of the provided date {@code when} (in radians, in the [0, 2*PI[ interval).
      */
     public static double greenwich(ZonedDateTime when) {
-        return Angle.ofHr(RightOpenInterval
-                .of(0, 24d)
-                .reduce(rawGreenwich(when.withZoneSameInstant(ZoneOffset.UTC))));
+        return Angle.normalizePositive(
+                Angle.ofHr(rawGreenwich(when.withZoneSameInstant(ZoneOffset.UTC)))
+        );
     }
 
     /**
@@ -38,9 +38,9 @@ public final class SiderealTime {
      * {@code when} and the provided position {@code where}.
      */
     public static double local(ZonedDateTime when, GeographicCoordinates where) {
-        return Angle.ofHr(RightOpenInterval
-                .of(0, 24d)
-                .reduce(rawGreenwich(when.withZoneSameInstant(ZoneOffset.UTC)) + Angle.toHr(where.lon())));
+        return Angle.normalizePositive(
+                Angle.ofHr(rawGreenwich(when.withZoneSameInstant(ZoneOffset.UTC)) + Angle.toHr(where.lon()))
+        );
     }
 
     /**

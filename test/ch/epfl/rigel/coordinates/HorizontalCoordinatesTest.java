@@ -38,7 +38,7 @@ public class HorizontalCoordinatesTest {
         assertEquals(0, trivial.lat());
 
         HorizontalCoordinates untested = HorizontalCoordinates.of(0, Math.PI / 2d);
-        assertEquals(Math.PI / 2d, untested.lat(), Impr.DELTA);
+        assertEquals(Math.PI / 2d, untested.lat(), Impr.C_DELTA);
     }
 
     @Test
@@ -50,8 +50,8 @@ public class HorizontalCoordinatesTest {
             final double lonDeg = Angle.toDeg(lon);
             final double latDeg = Angle.toDeg(lat);
             HorizontalCoordinates coordinates = HorizontalCoordinates.ofDeg(lonDeg, latDeg);
-            assertEquals(lon, coordinates.lon(), Impr.DELTA);
-            assertEquals(lat, coordinates.lat(), Impr.DELTA);
+            assertEquals(lon, coordinates.lon(), Impr.C_DELTA);
+            assertEquals(lat, coordinates.lat(), Impr.C_DELTA);
         }
 
         HorizontalCoordinates trivial = HorizontalCoordinates.ofDeg(0, 0);
@@ -59,7 +59,7 @@ public class HorizontalCoordinatesTest {
         assertEquals(0, trivial.lat());
 
         HorizontalCoordinates untested = HorizontalCoordinates.ofDeg(0, 90);
-        assertEquals(Math.PI / 2d, untested.lat(), Impr.DELTA);
+        assertEquals(Math.PI / 2d, untested.lat(), Impr.C_DELTA);
     }
 
     @Test
@@ -85,7 +85,7 @@ public class HorizontalCoordinatesTest {
     @Test
     void angularDistanceToWorks() {
         assertEquals(0.0279d, HorizontalCoordinates.ofDeg(6.5682d, 46.5183d)
-                .angularDistanceTo(HorizontalCoordinates.ofDeg(8.5476d, 47.3763d)), Impr.DELTA);
+                .angularDistanceTo(HorizontalCoordinates.ofDeg(8.5476d, 47.3763d)), Impr.C_DELTA);
     }
 
 }

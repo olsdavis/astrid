@@ -29,8 +29,6 @@ public enum Epoch {
             ZoneOffset.UTC)
     );
 
-    private static final double FROM_MILLIS_TO_DAYS = 1d / (1000 * 3600 * 24);
-
     private final ZonedDateTime epochStart;
 
     Epoch(ZonedDateTime epochStart) {

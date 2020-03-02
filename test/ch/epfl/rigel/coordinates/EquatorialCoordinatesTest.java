@@ -32,7 +32,7 @@ public class EquatorialCoordinatesTest {
         assertEquals(0, trivial.dec());
 
         EquatorialCoordinates untested = EquatorialCoordinates.of(0, Math.PI / 2d);
-        assertEquals(Math.PI / 2d, untested.dec(), Impr.DELTA);
+        assertEquals(Math.PI / 2d, untested.dec(), Impr.C_DELTA);
     }
 
     @Test
@@ -44,7 +44,7 @@ public class EquatorialCoordinatesTest {
         assertEquals(90, EquatorialCoordinates.of(Math.PI / 2d, 0).raDeg());
         assertEquals(90, EquatorialCoordinates.of(0, Math.PI / 2d).decDeg());
         // some particular values
-        assertEquals(30, EquatorialCoordinates.of(Math.PI / 6d, 0).raDeg(), Impr.DELTA);
+        assertEquals(30, EquatorialCoordinates.of(Math.PI / 6d, 0).raDeg(), Impr.C_DELTA);
     }
 
     @Test
@@ -52,7 +52,7 @@ public class EquatorialCoordinatesTest {
         // trivial coordinates
         assertEquals(0, EquatorialCoordinates.of(0, 0).raHr());
         // reachable borders
-        assertEquals(12, EquatorialCoordinates.of(Math.PI, 0).raHr(), Impr.DELTA);
+        assertEquals(12, EquatorialCoordinates.of(Math.PI, 0).raHr(), Impr.C_DELTA);
         // some particular values
         assertEquals(6, EquatorialCoordinates.of(Math.PI / 2, 0).raHr());
         assertEquals(3, EquatorialCoordinates.of(Math.PI / 4, 0).raHr());

@@ -32,15 +32,15 @@ public class EclipticCoordinatesTest {
         assertEquals(0, trivial.lat());
 
         EclipticCoordinates untested = EclipticCoordinates.of(0, Math.PI / 2d);
-        assertEquals(Math.PI / 2d, untested.lat(), Impr.DELTA);
+        assertEquals(Math.PI / 2d, untested.lat(), Impr.C_DELTA);
     }
 
     @Test
     void ofThrowsOnInvalidParameters() {
         assertThrows(IllegalArgumentException.class, () -> EclipticCoordinates.of(2 * Math.PI, 0));
-        assertThrows(IllegalArgumentException.class, () -> EclipticCoordinates.of(-Math.PI - Impr.DELTA, 0));
-        assertThrows(IllegalArgumentException.class, () -> EclipticCoordinates.of(0, Math.PI / 2 + Impr.DELTA));
-        assertThrows(IllegalArgumentException.class, () -> EclipticCoordinates.of(0, -Math.PI / 2 - Impr.DELTA));
+        assertThrows(IllegalArgumentException.class, () -> EclipticCoordinates.of(-Math.PI - Impr.C_DELTA, 0));
+        assertThrows(IllegalArgumentException.class, () -> EclipticCoordinates.of(0, Math.PI / 2 + Impr.C_DELTA));
+        assertThrows(IllegalArgumentException.class, () -> EclipticCoordinates.of(0, -Math.PI / 2 - Impr.C_DELTA));
     }
 
     @Test
@@ -52,7 +52,7 @@ public class EclipticCoordinatesTest {
         assertEquals(90, EclipticCoordinates.of(Math.PI / 2d, 0).lonDeg());
         assertEquals(90, EclipticCoordinates.of(0, Math.PI / 2d).latDeg());
         // some particular values
-        assertEquals(30, EclipticCoordinates.of(Math.PI / 6d, 0).lonDeg(), Impr.DELTA);
+        assertEquals(30, EclipticCoordinates.of(Math.PI / 6d, 0).lonDeg(), Impr.C_DELTA);
     }
 
     @Test
