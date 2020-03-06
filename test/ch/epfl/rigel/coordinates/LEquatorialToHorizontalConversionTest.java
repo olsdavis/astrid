@@ -8,8 +8,6 @@ import java.time.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
- * TODO
- *
  * @author Oscar Davis (SCIPER: 311193)
  * @author Alexandre Doukhan (SCIPER: 316706)
  * Creation date: 02/03/2020
