@@ -1,5 +1,10 @@
 package ch.epfl.rigel.coordinates;
 
+import org.junit.jupiter.api.Test;
+
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+
 /**
  * TODO
  *
@@ -8,4 +13,9 @@ package ch.epfl.rigel.coordinates;
  * Creation date: 02/03/2020
  */
 public class EquatorialToHorizontalConversionTest {
+
+    @Test
+    void equatorialToHorizontalConversionWorks() {
+        EquatorialToHorizontalConversion conv = new EquatorialToHorizontalConversion(ZonedDateTime.now(ZoneOffset.UTC), EquatorialCoordinates.of())
+    }
 }
