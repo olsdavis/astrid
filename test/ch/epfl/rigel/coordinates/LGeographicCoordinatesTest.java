@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * @author Alexandre Doukhan (SCIPER: 316706)
  * Creation date: 23/02/2020
  */
-public class GeographicCoordinatesTest {
+public class LGeographicCoordinatesTest {
 
     @Test
     void ofWorksOnValidParameters() {

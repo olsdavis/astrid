@@ -7,14 +7,13 @@ import org.junit.jupiter.api.Test;
 import java.util.SplittableRandom;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * @author Oscar Davis (SCIPER: 311193)
  * @author Alexandre Doukhan (SCIPER: 316706)
  * Creation date: 24/02/2020
  */
-public class EquatorialCoordinatesTest {
+public class LEquatorialCoordinatesTest {
 
     @Test
     void ofWorksOnValidParameters() {

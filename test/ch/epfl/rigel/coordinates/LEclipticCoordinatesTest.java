@@ -7,14 +7,15 @@ import org.junit.jupiter.api.Test;
 
 import java.util.SplittableRandom;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * @author Oscar Davis (SCIPER: 311193)
  * @author Alexandre Doukhan (SCIPER: 316706)
  * Creation date: 23/02/2020
  */
-public class EclipticCoordinatesTest {
+public class LEclipticCoordinatesTest {
 
     @Test
     void ofWorksOnValidParameters() {

@@ -40,8 +40,10 @@ public final class SiderealTime {
      * {@code when} and the provided position of the observer {@code where}.
      */
     public static double local(ZonedDateTime when, GeographicCoordinates where) {
+        //TODO: consider maybe removing this normalizePositive
+        // we'll see how it affects the run time of the code
         return Angle.normalizePositive(
-                greenwich(when) + Angle.toHr(where.lon())
+                greenwich(when) + where.lon()
         );
     }
 

@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * @author Alexandre Doukhan (SCIPER: 316706)
  * Creation date: 24/02/2020
  */
-public class HorizontalCoordinatesTest {
+public class LHorizontalCoordinatesTest {
 
     @Test
     void toStringWorks() {
