@@ -31,7 +31,7 @@ public class LEclipticToEquatorialConversionTest {
                     eclipticToEquatorialConv.apply(EclipticCoordinates.of(Angle.ofDMS(139, 41, 10),
                             Angle.ofDMS(4, 52, 31)));
             assertEquals(Angle.ofDeg(143.722173d), ec.ra(), 10e-8);
-            assertEquals(Angle.ofDMS(19, 32, 6.01d), ec.dec(), 0.1d);
+            assertEquals(Angle.ofDMS(19, 32, 6.01d), ec.dec(), 10e-10d);
             EquatorialCoordinates ec2 =
                     eclipticToEquatorialConv.apply(EclipticCoordinates.of(Angle.ofDeg(0), Angle.ofDeg(0)));
             assertEquals(0, ec2.ra());
