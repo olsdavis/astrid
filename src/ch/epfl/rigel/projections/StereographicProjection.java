@@ -13,7 +13,7 @@ import java.util.function.Function;
 public final class StereographicProjection implements Function<HorizontalCoordinates, CartesianCoordinates> {
     private final double centerLon;
     private final double centerLat;
-    //variables defined for convenience and more readability of formulas
+    //variables defined for convenience and better readability of formulas
     private final double centerLatSin;
     private final double centerLatCos;
 
