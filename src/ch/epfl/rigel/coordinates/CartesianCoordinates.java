@@ -3,6 +3,8 @@ package ch.epfl.rigel.coordinates;
 import java.util.Locale;
 
 /**
+ * Represents simple 2D cartesian coordinates.
+ *
  * @author Alexandre Doukhan (SCIPER: 316706)
  * @author Oscar Davis (SCIPER: 311193)
  * Creation date: 06/03/2020
@@ -16,21 +18,26 @@ public final class CartesianCoordinates {
         this.y = y;
     }
 
+    /**
+     * @param x the x-coordinates of the point
+     * @param y the y-coordinates of the point
+     * @return an instance of CartesianCoordinates representing the given {@code (x,y)} 2D point.
+     */
     public static CartesianCoordinates of(double x, double y) {
         return new CartesianCoordinates(x, y);
     }
 
     /**
-     * @return the abscissa of the current instance.
+     * @return the x-coordinate of the current instance.
      */
-    public final double x() {
+    public double x() {
         return x;
     }
 
     /**
-     * @return the ordinate of the current instance.
+     * @return the y-coordinate of the current instance.
      */
-    public final double y() {
+    public double y() {
         return y;
     }
 
@@ -40,11 +47,12 @@ public final class CartesianCoordinates {
     }
 
     @Override
-    public final int hashCode() {
-        throw new UnsupportedOperationException("This operation is not supported.");
+    public int hashCode() {
+        throw new UnsupportedOperationException("unsupported operation");
     }
 
-    public final int equals() {
-        throw new UnsupportedOperationException("This operation is not supported.");
+    @Override
+    public boolean equals(Object o) {
+        throw new UnsupportedOperationException("unsupported operation");
     }
 }
