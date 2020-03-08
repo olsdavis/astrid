@@ -54,6 +54,17 @@ public final class StereographicProjection implements Function<HorizontalCoordin
     }
 
     /**
+     * Computes the diameter of the circle corresponding to the projection of a sphere
+     * with angular size {@code rad}, assuming it is centered at the center of the projection,
+     * whom we consider to be on the horizon.
+     * @param rad the angular size of the sphere we wish to project on the plane.
+     * @return the diameter of the projection circle.
+     */
+    public double applyToAngle(double rad) {
+        return 2*Math.tan(rad/4);
+    }
+
+    /**
      * Applies the stereographic projection to a point with coordinates given by {@code azAlt}.
      *
      * @param azAlt The instance of {@link HorizontalCoordinates} representing the coordinates
@@ -69,17 +80,35 @@ public final class StereographicProjection implements Function<HorizontalCoordin
     }
 
     /**
-     * TODO
      *
-     * @param point
-     * @return
+     *Computes the {@link HorizontalCoordinates} of the projection point with
+     * coordinates given by  {@code xy}.
+     * @param xy the instance of {@link CartesianCoordinates} we wish to un-project.
+     * @return an instance of {@link HorizontalCoordinates} with coordinates such that
+     * the projection of these gives us {@code xy}.
      */
-    public HorizontalCoordinates inverseApply(CartesianCoordinates point) {
-        double rho = Math.sqrt(point.x() * point.x() + point.y() * point.y());
+    public HorizontalCoordinates inverseApply(CartesianCoordinates xy) {
+        double rho = Math.sqrt(xy.x() * xy.x() + xy.y() * xy.y());
         double sinC = 2 * rho / (rho * rho + 1);
         double cosC = (1 - rho) / (rho * rho + 1);
-        double lambda = Math.atan2(point.x() * sinC, rho * centerLatCos * cosC - point.y() * centerLatSin * sinC) + centerLon;
-        double phi = Math.asin(cosC * centerLatSin + (point.y() * sinC * centerLatCos / rho));
+        double lambda = Math.atan2(xy.x() * sinC, rho * centerLatCos * cosC - xy.y() * centerLatSin * sinC) + centerLon;
+        double phi = Math.asin(cosC * centerLatSin + (xy.y() * sinC * centerLatCos / rho));
         return HorizontalCoordinates.of(lambda, phi);
+    }
+
+    @Override
+    public int hashCode() {
+        throw new UnsupportedOperationException("This operation is not supported.");
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        throw new UnsupportedOperationException("This operation is not supported.");
+    }
+
+    @Override
+    public String toString() {
+        return String.format("StereographicProjection instance, centered at coordinates: " +
+                "(x=%.4f, y=%.4f)", centerLon, centerLat);
     }
 }
