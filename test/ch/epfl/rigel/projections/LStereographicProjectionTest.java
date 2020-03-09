@@ -1,6 +1,7 @@
 package ch.epfl.rigel.projections;
 
 import ch.epfl.rigel.coordinates.HorizontalCoordinates;
+import ch.epfl.rigel.coordinates.StereographicProjection;
 import ch.epfl.test.TestRandomizer;
 import org.junit.jupiter.api.Test;
 

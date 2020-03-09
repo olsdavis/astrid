@@ -1,7 +1,4 @@
-package ch.epfl.rigel.projections;
-
-import ch.epfl.rigel.coordinates.CartesianCoordinates;
-import ch.epfl.rigel.coordinates.HorizontalCoordinates;
+package ch.epfl.rigel.coordinates;
 
 import java.util.function.Function;
 

@@ -1,10 +1,7 @@
 package ch.epfl.rigel.astronomy;
 
 import ch.epfl.rigel.coordinates.EclipticCoordinates;
-import ch.epfl.rigel.coordinates.EclipticToEquatorialConversion;
 import ch.epfl.rigel.coordinates.EquatorialCoordinates;
-
-import java.time.ZonedDateTime;
 
 /**
  * Represents the sun.
@@ -17,15 +14,17 @@ import java.time.ZonedDateTime;
 public final class Sun extends CelestialObject {
 
     private final double meanAnomaly;
+    private final EclipticCoordinates eclipticPos;
 
     /**
-     * @param eclipticPos the position of the Sun represented by EclipticCoordinates
-     * @param angularSize the angular size of the Sun
-     * @param meanAnomaly the mean anomaly of the Sun
+     * @param eclipticPos   the position of the Sun represented by EclipticCoordinates
+     * @param equatorialPos the position of the Sun represented by EquatorialCoordinates
+     * @param angularSize   the angular size of the Sun
+     * @param meanAnomaly   the mean anomaly of the Sun
      */
-    public Sun(EclipticCoordinates eclipticPos, float angularSize, float meanAnomaly) {
-        //TODO: verify this ZonedDateTime thing, it was just for now
-        super("Soleil", new EclipticToEquatorialConversion(ZonedDateTime.now()).apply(eclipticPos), angularSize, -26.7f);
+    public Sun(EclipticCoordinates eclipticPos, EquatorialCoordinates equatorialPos, float angularSize, float meanAnomaly) {
+        super("Soleil", equatorialPos, angularSize, -26.7f);
+        this.eclipticPos = eclipticPos;
         this.meanAnomaly = meanAnomaly;
     }
 
@@ -34,6 +33,13 @@ public final class Sun extends CelestialObject {
      */
     public double meanAnomaly() {
         return meanAnomaly;
+    }
+
+    /**
+     * @return the position of the Sun represented by EquatorialCoordinates.
+     */
+    public EclipticCoordinates eclipticPos() {
+        return eclipticPos;
     }
 
     @Override

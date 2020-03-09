@@ -37,8 +37,8 @@ public final class EclipticToEquatorialConversion implements Function<EclipticCo
     @Override
     public EquatorialCoordinates apply(EclipticCoordinates e) {
         return EquatorialCoordinates.of(
-                Math.atan2((Math.sin(e.lon()) * cosObliqueness)
-                        - (Math.tan(e.lat()) * sinObliqueness), Math.cos(e.lon())),
+                Angle.normalizePositive(Math.atan2((Math.sin(e.lon()) * cosObliqueness)
+                        - (Math.tan(e.lat()) * sinObliqueness), Math.cos(e.lon()))),
                 Math.asin((Math.sin(e.lat()) * cosObliqueness)
                         + (Math.cos(e.lat()) * sinObliqueness * Math.sin(e.lon())))
         );
