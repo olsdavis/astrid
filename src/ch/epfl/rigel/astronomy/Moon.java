@@ -15,7 +15,7 @@ import static ch.epfl.rigel.Preconditions.checkInInterval;
  * Creation date: 08/03/2020
  * @see CelestialObject
  */
-public class Moon extends CelestialObject {
+public final class Moon extends CelestialObject {
 
     private final float phase;
 

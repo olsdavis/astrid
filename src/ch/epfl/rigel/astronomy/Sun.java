@@ -14,7 +14,7 @@ import java.time.ZonedDateTime;
  * Creation date: 08/03/2020
  * @see CelestialObject
  */
-public class Sun extends CelestialObject {
+public final class Sun extends CelestialObject {
 
     private final double meanAnomaly;
 
