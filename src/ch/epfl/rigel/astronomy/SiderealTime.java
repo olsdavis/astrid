@@ -22,15 +22,23 @@ public final class SiderealTime {
 
     /**
      * @param when a date
+     * @return the not normalized value of the greenwich sidereal time (not necessarily
+     * in the [0, 2*PI[ interval). Avoids normalizing the angle twice for
+     * {@link #local(ZonedDateTime, GeographicCoordinates)}.
+     */
+    private static double rawGreenwich(ZonedDateTime when) {
+        final ZonedDateTime w = when.withZoneSameInstant(ZoneOffset.UTC);
+        final double j = Epoch.J2000.julianCenturiesUntil(w.truncatedTo(ChronoUnit.DAYS));
+        final double d = ChronoUnit.MILLIS.between(w.truncatedTo(ChronoUnit.DAYS), when) / 3_600_000d;
+        return Angle.ofHr(S_0.at(j) + S_1.at(d));
+    }
+
+    /**
+     * @param when a date
      * @return the greenwich sidereal time of the provided date {@code when} (in radians, in the [0, 2*PI[ interval).
      */
     public static double greenwich(ZonedDateTime when) {
-        final ZonedDateTime w = when.withZoneSameInstant(ZoneOffset.UTC);
-        final double j = Epoch.J2000.julianCenturiesUntil(w.truncatedTo(ChronoUnit.DAYS));
-        final double d = ChronoUnit.MILLIS.between(when.truncatedTo(ChronoUnit.DAYS), when) / 3_600_000d;
-        return Angle.normalizePositive(
-                Angle.ofHr(S_0.at(j) + S_1.at(d))
-        );
+        return Angle.normalizePositive(rawGreenwich(when));
     }
 
     /**
@@ -40,10 +48,8 @@ public final class SiderealTime {
      * {@code when} and the provided position of the observer {@code where}.
      */
     public static double local(ZonedDateTime when, GeographicCoordinates where) {
-        //TODO: consider maybe removing this normalizePositive
-        // we'll see how it affects the run time of the code
         return Angle.normalizePositive(
-                greenwich(when) + where.lon()
+                rawGreenwich(when) + where.lon()
         );
     }
 

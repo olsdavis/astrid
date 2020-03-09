@@ -14,6 +14,6 @@ public class LCartesianCoordinatesTest {
     @Test
     void toStringWorks() {
         assertEquals("(x=10.0000, y=4.0000)", CartesianCoordinates.of(10, 4).toString());
-        assertEquals("x=0.0000, y=1254.7469", CartesianCoordinates.of(0, 1254.7469).toString());
+        assertEquals("(x=0.0000, y=1254.7469)", CartesianCoordinates.of(0, 1254.7469d).toString());
     }
 }
