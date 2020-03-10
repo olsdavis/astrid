@@ -80,12 +80,12 @@ class LStereographicProjectionTest {
 
     @Test
     void toStringWorks() {
-        assertEquals("StereographicProjection instance, centered at coordinates: (x=0.0000, y=0.0000)",
+        assertEquals("StereographicProjection(x=0.0000, y=0.0000)",
                 new StereographicProjection(HorizontalCoordinates.of(
         0, 0)).toString());
-        assertEquals("StereographicProjection instance, centered at coordinates: (x=0.7854, y=0.7854)",
+        assertEquals("StereographicProjection(x=0.7854, y=0.7854)",
                 new StereographicProjection(HorizontalCoordinates.of(Math.PI/4, Math.PI/4)).toString());
-        assertEquals("StereographicProjection instance, centered at coordinates: (x=1.5708, y=1.5708)",
+        assertEquals("StereographicProjection(x=1.5708, y=1.5708)",
                 new StereographicProjection(HorizontalCoordinates.of(Math.PI/2, Math.PI/2)).toString());
     }
 }

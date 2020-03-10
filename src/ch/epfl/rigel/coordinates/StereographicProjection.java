@@ -86,11 +86,11 @@ public final class StereographicProjection implements Function<HorizontalCoordin
      * the projection of these gives us {@code xy}.
      */
     public HorizontalCoordinates inverseApply(CartesianCoordinates xy) {
-        double rho = Math.sqrt(xy.x() * xy.x() + xy.y() * xy.y());
-        double sinC = 2 * rho / (rho * rho + 1);
-        double cosC = (1 - rho) / (rho * rho + 1);
-        double lambda = Math.atan2(xy.x() * sinC, rho * centerLatCos * cosC - xy.y() * centerLatSin * sinC) + centerLon;
-        double phi = Math.asin(cosC * centerLatSin + (xy.y() * sinC * centerLatCos / rho));
+        final double rho = Math.sqrt(xy.x() * xy.x() + xy.y() * xy.y());
+        final double sinC = 2 * rho / (rho * rho + 1);
+        final double cosC = (1 - rho) / (rho * rho + 1);
+        final double lambda = Math.atan2(xy.x() * sinC, rho * centerLatCos * cosC - xy.y() * centerLatSin * sinC) + centerLon;
+        final double phi = Math.asin(cosC * centerLatSin + (xy.y() * sinC * centerLatCos / rho));
         return HorizontalCoordinates.of(lambda, phi);
     }
 
