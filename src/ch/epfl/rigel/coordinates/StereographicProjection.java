@@ -54,11 +54,12 @@ public final class StereographicProjection implements Function<HorizontalCoordin
      * Computes the diameter of the circle corresponding to the projection of a sphere
      * with angular size {@code rad}, assuming it is centered at the center of the projection,
      * whom we consider to be on the horizon.
+     *
      * @param rad the angular size of the sphere we wish to project on the plane.
      * @return the diameter of the projection circle.
      */
     public double applyToAngle(double rad) {
-        return 2*Math.tan(rad/4);
+        return 2 * Math.tan(rad / 4);
     }
 
     /**
@@ -77,9 +78,9 @@ public final class StereographicProjection implements Function<HorizontalCoordin
     }
 
     /**
-     *
-     *Computes the {@link HorizontalCoordinates} of the projection point with
+     * Computes the {@link HorizontalCoordinates} of the projection point with
      * coordinates given by  {@code xy}.
+     *
      * @param xy the instance of {@link CartesianCoordinates} we wish to un-project.
      * @return an instance of {@link HorizontalCoordinates} with coordinates such that
      * the projection of these gives us {@code xy}.
@@ -95,17 +96,16 @@ public final class StereographicProjection implements Function<HorizontalCoordin
 
     @Override
     public int hashCode() {
-        throw new UnsupportedOperationException("This operation is not supported.");
+        throw new UnsupportedOperationException("unsupported operation");
     }
 
     @Override
     public boolean equals(Object o) {
-        throw new UnsupportedOperationException("This operation is not supported.");
+        throw new UnsupportedOperationException("unsupported operation");
     }
 
     @Override
     public String toString() {
-        return String.format("StereographicProjection instance, centered at coordinates: " +
-                "(x=%.4f, y=%.4f)", centerLon, centerLat);
+        return String.format("StereographicProjection(x=%.4f, y=%.4f)", centerLon, centerLat);
     }
 }
