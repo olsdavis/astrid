@@ -17,8 +17,6 @@ public class LSunTest {
     void defaultValuesSetCorrectly() {
         assertEquals("Soleil", new Sun(EclipticCoordinates.of(0, 0),
                 EquatorialCoordinates.of(0, 0), 1f, 0).name());
-        assertEquals(-26.7, new Sun(EclipticCoordinates.of(0, 0),
-                EquatorialCoordinates.of(0, 0), 0, 1f).magnitude());
     }
 
 }
