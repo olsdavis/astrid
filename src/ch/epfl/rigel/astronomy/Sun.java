@@ -3,6 +3,10 @@ package ch.epfl.rigel.astronomy;
 import ch.epfl.rigel.coordinates.EclipticCoordinates;
 import ch.epfl.rigel.coordinates.EquatorialCoordinates;
 
+import java.util.Objects;
+
+import static java.util.Objects.requireNonNull;
+
 /**
  * Represents the sun.
  *
@@ -13,7 +17,7 @@ import ch.epfl.rigel.coordinates.EquatorialCoordinates;
  */
 public final class Sun extends CelestialObject {
 
-    private final double meanAnomaly;
+    private final float meanAnomaly;
     private final EclipticCoordinates eclipticPos;
 
     /**
@@ -24,6 +28,7 @@ public final class Sun extends CelestialObject {
      */
     public Sun(EclipticCoordinates eclipticPos, EquatorialCoordinates equatorialPos, float angularSize, float meanAnomaly) {
         super("Soleil", equatorialPos, angularSize, -26.7f);
+        requireNonNull(equatorialPos, "the equatorial position cannot be null");
         this.eclipticPos = eclipticPos;
         this.meanAnomaly = meanAnomaly;
     }
