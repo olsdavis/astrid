@@ -89,7 +89,7 @@ class LStereographicProjectionTest {
         assertEquals(Math.PI, unProject.az());
         CartesianCoordinates xy2 = CartesianCoordinates.of(0, 1);
         HorizontalCoordinates unProject2 = centerOfProj.inverseApply(xy2);
-        assertEquals(0, unProject2.az());
+        assertEquals(3/2d*Math.PI, unProject2.az());
     }
 
     @Test
