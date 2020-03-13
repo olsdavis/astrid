@@ -1,5 +1,6 @@
 package ch.epfl.rigel.projections;
 
+import ch.epfl.rigel.coordinates.CartesianCoordinates;
 import ch.epfl.rigel.coordinates.HorizontalCoordinates;
 import ch.epfl.rigel.coordinates.StereographicProjection;
 import ch.epfl.test.TestRandomizer;
@@ -70,12 +71,25 @@ class LStereographicProjectionTest {
             assertEquals(0, randomCenter.apply(pointToProject).y());
         }
         StereographicProjection nonTrivial = new StereographicProjection(HorizontalCoordinates.of(Math.PI / 2, Math.PI / 4));
-        HorizontalCoordinates pointToProject1 = HorizontalCoordinates.of(Math.PI / 6, Math.PI / 6);
-        //TODO complete testing on remarkable cos and sin values.
+        StereographicProjection nonTrivial2 = new StereographicProjection(HorizontalCoordinates.of(Math.PI / 4, 0));
+        HorizontalCoordinates pointToProject1 = HorizontalCoordinates.of(0, Math.PI / 2);
+        assertEquals(0, nonTrivial2.apply(pointToProject1).x(), 10e-15);
+        assertEquals(1, nonTrivial2.apply(pointToProject1).y(), 10e-15);
+        HorizontalCoordinates pointToProject2 = HorizontalCoordinates.of(Math.PI/4, 0);
+        assertEquals(-Math.sqrt(2)/3d, nonTrivial.apply(pointToProject2).x(), 10e-14);
+        assertEquals(-1d/3d, nonTrivial.apply(pointToProject2).y());
     }
 
     @Test
     void inverseApplyWorks() {
+        StereographicProjection centerOfProj = new StereographicProjection(HorizontalCoordinates.of(Math.PI/2,  Math.PI/2));
+        CartesianCoordinates xy = CartesianCoordinates.of(1, 0);
+        HorizontalCoordinates unProject = centerOfProj.inverseApply(xy);
+        assertEquals(0, unProject.alt());
+        assertEquals(Math.PI, unProject.az());
+        CartesianCoordinates xy2 = CartesianCoordinates.of(0, 1);
+        HorizontalCoordinates unProject2 = centerOfProj.inverseApply(xy2);
+        assertEquals(0, unProject2.az());
     }
 
     @Test
