@@ -28,8 +28,7 @@ public final class Sun extends CelestialObject {
      */
     public Sun(EclipticCoordinates eclipticPos, EquatorialCoordinates equatorialPos, float angularSize, float meanAnomaly) {
         super("Soleil", equatorialPos, angularSize, -26.7f);
-        requireNonNull(equatorialPos, "the equatorial position cannot be null");
-        this.eclipticPos = eclipticPos;
+        this.eclipticPos = requireNonNull(eclipticPos, "the ecliptic position cannot be null");
         this.meanAnomaly = meanAnomaly;
     }
 
@@ -45,11 +44,6 @@ public final class Sun extends CelestialObject {
      */
     public EclipticCoordinates eclipticPos() {
         return eclipticPos;
-    }
-
-    @Override
-    public EquatorialCoordinates equatorialPos() {
-        return super.equatorialPos();
     }
 
 }

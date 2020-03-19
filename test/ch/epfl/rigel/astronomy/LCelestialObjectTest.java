@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * @author Alexandre Doukhan (SCIPER: 316706)
  * Creation date: 12/03/2020
  */
-public class LCelestialObject {
+public class LCelestialObjectTest {
 
     @Test
     void constructorThrows() {
