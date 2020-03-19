@@ -4,6 +4,8 @@ import ch.epfl.rigel.coordinates.EclipticCoordinates;
 import ch.epfl.rigel.coordinates.EclipticToEquatorialConversion;
 import ch.epfl.rigel.math.Angle;
 
+import java.util.List;
+
 import static java.lang.Math.*;
 
 /**
@@ -54,6 +56,11 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
      */
     NEPTUNE("Neptune", 165.84539, 326.895127, 23.07, 0.010483,
             30.1985, 1.7673, 131.879, 62.20, -6.87);
+
+    /**
+     * The list of all models (ordered).
+     */
+    public static final List<PlanetModel> ALL = List.of(PlanetModel.values());
 
     private final String name;
     private final double tropicalYear;
