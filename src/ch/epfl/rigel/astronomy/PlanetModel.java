@@ -93,6 +93,7 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
         this.magnitude = magnitude;
     }
 
+    //TODO: store pre-calculated values
     @Override
     public Planet at(double daysSinceJ2010, EclipticToEquatorialConversion conversion) {
         // position calculations
