@@ -2,11 +2,13 @@ package ch.epfl.rigel.astronomy;
 
 import java.util.List;
 
+import static ch.epfl.rigel.Preconditions.checkArgument;
+
 /**
  * Collection of bright stars near to each other.
  *
- * @author Alexandre Doukhan (SCIPER: 316706)
  * @author Oscar Davis (SCIPER: 311193)
+ * @author Alexandre Doukhan (SCIPER: 316706)
  * Creation date: 10/03/2020
  */
 public final class Asterism {
@@ -16,7 +18,8 @@ public final class Asterism {
      * @param stars the stars constituting the Asterism
      */
     public Asterism(List<Star> stars) {
-        this.stars = stars;
+        checkArgument(stars != null && !stars.isEmpty());
+        this.stars = List.copyOf(stars);
     }
 
     /**
@@ -25,4 +28,5 @@ public final class Asterism {
     public List<Star> stars() {
         return stars;
     }
+
 }

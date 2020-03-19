@@ -5,6 +5,8 @@ import ch.epfl.rigel.coordinates.EclipticToEquatorialConversion;
 /**
  * Represents the position of a celestial object in a geocentric model.
  *
+ * @param <O> the type of objects modeled by the current model.
+ *
  * @author Alexandre Doukhan (SCIPER: 316706)
  * @author Oscar Davis (SCIPER: 311193)
  * Creation date: 10/03/2020
