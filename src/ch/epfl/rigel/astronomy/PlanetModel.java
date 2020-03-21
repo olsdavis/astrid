@@ -109,6 +109,7 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
     }
 
     //TODO: store pre-calculated values
+    //TODO: add normalizePositive on longitudes + atan2?
     @Override
     public Planet at(double daysSinceJ2010, EclipticToEquatorialConversion conversion) {
         // position calculations
@@ -143,7 +144,6 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
             }
         }
 
-        //TODO: verify normalize positive and atan2 vs atan
         final double lambda;
         final double x = earthRadius * sin(pLon - earthLongitude);
         switch (this) {
