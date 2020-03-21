@@ -73,6 +73,10 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
     private final double angularSize;
     private final double magnitude;
 
+    // pre-calculated values
+    private final double longitudeDiff;
+    private final double eccentricitySquare;
+
     /**
      * @param name           the name of the planet
      * @param tropicalYear   the revolution period
@@ -98,6 +102,10 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
         this.longitudeONode = Angle.ofDeg(longitudeONode);
         this.angularSize = Angle.ofDMS(0, 0, angularSize);
         this.magnitude = magnitude;
+
+        // pre-calculated values
+        this.longitudeDiff = longitude2010 - longitudeP;
+        this.eccentricitySquare = eccentricity * eccentricity;
     }
 
     //TODO: store pre-calculated values
@@ -105,9 +113,9 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
     public Planet at(double daysSinceJ2010, EclipticToEquatorialConversion conversion) {
         // position calculations
         final double meanAnomaly = (Angle.TAU / 365.242191d) * (daysSinceJ2010 / tropicalYear)
-                + longitude2010 - longitudeP;
+                + longitudeDiff;
         final double trueAnomaly = meanAnomaly + 2 * eccentricity * sin(meanAnomaly);
-        final double radius = (semiMajorAxis * (1 - eccentricity * eccentricity))
+        final double radius = (semiMajorAxis * (1 - eccentricitySquare))
                 / (1 + eccentricity * cos(trueAnomaly));
         final double longitude = trueAnomaly + longitudeP;
         final double psi = asin(sin(longitude - longitudeONode) * sin(inclination));
@@ -139,11 +147,13 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
         final double lambda;
         final double x = earthRadius * sin(pLon - earthLongitude);
         switch (this) {
+            // inferior planets
             case VENUS:
             case MERCURY:
                 lambda = PI + earthLongitude + atan2(pRad * sin(earthLongitude - pLon),
                         earthRadius - pRad * cos(earthLongitude - pLon));
                 break;
+            // superior planets
             default:
                 lambda = pLon + atan2(x, pRad - earthRadius * cos(pLon - earthLongitude));
                 break;
