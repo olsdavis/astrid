@@ -130,7 +130,7 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
                         + EARTH.eccentricity - EARTH.longitudeP;
                 final double trueEarth = meanEarth + 2 * EARTH.eccentricity * sin(meanEarth);
                 earthRadius = (EARTH.semiMajorAxis * (1 - EARTH.eccentricity * EARTH.eccentricity))
-                        / (1 + EARTH.eccentricity * cos(trueAnomaly));
+                        / (1 + EARTH.eccentricity * cos(trueEarth));
                 earthLongitude = trueEarth + EARTH.longitudeP;
             }
         }
