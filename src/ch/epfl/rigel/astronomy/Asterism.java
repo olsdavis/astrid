@@ -12,6 +12,7 @@ import static ch.epfl.rigel.Preconditions.checkArgument;
  * Creation date: 10/03/2020
  */
 public final class Asterism {
+
     private final List<Star> stars;
 
     /**
