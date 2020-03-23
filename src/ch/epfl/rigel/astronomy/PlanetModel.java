@@ -130,19 +130,15 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
         // earth calculations
         final double earthRadius;
         final double earthLongitude;
-        // shorten scope of the variables used for Earth calculations
+        // shorten the scope of variables used for Earth calculations
         {
-            if (this == EARTH) {
-                earthRadius = radius;
-                earthLongitude = longitude;
-            } else {
-                final double meanEarth = (Angle.TAU / 365.242191d) * (daysSinceJ2010 / EARTH.tropicalYear)
-                        + EARTH.eccentricity - EARTH.longitudeP;
-                final double trueEarth = meanEarth + 2 * EARTH.eccentricity * sin(meanEarth);
-                earthRadius = (EARTH.semiMajorAxis * (1 - EARTH.eccentricity * EARTH.eccentricity))
-                        / (1 + EARTH.eccentricity * cos(trueEarth));
-                earthLongitude = trueEarth + EARTH.longitudeP;
-            }
+            // we assume that PlanetModel.EARTH#at is never called
+            final double meanEarth = (Angle.TAU / 365.242191d) * (daysSinceJ2010 / EARTH.tropicalYear)
+                    + EARTH.eccentricity - EARTH.longitudeP;
+            final double trueEarth = meanEarth + 2 * EARTH.eccentricity * sin(meanEarth);
+            earthRadius = (EARTH.semiMajorAxis * (1 - EARTH.eccentricity * EARTH.eccentricity))
+                    / (1 + EARTH.eccentricity * cos(trueEarth));
+            earthLongitude = trueEarth + EARTH.longitudeP;
         }
 
         final double lambda;
@@ -159,7 +155,7 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
                 lambda = pLon + atan2(x, pRad - earthRadius * cos(pLon - earthLongitude));
                 break;
         }
-        final double beta = atan2(pRad * tan(psi) * sin(lambda - pLon), x);
+        final double beta = atan(pRad * tan(psi) * sin(lambda - pLon) / x);
 
         // angular size calculations
         final double distance = sqrt(earthRadius * earthRadius + radius * radius
