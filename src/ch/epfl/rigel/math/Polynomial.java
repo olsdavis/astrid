@@ -46,9 +46,6 @@ public class Polynomial {
         return res;
     }
 
-    /**
-     * @return a visual representation of the associated polynomial expression.
-     */
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
