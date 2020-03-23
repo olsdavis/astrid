@@ -130,6 +130,7 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
         // earth calculations
         final double earthRadius;
         final double earthLongitude;
+        // shorten scope of the variables used for Earth calculations
         {
             if (this == EARTH) {
                 earthRadius = radius;
