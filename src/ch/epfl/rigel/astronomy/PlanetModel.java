@@ -147,12 +147,16 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
             // inferior planets
             case VENUS:
             case MERCURY:
-                lambda = PI + earthLongitude + atan2(pRad * sin(earthLongitude - pLon),
-                        earthRadius - pRad * cos(earthLongitude - pLon));
+                lambda = Angle.normalizePositive(
+                        PI + earthLongitude + atan2(pRad * sin(earthLongitude - pLon),
+                        earthRadius - pRad * cos(earthLongitude - pLon))
+                );
                 break;
             // superior planets
             default:
-                lambda = pLon + atan2(x, pRad - earthRadius * cos(pLon - earthLongitude));
+                lambda = Angle.normalizePositive(
+                        pLon + atan2(x, pRad - earthRadius * cos(pLon - earthLongitude))
+                );
                 break;
         }
         final double beta = atan(pRad * tan(psi) * sin(lambda - pLon) / x);
