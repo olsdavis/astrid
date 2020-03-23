@@ -17,9 +17,9 @@ public class Polynomial {
     }
 
     /**
-     * @param coeffDom     The dominant coefficient of the polynomial function.
-     *                     Will be placed at the start of the coefficients list.
-     * @param c The rest of the coefficients. Will be placed after coeffDom.
+     * @param coeffDom The dominant coefficient of the polynomial function.
+     *                 Will be placed at the start of the coefficients list.
+     * @param c        The rest of the coefficients. Will be placed after coeffDom.
      * @return a new Polynomial instance with given coefficients.
      */
     public static Polynomial of(double coeffDom, double... c) {
