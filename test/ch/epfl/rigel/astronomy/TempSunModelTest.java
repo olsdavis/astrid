@@ -33,7 +33,6 @@ public class TempSunModelTest {
                 LocalDate.of(1988, Month.JULY, 27),
                 LocalTime.of(0, 0), ZoneOffset.UTC);
         assertEquals(SunModel.SUN.at(J2010.daysUntil(zone1988), new EclipticToEquatorialConversion(zone1988)).angularSize(), 0.009162353351712227, 1e-10);
-        //TODO: check?
     }
 
 }
