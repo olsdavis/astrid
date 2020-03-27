@@ -21,7 +21,7 @@ public enum Epoch {
             ZoneOffset.UTC)
     ),
     /**
-     * Represents the epoch starting on the 31st of January 2009, at 0:00.
+     * Represents the epoch starting on the 31st of December 2009, at 0:00.
      */
     J2010(ZonedDateTime.of(
             LocalDate.of(2010, Month.JANUARY, 1).minusDays(1),
