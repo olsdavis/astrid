@@ -10,6 +10,11 @@ import static java.lang.Math.*;
 
 /**
  * Holds all available models of the Solar System's planets.
+ * <br>
+ * Please note that, for this particular class, Java naming conventions
+ * and standards have been omitted for the sake of readability. They were
+ * not, initially; yet, this led to major confusions and mistakes. Thank you
+ * for your understanding.
  *
  * @author Oscar Davis (SCIPER: 311193)
  * @author Alexandre Doukhan (SCIPER: 316706)
@@ -64,111 +69,104 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
 
     private final String name;
     private final double tropicalYear;
-    private final double longitude2010;
-    private final double longitudeP;
-    private final double eccentricity;
-    private final double semiMajorAxis;
-    private final double inclination;
-    private final double longitudeONode;
+    private final double epsilon;
+    private final double omegaBar;
+    private final double e;
+    private final double a;
+    private final double i;
+    private final double omega;
     private final double angularSize;
-    private final double magnitude;
+    private final double V0;
 
     // pre-calculated values
-    private final double longitudeDiff;
-    private final double eccentricitySquare;
+    private final double eSquare;
 
     /**
-     * @param name           the name of the planet
-     * @param tropicalYear   the revolution period
-     * @param longitude2010  the longitude at {@link Epoch#J2010} (in degrees)
-     * @param longitudeP     the longitude at the perigee (in degrees)
-     * @param eccentricity   the eccentricity
-     * @param semiMajorAxis  the length of the semi-major axis
-     * @param inclination    the inclination (in degrees)
-     * @param longitudeONode the longitude of the orbital node (in degrees)
-     * @param angularSize    the angular size (in seconds)
-     * @param magnitude      the apparent magnitude
+     * @param name         the name of the planet
+     * @param tropicalYear the revolution period
+     * @param epsilon      the longitude at {@link Epoch#J2010} (in degrees)
+     * @param omegaBar     the longitude at the perigee (in degrees)
+     * @param e            the eccentricity
+     * @param a            the length of the semi-major axis
+     * @param i            the inclination (in degrees)
+     * @param omega        the longitude of the orbital node (in degrees)
+     * @param angularSize  the angular size (in seconds)
+     * @param V0           the apparent magnitude
      */
-    PlanetModel(String name, double tropicalYear, double longitude2010,
-                double longitudeP, double eccentricity, double semiMajorAxis,
-                double inclination, double longitudeONode, double angularSize, double magnitude) {
+    PlanetModel(String name, double tropicalYear, double epsilon,
+                double omegaBar, double e, double a,
+                double i, double omega, double angularSize, double V0) {
         this.name = name;
         this.tropicalYear = tropicalYear;
-        this.longitude2010 = Angle.ofDeg(longitude2010);
-        this.longitudeP = Angle.ofDeg(longitudeP);
-        this.eccentricity = eccentricity;
-        this.semiMajorAxis = semiMajorAxis;
-        this.inclination = Angle.ofDeg(inclination);
-        this.longitudeONode = Angle.ofDeg(longitudeONode);
-        this.angularSize = Angle.ofDMS(0, 0, angularSize);
-        this.magnitude = magnitude;
+        this.epsilon = Angle.ofDeg(epsilon);
+        this.omegaBar = Angle.ofDeg(omegaBar);
+        this.e = e;
+        this.a = a;
+        this.i = Angle.ofDeg(i);
+        this.omega = Angle.ofDeg(omega);
+        this.angularSize = Angle.ofArcsec(angularSize);
+        this.V0 = V0;
 
         // pre-calculated values
-        this.longitudeDiff = longitude2010 - longitudeP;
-        this.eccentricitySquare = eccentricity * eccentricity;
+        this.eSquare = e * e;
     }
 
-    //TODO: store pre-calculated values
-    //TODO: add normalizePositive on longitudes + atan2?
     @Override
-    public Planet at(double daysSinceJ2010, EclipticToEquatorialConversion conversion) {
+    public Planet at(double D, EclipticToEquatorialConversion conversion) {
         // position calculations
-        final double meanAnomaly = (Angle.TAU / 365.242191d) * (daysSinceJ2010 / tropicalYear)
-                + longitudeDiff;
-        final double trueAnomaly = meanAnomaly + 2 * eccentricity * sin(meanAnomaly);
-        final double radius = (semiMajorAxis * (1 - eccentricitySquare))
-                / (1 + eccentricity * cos(trueAnomaly));
-        final double longitude = trueAnomaly + longitudeP;
-        final double psi = asin(sin(longitude - longitudeONode) * sin(inclination));
+        final double M = (Angle.TAU / 365.242191d) * (D / tropicalYear)
+                + epsilon - omegaBar;
+        final double nu = M + 2 * e * sin(M);
+        final double r = (a * (1 - eSquare)) / (1 + e * cos(nu));
+        final double l = nu + omegaBar;
+        final double psi = asin(sin(l - omega) * sin(i));
         final double cosPsi = cos(psi);
         // projected radius
-        final double pRad = radius * cosPsi;
+        final double rPrime = r * cosPsi;
         // projected longitude
-        final double pLon = atan2(sin(longitude - longitudeONode) * cos(inclination),
-                cos(longitude - longitudeONode)) + longitudeONode;
+        final double lPrime = atan2(sin(l - omega) * cos(i),
+                cos(l - omega)) + omega;
 
         // earth calculations
-        final double earthRadius;
-        final double earthLongitude;
+        final double R;
+        final double L;
         // shorten the scope of variables used for Earth calculations
         {
             // we assume that PlanetModel.EARTH#at is never called
-            final double meanEarth = (Angle.TAU / 365.242191d) * (daysSinceJ2010 / EARTH.tropicalYear)
-                    + EARTH.eccentricity - EARTH.longitudeP;
-            final double trueEarth = meanEarth + 2 * EARTH.eccentricity * sin(meanEarth);
-            earthRadius = (EARTH.semiMajorAxis * (1 - EARTH.eccentricity * EARTH.eccentricity))
-                    / (1 + EARTH.eccentricity * cos(trueEarth));
-            earthLongitude = trueEarth + EARTH.longitudeP;
+            final double MEarth = (Angle.TAU / 365.242191d) * (D / EARTH.tropicalYear)
+                    + EARTH.epsilon - EARTH.omegaBar;
+            final double nuEarth = MEarth + 2 * EARTH.e * sin(MEarth);
+            R = (EARTH.a * (1 - EARTH.eSquare))
+                    / (1 + EARTH.e * cos(nuEarth));
+            L = nuEarth + EARTH.omegaBar;
         }
 
         final double lambda;
-        final double x = earthRadius * sin(pLon - earthLongitude);
+        final double x = R * sin(lPrime - L);
         switch (this) {
             // inferior planets
             case VENUS:
             case MERCURY:
                 lambda = Angle.normalizePositive(
-                        PI + earthLongitude + atan2(pRad * sin(earthLongitude - pLon),
-                        earthRadius - pRad * cos(earthLongitude - pLon))
+                        PI + L + atan2(rPrime * sin(L - lPrime), R - rPrime * cos(L - lPrime))
                 );
                 break;
             // superior planets
             default:
                 lambda = Angle.normalizePositive(
-                        pLon + atan2(x, pRad - earthRadius * cos(pLon - earthLongitude))
+                        lPrime + atan2(x, rPrime - R * cos(lPrime - L))
                 );
                 break;
         }
-        final double beta = atan(pRad * tan(psi) * sin(lambda - pLon) / x);
+        final double beta = atan(rPrime * tan(psi) * sin(lambda - lPrime) / x);
 
         // angular size calculations
-        final double distance = sqrt(earthRadius * earthRadius + radius * radius
-                - 2 * earthRadius * radius * cos(longitude - earthLongitude) * cosPsi);
-        final double as = angularSize / distance;
+        final double rho = sqrt(R * R + r * r - 2 * R * r * cos(l - L) * cosPsi);
+        final double as = angularSize / rho;
 
         // magnitude calculations
-        final double f = 1 + cos(lambda - longitude) / 2d;
-        final double m = magnitude + 5 * log10(radius * distance / sqrt(f));
+        final double F = (1 + cos(lambda - l)) / 2d;
+        final double m = V0 + 5 * log10(r * rho / sqrt(F));
         return new Planet(name, conversion.apply(EclipticCoordinates.of(lambda, beta)), (float) as, (float) m);
     }
 
