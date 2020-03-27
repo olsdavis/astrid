@@ -27,6 +27,10 @@ public final class EquatorialCoordinates extends SphericalCoordinates {
                 checkInInterval(ClosedInterval.symmetric(Math.PI), dec));
     }
 
+    /**
+     * @param lon the longitude (in radians)
+     * @param lat the latitude (in radians)
+     */
     private EquatorialCoordinates(double lon, double lat) {
         super(lon, lat);
     }
@@ -66,6 +70,9 @@ public final class EquatorialCoordinates extends SphericalCoordinates {
         return super.latDeg();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String toString() {
         return String.format(Locale.ROOT, "(ra=%.4fh, dec=%.4f°)", raHr(), decDeg());

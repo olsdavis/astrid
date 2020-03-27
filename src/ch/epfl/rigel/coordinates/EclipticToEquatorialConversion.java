@@ -16,7 +16,7 @@ import java.util.function.Function;
  */
 public final class EclipticToEquatorialConversion implements Function<EclipticCoordinates, EquatorialCoordinates> {
 
-    private static final Polynomial OBLIQUENESS_POLYNOMIAL = Polynomial.of(Angle.ofArcsec(0.00181),
+    private static final Polynomial OBLIQUENESS_POLYNOMIAL = Polynomial.of(Angle.ofArcsec(0.00181d),
             Angle.ofArcsec(-0.0006d),
             Angle.ofArcsec(-46.815d),
             Angle.ofDMS(23, 26, 21.45d)
@@ -44,11 +44,17 @@ public final class EclipticToEquatorialConversion implements Function<EclipticCo
         );
     }
 
+    /**
+     * @throws UnsupportedOperationException this operation is forbidden.
+     */
     @Override
     public int hashCode() {
         throw new UnsupportedOperationException("unsupported operation");
     }
 
+    /**
+     * @throws UnsupportedOperationException this operation is forbidden.
+     */
     @Override
     public boolean equals(Object obj) {
         throw new UnsupportedOperationException("unsupported operation");

@@ -12,6 +12,9 @@ import static ch.epfl.rigel.Preconditions.checkArgument;
 public class Polynomial {
     private final double[] coefficients;
 
+    /**
+     * @param coefficients the coefficients of the Polynomial
+     */
     private Polynomial(double[] coefficients) {
         this.coefficients = coefficients;
     }
@@ -52,7 +55,7 @@ public class Polynomial {
         for (int i = 0; i < coefficients.length; ++i) {
             // do not write 0x^c
             if (coefficients[i] != 0) {
-                double coefficient = coefficients[i];
+                final double coefficient = coefficients[i];
                 // do not write -1x^c nor 1x^c
                 if (Math.abs(coefficient) == 1.0d) {
                     // add the minus if the coefficient is -1
@@ -62,7 +65,7 @@ public class Polynomial {
                 } else {
                     builder.append(coefficient);
                 }
-                int power = coefficients.length - 1 - i;
+                final int power = coefficients.length - 1 - i;
                 // write x^c if c is not null (constant coefficient)
                 if (power != 0) {
                     builder.append("x");

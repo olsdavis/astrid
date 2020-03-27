@@ -13,6 +13,10 @@ public final class CartesianCoordinates {
     private final double x;
     private final double y;
 
+    /**
+     * @param x the x-coordinate
+     * @param y the y-coordinate
+     */
     private CartesianCoordinates(double x, double y) {
         this.x = x;
         this.y = y;
@@ -41,16 +45,25 @@ public final class CartesianCoordinates {
         return y;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String toString() {
         return String.format(Locale.ROOT, "(x=%.4f, y=%.4f)", x, y);
     }
 
+    /**
+     * @throws UnsupportedOperationException this operation is forbidden.
+     */
     @Override
     public int hashCode() {
         throw new UnsupportedOperationException("unsupported operation");
     }
 
+    /**
+     * @throws UnsupportedOperationException this operation is forbidden.
+     */
     @Override
     public boolean equals(Object o) {
         throw new UnsupportedOperationException("unsupported operation");

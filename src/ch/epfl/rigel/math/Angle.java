@@ -1,6 +1,6 @@
 package ch.epfl.rigel.math;
 
-import static ch.epfl.rigel.Preconditions.checkArgument;
+import static ch.epfl.rigel.Preconditions.checkInInterval;
 
 /**
  * Class containing utils methods for angle manipulations.
@@ -9,10 +9,17 @@ import static ch.epfl.rigel.Preconditions.checkArgument;
  * @author Oscar Davis (SCIPER: 311193)
  */
 public final class Angle {
+    /**
+     * The double of {@code PI}.
+     */
     public static final double TAU = 2 * Math.PI;
-    public static final double RAD_PER_HR = TAU / 24;
+    /**
+     * The number of radians per hour.
+     */
+    public static final double RAD_PER_HR = TAU / 24d;
 
     private Angle() {
+        // private constructor, forbids external instantiations
     }
 
     /**
@@ -32,8 +39,8 @@ public final class Angle {
      * @return the angle in radians.
      */
     public static double ofArcsec(double sec) {
-        double res = sec / 3600; // to convert to degrees
-        res *= TAU / 360; // to convert from degrees to radians
+        double res = sec / 3600d; // to convert to degrees
+        res *= TAU / 360d; // to convert from degrees to radians
         return res;
     }
 
@@ -46,10 +53,10 @@ public final class Angle {
      * @return the converted angle in radians.
      */
     public static double ofDMS(int deg, int min, double sec) {
-        RightOpenInterval interv = RightOpenInterval.of(0, 60);
-        checkArgument(interv.contains(min));
-        checkArgument(interv.contains(sec));
-        double res = deg + (min / 60d) + (sec / 3600d);
+        RightOpenInterval interval = RightOpenInterval.of(0, 60);
+        checkInInterval(interval, min);
+        checkInInterval(interval, sec);
+        final double res = deg + (min / 60d) + (sec / 3600d);
         return ofDeg(res);
     }
 

@@ -54,6 +54,7 @@ public final class SiderealTime {
     }
 
     private SiderealTime() {
+        // private constructor, forbids external instantiation
     }
 
 }

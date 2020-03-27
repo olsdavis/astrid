@@ -10,10 +10,11 @@ import static java.util.Objects.requireNonNull;
 /**
  * Represents the sun.
  *
+ * @see CelestialObject
+ *
  * @author Oscar Davis (SCIPER: 311193)
  * @author Alexandre Doukhan (SCIPER: 316706)
  * Creation date: 08/03/2020
- * @see CelestialObject
  */
 public final class Sun extends CelestialObject {
 

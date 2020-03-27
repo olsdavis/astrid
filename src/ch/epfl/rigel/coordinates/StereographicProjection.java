@@ -106,16 +106,25 @@ public final class StereographicProjection implements Function<HorizontalCoordin
         return HorizontalCoordinates.of(lambda, phi);
     }
 
+    /**
+     * @throws UnsupportedOperationException this operation is forbidden.
+     */
     @Override
     public int hashCode() {
         throw new UnsupportedOperationException("unsupported operation");
     }
 
+    /**
+     * @throws UnsupportedOperationException this operation is forbidden.
+     */
     @Override
     public boolean equals(Object o) {
         throw new UnsupportedOperationException("unsupported operation");
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String toString() {
         return String.format("StereographicProjection(x=%.4f, y=%.4f)",

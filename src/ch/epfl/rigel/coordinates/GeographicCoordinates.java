@@ -18,8 +18,8 @@ import static ch.epfl.rigel.Preconditions.checkInInterval;
 public final class GeographicCoordinates extends SphericalCoordinates {
 
     /**
-     * @param lon Longitude in radians. Must be in the interval [-180, 180[.
-     * @param lat Latitude in radians. Must be in the interval [-90, 90].
+     * @param lon Longitude in degrees. Must be in the interval {@code [-180, 180[}.
+     * @param lat Latitude in degrees. Must be in the interval {@code [-90, 90]}.
      * @return a new instance of GeographicalCoordinates with given parameters.
      */
     public static GeographicCoordinates ofDeg(double lon, double lat) {
@@ -29,7 +29,7 @@ public final class GeographicCoordinates extends SphericalCoordinates {
 
     /**
      * @param lonDeg Longitude given in degrees.
-     * @return true if and only if the parameter is in [-180, 180[.
+     * @return true if and only if the parameter is in {@code [-180, 180[}.
      */
     public static boolean isValidLonDeg(double lonDeg) {
         return RightOpenInterval.symmetric(360).contains(lonDeg);
@@ -37,12 +37,16 @@ public final class GeographicCoordinates extends SphericalCoordinates {
 
     /**
      * @param latDeg Latitude given in degrees.
-     * @return true if and only if the parameter is in [-90, 90].
+     * @return true if and only if the parameter is in {@code [-90, 90]}.
      */
     public static boolean isValidLatDeg(double latDeg) {
         return ClosedInterval.symmetric(180).contains(latDeg);
     }
 
+    /**
+     * @param lon the longitude (in radians)
+     * @param lat the latitude (in radians)
+     */
     private GeographicCoordinates(double lon, double lat) {
         super(lon, lat);
     }
@@ -79,6 +83,9 @@ public final class GeographicCoordinates extends SphericalCoordinates {
         return super.latDeg();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String toString() {
         return String.format(Locale.ROOT, "(lon=%.4f°, lat=%.4f°)", lonDeg(), latDeg());

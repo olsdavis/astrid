@@ -70,6 +70,9 @@ public abstract class CelestialObject {
         return name();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String toString() {
         return info();

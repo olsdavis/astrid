@@ -31,6 +31,9 @@ public enum Epoch {
 
     private final ZonedDateTime epochStart;
 
+    /**
+     * @param epochStart the beginning of the epoch
+     */
     Epoch(ZonedDateTime epochStart) {
         this.epochStart = epochStart;
     }

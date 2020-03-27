@@ -14,6 +14,11 @@ import static ch.epfl.rigel.Preconditions.*;
  */
 public class RightOpenInterval extends Interval {
 
+    /**
+     * @param x a double
+     * @param y a double
+     * @return the floor mod.
+     */
     private static double floorMod(double x, double y) {
         return x - y * (Math.floor(x / y));
     }
@@ -40,6 +45,10 @@ public class RightOpenInterval extends Interval {
         return of(-size / 2d, size / 2d);
     }
 
+    /**
+     * @param low  the lower bound of the interval
+     * @param high the upper bound of the interval
+     */
     private RightOpenInterval(double low, double high) {
         super(low, high);
     }
@@ -52,11 +61,19 @@ public class RightOpenInterval extends Interval {
         return low() + floorMod(v - low(), high() - low());
     }
 
+    /**
+     * @param d the double to verify
+     * @return {@code true} if {@code d} is inside the open interval or equal
+     * to the lower bound.
+     */
     @Override
     public boolean contains(double d) {
         return d >= low() && d < high();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String toString() {
         return String.format(Locale.ROOT, "[%s,%s[", low(), high());

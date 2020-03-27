@@ -1,7 +1,11 @@
 package ch.epfl.rigel.math;
 
 /**
- * Represents an interval.
+ * Represents an interval of real numbers.
+ *
+ * @see ClosedInterval
+ * @see RightOpenInterval
+ *
  * @author Oscar Davis (SCIPER: 311193)
  * @author Alexandre Doukhan (SCIPER: 316706)
  * Creation date: 17/02/2020
@@ -11,6 +15,10 @@ public abstract class Interval {
     private final double low;
     private final double high;
 
+    /**
+     * @param low  the lower bound of the interval
+     * @param high the upper bound of the interval
+     */
     protected Interval(double low, double high) {
         this.low = low;
         this.high = high;

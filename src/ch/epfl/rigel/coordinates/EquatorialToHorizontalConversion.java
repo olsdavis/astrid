@@ -29,6 +29,10 @@ public final class EquatorialToHorizontalConversion implements Function<Equatori
         sidereal = SiderealTime.local(when, where);
     }
 
+    /**
+     * @param e the coordinates to convert
+     * @return the converted coordinates in {@link HorizontalCoordinates}.
+     */
     @Override
     public HorizontalCoordinates apply(EquatorialCoordinates e) {
         final double hourAngle = sidereal - e.ra();
@@ -39,11 +43,17 @@ public final class EquatorialToHorizontalConversion implements Function<Equatori
         );
     }
 
+    /**
+     * @throws UnsupportedOperationException this operation is forbidden.
+     */
     @Override
     public int hashCode() {
         throw new UnsupportedOperationException("unsupported operation");
     }
 
+    /**
+     * @throws UnsupportedOperationException this operation is forbidden.
+     */
     @Override
     public boolean equals(Object obj) {
         throw new UnsupportedOperationException("unsupported operation");

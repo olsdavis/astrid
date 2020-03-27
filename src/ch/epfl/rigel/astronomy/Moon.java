@@ -31,6 +31,9 @@ public final class Moon extends CelestialObject {
         this.phase = phase;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String info() {
         return String.format(Locale.ROOT, "%s (%.1f%%)", name(), phase * 100);

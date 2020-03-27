@@ -13,6 +13,10 @@ abstract class SphericalCoordinates {
     private double lon;
     private double lat;
 
+    /**
+     * @param lon the longitude (in radians)
+     * @param lat the latitude (in radians)
+     */
     SphericalCoordinates(double lon, double lat) {
         this.lon = lon;
         this.lat = lat;

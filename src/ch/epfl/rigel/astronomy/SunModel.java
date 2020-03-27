@@ -44,6 +44,9 @@ public enum SunModel implements CelestialObjectModel<Sun> {
      */
     private static final double E_2 = E * E;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Sun at(double D, EclipticToEquatorialConversion conversion) {
         final double M = (Angle.TAU / 365.242191d) * D + EPSILON - OMEGA_BAR;

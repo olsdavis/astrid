@@ -115,6 +115,9 @@ public final class HorizontalCoordinates extends SphericalCoordinates {
                 Math.cos(lat()) * Math.cos(that.lat()) * Math.cos(lon() - that.lon()));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String toString() {
         return String.format(Locale.ROOT, "(az=%.4f°, alt=%.4f°)", lonDeg(), latDeg());

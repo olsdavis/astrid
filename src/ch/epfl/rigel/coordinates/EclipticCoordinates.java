@@ -26,6 +26,10 @@ public final class EclipticCoordinates extends SphericalCoordinates {
                 checkInInterval(ClosedInterval.symmetric(Math.PI), lat));
     }
 
+    /**
+     * @param lon the longitude (in radians)
+     * @param lat the latitude (in radians)
+     */
     private EclipticCoordinates(double lon, double lat) {
         super(lon, lat);
     }
@@ -62,6 +66,9 @@ public final class EclipticCoordinates extends SphericalCoordinates {
         return super.latDeg();
     }
 
+    /**
+     * @throws UnsupportedOperationException this operation is forbidden.
+     */
     @Override
     public String toString() {
         return String.format(Locale.ROOT, "(\u03BB=%.4f°, \u03B2=%.4f°)", lonDeg(), latDeg());

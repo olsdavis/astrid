@@ -111,6 +111,9 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
         this.eSquare = e * e;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Planet at(double D, EclipticToEquatorialConversion conversion) {
         // position calculations
