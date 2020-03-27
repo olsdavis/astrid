@@ -5,6 +5,7 @@ import ch.epfl.rigel.math.Angle;
 import org.junit.jupiter.api.Test;
 
 import java.time.*;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -41,6 +42,13 @@ public class TempPlanetModelTest {
         assertEquals(-1.9885659217834473, PlanetModel.JUPITER.at(-2231.0,
                 new EclipticToEquatorialConversion(ZonedDateTime.of(LocalDate.of(2003, Month.NOVEMBER, 22),
                         LocalTime.of(0, 0, 0, 0), ZoneOffset.UTC))).magnitude());
+    }
+
+    @Test
+    void testValues() {
+        assertEquals(List.of(PlanetModel.MERCURY, PlanetModel.VENUS,
+                PlanetModel.EARTH, PlanetModel.MARS, PlanetModel.JUPITER,
+                PlanetModel.SATURN, PlanetModel.URANUS, PlanetModel.NEPTUNE), PlanetModel.ALL);
     }
 
 }
