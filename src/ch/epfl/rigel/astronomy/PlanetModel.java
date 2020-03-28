@@ -89,7 +89,7 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
      * @param e            the eccentricity
      * @param a            the length of the semi-major axis
      * @param i            the inclination (in degrees)
-     * @param omega        the longitude of the orbital node (in degrees)
+     * @param omega        the longitude of the ascending node (in degrees)
      * @param angularSize  the angular size (in seconds)
      * @param V0           the apparent magnitude
      */
@@ -110,6 +110,9 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
         // pre-calculated values
         this.eSquare = e * e;
     }
+
+    //TODO: store pre-calculated values
+    // namely, cos(i), sin(i)
 
     /**
      * {@inheritDoc}

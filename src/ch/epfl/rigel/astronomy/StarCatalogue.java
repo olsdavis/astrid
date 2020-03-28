@@ -16,21 +16,23 @@ import java.util.*;
 public final class StarCatalogue {
 
     private final List<Star> starCatalogue;
-    private final Map<Asterism, List<Integer>> asterismMap;
+    private final Map<Asterism, List<Integer>> asterismMap = new HashMap<>();
 
+    /**
+     * @param stars     the stars of the star catalogue
+     * @param asterisms the asterisms of the star catalogue
+     */
     public StarCatalogue(List<Star> stars, List<Asterism> asterisms) {
         Objects.requireNonNull(asterisms);
         Objects.requireNonNull(stars);
         for (Asterism ast : asterisms) {
             Preconditions.checkArgument(stars.containsAll(ast.stars()));
         }
-        this.starCatalogue = List.copyOf(stars);
-        asterismMap = new HashMap<>();
-        List<Star> starsOfAst;
-        List<Integer> indices = new ArrayList<>();
+        starCatalogue = List.copyOf(stars);
+        final List<Integer> indices = new ArrayList<>();
         for (Asterism ast : asterisms) {
             indices.clear();
-            starsOfAst = ast.stars();
+            final List<Star> starsOfAst = ast.stars();
             for (int i = 0; i < starCatalogue.size(); i++) {
                 if (starsOfAst.contains(starCatalogue.get(i))) {
                     indices.add(i);
@@ -40,6 +42,9 @@ public final class StarCatalogue {
         }
     }
 
+    /**
+     * @return the stars of the star catalogue.
+     */
     public List<Star> stars() {
         return starCatalogue;
     }
@@ -54,9 +59,9 @@ public final class StarCatalogue {
     /**
      * Finds the indices of the stars of an asterism in the {@code starCatalogue}.
      *
-     * @param asterism , of which we want to find the indices of the start composing it.
-     * @return a {@code List} of integers ,
-     * corresponding to the positions in the {@code starCatalogue} of the stars of the {@code asterism}.
+     * @param asterism of which we want to find the indices of the start composing it.
+     * @return a {@code List} of integers corresponding to the positions in the {@code starCatalogue}
+     * of the stars of the {@code asterism}.
      */
     public List<Integer> asterismIndices(Asterism asterism) {
         Preconditions.checkArgument(asterisms().contains(asterism));
@@ -65,17 +70,11 @@ public final class StarCatalogue {
 
     /**
      * Represents a catalogue builder.
-     * Will ultimately give a {@link StarCatalogue}.
      */
     public final static class Builder {
 
-        private List<Star> starCatalogue;
-        private List<Asterism> asterismCatalogue;
-
-        Builder() {
-            starCatalogue = new ArrayList<>();
-            asterismCatalogue = new ArrayList<>();
-        }
+        private List<Star> starCatalogue = new ArrayList<>();
+        private List<Asterism> asterismCatalogue = new ArrayList<>();
 
         /**
          * Adds the given {@link Star} instance to {@code starCatalogue}.
@@ -83,7 +82,7 @@ public final class StarCatalogue {
          * @param star The star to add to the catalogue.
          * @return the current {@link Builder} instance ({@code this}).
          */
-        Builder addStar(Star star) {
+        public Builder addStar(Star star) {
             starCatalogue.add(star);
             return this;
         }
@@ -91,7 +90,7 @@ public final class StarCatalogue {
         /**
          * @return an unmodifiable view of {@code starCatalogue}.
          */
-        List<Star> stars() {
+        public List<Star> stars() {
             return Collections.unmodifiableList(starCatalogue);
         }
 
@@ -101,7 +100,7 @@ public final class StarCatalogue {
          * @param asterism The asterism to add to the catalogue.
          * @return the current {@link Builder} instance ({@code this)}
          */
-        Builder addAsterism(Asterism asterism) {
+        public Builder addAsterism(Asterism asterism) {
             asterismCatalogue.add(asterism);
             return this;
         }
@@ -109,19 +108,19 @@ public final class StarCatalogue {
         /**
          * @return an unmodifiable view of {@code asterismCatalogue}.
          */
-        List<Asterism> asterisms() {
+        public List<Asterism> asterisms() {
             return Collections.unmodifiableList(asterismCatalogue);
         }
 
         /**
-         * Loads
+         * Loads the builder data from the provided input stream.
          *
          * @param inputStream of data to be loaded.
          * @param loader      Loads the data into the {@link  Builder}.
          * @return the {@code Builder} that is loaded.
          * @throws IOException in case of I/O error.
          */
-        Builder loadFrom(InputStream inputStream, Loader loader) throws IOException {
+        public Builder loadFrom(InputStream inputStream, Loader loader) throws IOException {
             loader.load(inputStream, this);
             return this;
         }
@@ -129,11 +128,9 @@ public final class StarCatalogue {
         /**
          * @return a new instance of {@link StarCatalogue} with built {@code starCatalogue} and {@code asterismCatalogue}.
          */
-        StarCatalogue build() {
+        public StarCatalogue build() {
             return new StarCatalogue(starCatalogue, asterismCatalogue);
         }
-
-
 
     }
 
@@ -152,4 +149,5 @@ public final class StarCatalogue {
          */
         void load(InputStream inputStream, Builder builder) throws IOException;
     }
+
 }
