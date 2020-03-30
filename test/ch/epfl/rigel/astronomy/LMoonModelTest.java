@@ -9,7 +9,8 @@ import static ch.epfl.rigel.astronomy.Epoch.J2010;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
- * @author Oscar Davis
+ * @author Oscar Davis (SCIPER: 311193)
+ * @author Alexandre Doukhan (SCIPER: 316706)
  * Creation date: 30/03/2020
  */
 public class LMoonModelTest {
@@ -28,12 +29,10 @@ public class LMoonModelTest {
                         LocalTime.of(0, 0), ZoneOffset.UTC))).equatorialPos().dec(), 1e-13);
         assertEquals(0.009225908666849136, MoonModel.MOON.at(J2010.daysUntil(ZonedDateTime.of(LocalDate.of(1979, 9, 1), LocalTime.of(0, 0),
                 ZoneOffset.UTC)), new EclipticToEquatorialConversion(ZonedDateTime.of(
-                LocalDate.of(1979, 9, 1), LocalTime.of(0, 0), ZoneOffset.UTC))).
-                angularSize());
+                LocalDate.of(1979, 9, 1), LocalTime.of(0, 0), ZoneOffset.UTC))).angularSize());
         assertEquals("Lune (22.5%)", MoonModel.MOON.at(J2010.daysUntil(ZonedDateTime.of(LocalDate.of(2003, 9, 1), LocalTime.of(0, 0),
                 ZoneOffset.UTC)), new EclipticToEquatorialConversion(ZonedDateTime.of(LocalDate.of(2003, 9, 1),
-                LocalTime.of(0, 0), ZoneOffset.UTC))).
-                info());
+                LocalTime.of(0, 0), ZoneOffset.UTC))).info());
     }
 
 }
