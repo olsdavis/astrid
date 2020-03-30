@@ -26,13 +26,13 @@ public class LMoonModelTest {
                         Month.SEPTEMBER,
                         1),
                         LocalTime.of(0, 0), ZoneOffset.UTC))).equatorialPos().dec(), 1e-13);
-        assertEquals(0.009225908666849136, MoonModel.MOON.at(J2010.daysUntil(ZonedDateTime.of(LocalDate.of(1979, 9, 1),LocalTime.of(0, 0),
+        assertEquals(0.009225908666849136, MoonModel.MOON.at(J2010.daysUntil(ZonedDateTime.of(LocalDate.of(1979, 9, 1), LocalTime.of(0, 0),
                 ZoneOffset.UTC)), new EclipticToEquatorialConversion(ZonedDateTime.of(
-                LocalDate.of(1979, 9, 1),LocalTime.of(0, 0),ZoneOffset.UTC))).
+                LocalDate.of(1979, 9, 1), LocalTime.of(0, 0), ZoneOffset.UTC))).
                 angularSize());
-        assertEquals("Lune (22.5%)", MoonModel.MOON.at(J2010.daysUntil(ZonedDateTime.of(LocalDate.of(2003, 9, 1),LocalTime.of(0, 0),
-                ZoneOffset.UTC)), new EclipticToEquatorialConversion(ZonedDateTime.of( LocalDate.of(2003, 9, 1),
-                LocalTime.of(0, 0),ZoneOffset.UTC))).
+        assertEquals("Lune (22.5%)", MoonModel.MOON.at(J2010.daysUntil(ZonedDateTime.of(LocalDate.of(2003, 9, 1), LocalTime.of(0, 0),
+                ZoneOffset.UTC)), new EclipticToEquatorialConversion(ZonedDateTime.of(LocalDate.of(2003, 9, 1),
+                LocalTime.of(0, 0), ZoneOffset.UTC))).
                 info());
     }
 
