@@ -86,7 +86,7 @@ public enum MoonModel implements CelestialObjectModel<Moon> {
         // A_4
         final double a4 = C_7 * sin(2 * correctedAnomaly);
         // l'
-        final double correctedLongitude = longitude + evection + eC - aE - a4;
+        final double correctedLongitude = longitude + evection + eC - aE + a4;
         // V
         final double variation = C_8 * sin(2 * (correctedLongitude - sun.eclipticPos().lon()));
         // l''

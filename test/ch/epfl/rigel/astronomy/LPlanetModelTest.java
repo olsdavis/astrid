@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * @author Alexandre Doukhan (SCIPER: 316706)
  * Creation date: 26/03/2020
  */
-public class TempPlanetModelTest {
+public class LPlanetModelTest {
 
     @Test
     void testAt() {

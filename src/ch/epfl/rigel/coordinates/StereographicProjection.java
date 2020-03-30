@@ -64,7 +64,7 @@ public final class StereographicProjection implements Function<HorizontalCoordin
      * @return the diameter of the projection circle.
      */
     public double applyToAngle(double rad) {
-        return 2 * Math.tan(rad / 4d);
+        return 2 * tan(rad / 4d);
     }
 
     /**
@@ -102,7 +102,7 @@ public final class StereographicProjection implements Function<HorizontalCoordin
         final double cosC = (1 - rhoS) / (rhoS + 1);
         final double lambda = Angle.normalizePositive(Math.atan2(xy.x() * sinC, rho * cosPhi1 * cosC
                 - xy.y() * sinPhi1 * sinC) + lambda0);
-        final double phi = Math.asin(cosC * sinPhi1 + (xy.y() * sinC * cosPhi1 / rho));
+        final double phi = asin(cosC * sinPhi1 + (xy.y() * sinC * cosPhi1 / rho));
         return HorizontalCoordinates.of(lambda, phi);
     }
 
