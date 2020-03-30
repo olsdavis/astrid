@@ -80,6 +80,8 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
 
     // pre-calculated values
     private final double eSquare;
+    private final double cosI;
+    private final double sinI;
 
     /**
      * @param name         the name of the planet
@@ -109,10 +111,9 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
 
         // pre-calculated values
         this.eSquare = e * e;
+        this.cosI = cos(this.i);
+        this.sinI = sin(this.i);
     }
-
-    //TODO: store pre-calculated values
-    // namely, cos(i), sin(i)
 
     @Override
     public Planet at(double D, EclipticToEquatorialConversion conversion) {
@@ -122,12 +123,12 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
         final double nu = M + 2 * e * sin(M);
         final double r = (a * (1 - eSquare)) / (1 + e * cos(nu));
         final double l = nu + omegaBar;
-        final double psi = asin(sin(l - omega) * sin(i));
+        final double psi = asin(sin(l - omega) * sinI);
         final double cosPsi = cos(psi);
         // projected radius
         final double rPrime = r * cosPsi;
         // projected longitude
-        final double lPrime = atan2(sin(l - omega) * cos(i),
+        final double lPrime = atan2(sin(l - omega) * cosI,
                 cos(l - omega)) + omega;
 
         // earth calculations

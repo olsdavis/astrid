@@ -2,7 +2,6 @@ package ch.epfl.rigel.astronomy;
 
 import ch.epfl.rigel.coordinates.EclipticCoordinates;
 import ch.epfl.rigel.coordinates.EclipticToEquatorialConversion;
-import ch.epfl.rigel.coordinates.EquatorialCoordinates;
 import ch.epfl.rigel.math.Angle;
 
 import static java.lang.Math.*;
@@ -56,13 +55,27 @@ public enum MoonModel implements CelestialObjectModel<Moon> {
     private static final double C_9 = Angle.ofDeg(0.0529539);
     private static final double C_10 = Angle.ofDeg(0.16);
 
+    /*
+     * Hereunder, pre-calculated values.
+     */
+
+    /**
+     * The cosine of the inclination.
+     */
+    private static final double COS_I = cos(I);
+    /**
+     * The sine of the inclination.
+     */
+    private static final double SIN_I = sin(I);
+    /**
+     * The square of the eccentricity.
+     */
+    private static final double E_SQUARED = E * E;
+
     /**
      * Angular size of the moon as seen from Earth.
      */
     private static final double THETA_0 = Angle.ofDeg(0.5181);
-
-    //TODO: tests + store pre-calculated values,
-    // namely cos(i), sin(i), E * E
 
     @Override
     public Moon at(double daysSinceJ2010, EclipticToEquatorialConversion conversion) {
@@ -97,17 +110,17 @@ public enum MoonModel implements CelestialObjectModel<Moon> {
         final double correctedLongitudeAscendingNode = meanLongitudeAscendingNode - C_10 * sunSinMeanAnomaly;
         // lambda_m
         final double lambda = Angle.normalizePositive(
-                atan2(sin(trueLongitude - correctedLongitudeAscendingNode) * cos(I),
+                atan2(sin(trueLongitude - correctedLongitudeAscendingNode) * COS_I,
                         cos(trueLongitude - correctedLongitudeAscendingNode)) + correctedLongitudeAscendingNode
         );
         // beta_m
-        final double beta = asin(sin(trueLongitude - correctedLongitudeAscendingNode) * sin(I));
+        final double beta = asin(sin(trueLongitude - correctedLongitudeAscendingNode) * SIN_I);
 
         // F
         final double phase = (1 - cos(trueLongitude - sun.eclipticPos().lon())) / 2d;
 
         // rho
-        final double distance = (1 - E * E) / (1 + E * cos(correctedAnomaly + eC));
+        final double distance = (1 - E_SQUARED) / (1 + E * cos(correctedAnomaly + eC));
         // theta
         final double angularSize = THETA_0 / distance;
 
