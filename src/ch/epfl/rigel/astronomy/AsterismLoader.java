@@ -21,9 +21,6 @@ public enum AsterismLoader implements StarCatalogue.Loader {
 
     INSTANCE;
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void load(InputStream inputStream, StarCatalogue.Builder builder) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.US_ASCII));

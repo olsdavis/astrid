@@ -45,9 +45,6 @@ public final class CartesianCoordinates {
         return y;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
         return String.format(Locale.ROOT, "(x=%.4f, y=%.4f)", x, y);

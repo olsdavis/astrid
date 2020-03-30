@@ -122,9 +122,6 @@ public final class StereographicProjection implements Function<HorizontalCoordin
         throw new UnsupportedOperationException("unsupported operation");
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
         return String.format("StereographicProjection(x=%.4f, y=%.4f)",

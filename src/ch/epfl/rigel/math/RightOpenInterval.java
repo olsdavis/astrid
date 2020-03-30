@@ -71,9 +71,6 @@ public class RightOpenInterval extends Interval {
         return d >= low() && d < high();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
         return String.format(Locale.ROOT, "[%s,%s[", low(), high());

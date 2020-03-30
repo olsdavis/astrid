@@ -114,9 +114,6 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
     //TODO: store pre-calculated values
     // namely, cos(i), sin(i)
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Planet at(double D, EclipticToEquatorialConversion conversion) {
         // position calculations
