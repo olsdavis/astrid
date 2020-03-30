@@ -29,9 +29,8 @@ public final class StarCatalogue {
             Preconditions.checkArgument(stars.containsAll(ast.stars()));
         }
         starCatalogue = List.copyOf(stars);
-        final List<Integer> indices = new ArrayList<>();
         for (Asterism ast : asterisms) {
-            indices.clear();
+            final List<Integer> indices = new ArrayList<>();
             final List<Star> starsOfAst = ast.stars();
             for (int i = 0; i < starCatalogue.size(); i++) {
                 if (starsOfAst.contains(starCatalogue.get(i))) {
