@@ -5,6 +5,7 @@ import ch.epfl.rigel.Preconditions;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * References the entire stars and asterisms catalogues into a single instance.
@@ -16,28 +17,25 @@ import java.util.*;
 public final class StarCatalogue {
 
     private final List<Star> starCatalogue;
-    private final Map<Asterism, List<Integer>> asterismMap = new HashMap<>();
+    private final Map<Asterism, List<Integer>> asterismMap;
 
     /**
      * @param stars     the stars of the star catalogue
      * @param asterisms the asterisms of the star catalogue
      */
     public StarCatalogue(List<Star> stars, List<Asterism> asterisms) {
-        Objects.requireNonNull(asterisms);
-        Objects.requireNonNull(stars);
         for (Asterism ast : asterisms) {
             Preconditions.checkArgument(stars.containsAll(ast.stars()));
         }
         starCatalogue = List.copyOf(stars);
-        for (Asterism ast : asterisms) {
-            final List<Integer> indices = new ArrayList<>();
-            final List<Star> starsOfAst = ast.stars();
-            for (int i = 0; i < starCatalogue.size(); i++) {
-                if (starsOfAst.contains(starCatalogue.get(i))) {
-                    indices.add(i);
-                }
-            }
-            asterismMap.put(ast, indices);
+        asterismMap = new HashMap<>(asterisms.size());
+        final Map<Star, Integer> indices = new HashMap<>(stars.size());
+        for (int i = 0; i < stars.size(); i++) {
+            indices.put(stars.get(i), i);
+        }
+        for (Asterism asterism : asterisms) {
+            asterismMap.put(asterism,
+                    asterism.stars().stream().map(indices::get).collect(Collectors.toList()));
         }
     }
 
@@ -68,7 +66,7 @@ public final class StarCatalogue {
     }
 
     /**
-     * Represents a catalogue builder.
+     * Builder for star catalogues.
      */
     public final static class Builder {
 
@@ -143,6 +141,7 @@ public final class StarCatalogue {
          * @param inputStream Flow of data to be loaded.
          * @param builder     {@link Builder} in which we load the data from {@code inputStream}.
          * @throws IOException in case of I/O error.
+         *
          * @see AsterismLoader
          * @see HygDatabaseLoader
          */

@@ -2,7 +2,7 @@ package ch.epfl.rigel.astronomy;
 
 import ch.epfl.rigel.coordinates.EquatorialCoordinates;
 import ch.epfl.test.TestRandomizer;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -87,17 +87,20 @@ public class LHygDatabaseLoaderTest {
         return new Star(0, "", EquatorialCoordinates.of(0, 0), 0, colorIndex).colorTemperature();
     }
 
-    private StarCatalogue catalogue;
+    private static StarCatalogue catalogue;
 
-    private StarCatalogue loadWithBuilder() throws IOException {
+    private static StarCatalogue loadWithBuilder() throws IOException {
         StarCatalogue.Builder builder = new StarCatalogue.Builder();
         return builder
-                .loadFrom(getClass().getResourceAsStream(HYG_CATALOGUE_NAME), HygDatabaseLoader.INSTANCE)
+                .loadFrom(LHygDatabaseLoaderTest.class.getResourceAsStream(HYG_CATALOGUE_NAME), HygDatabaseLoader.INSTANCE)
                 .build();
     }
 
-    @BeforeEach
-    void setUp() throws IOException {
+    // Apparently, this method (using rather BeforeAll, over BeforeEach) has to be static.
+    // Therefore, the catalogue also is static.
+
+    @BeforeAll
+    static void setUp() throws IOException {
         catalogue = loadWithBuilder();
     }
 

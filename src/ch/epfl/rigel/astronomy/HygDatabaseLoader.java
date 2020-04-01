@@ -63,29 +63,30 @@ public enum HygDatabaseLoader implements StarCatalogue.Loader {
 
     @Override
     public void load(InputStream inputStream, StarCatalogue.Builder builder) throws IOException {
-        final BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream,
-                StandardCharsets.US_ASCII));
-        String str;
-        // we skip the first line, since it provides the names of the columns
-        reader.readLine();
-        while ((str = reader.readLine()) != null && !str.equals("")) {
-            final String[] dataLine = str.split(",");
-            final String properName = dataLine[PROPER].equals("")
-                    ? ((dataLine[BAYER].equals("") ? "?" : dataLine[BAYER]))  // default bayer value = '?'
+        try (final BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream,
+                StandardCharsets.US_ASCII))) {
+            String str;
+            // we skip the first line, since it provides the names of the columns
+            reader.readLine();
+            while ((str = reader.readLine()) != null && !str.equals("")) {
+                final String[] dataLine = str.split(",");
+                final String properName = dataLine[PROPER].equals("")
+                        ? ((dataLine[BAYER].equals("") ? "?" : dataLine[BAYER]))  // default bayer value = '?'
                         + " " + dataLine[CON]
-                    : dataLine[PROPER];
-            builder.addStar(new Star(
-                    // Hipparcos ID
-                    (dataLine[HIP].equals("") ? 0 : Integer.parseInt(dataLine[HIP])),
-                    // proper name
-                    properName,
-                    // coordinates
-                    EquatorialCoordinates.of(Double.parseDouble(dataLine[RARAD]), Double.parseDouble(dataLine[DECRAD])),
-                    // magnitude
-                    (dataLine[MAG].equals("") ? 0f : Float.parseFloat(dataLine[MAG])),
-                    // color index
-                    (dataLine[CI].equals("") ? 0f : Float.parseFloat(dataLine[CI]))
-            ));
+                        : dataLine[PROPER];
+                builder.addStar(new Star(
+                        // Hipparcos ID
+                        (dataLine[HIP].equals("") ? 0 : Integer.parseInt(dataLine[HIP])),
+                        // proper name
+                        properName,
+                        // coordinates
+                        EquatorialCoordinates.of(Double.parseDouble(dataLine[RARAD]), Double.parseDouble(dataLine[DECRAD])),
+                        // magnitude
+                        (dataLine[MAG].equals("") ? 0f : Float.parseFloat(dataLine[MAG])),
+                        // color index
+                        (dataLine[CI].equals("") ? 0f : Float.parseFloat(dataLine[CI]))
+                ));
+            }
         }
     }
 

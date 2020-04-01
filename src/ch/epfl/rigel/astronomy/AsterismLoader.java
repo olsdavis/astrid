@@ -26,31 +26,32 @@ public enum AsterismLoader implements StarCatalogue.Loader {
 
     @Override
     public void load(InputStream inputStream, StarCatalogue.Builder builder) throws IOException {
-        final BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream,
-                StandardCharsets.US_ASCII));
-        String str;
-        while ((str = reader.readLine()) != null && !str.equals("")) {
-            // convert to a list of integers
-            final List<Integer> hipIndicesStars = Arrays.stream(str.split(","))
-                    .map(Integer::parseInt)
-                    .collect(Collectors.toUnmodifiableList());
-            // allocate directly the maximal (and the very likely) size of the List
-            final List<Star> asterismStars = new ArrayList<>(hipIndicesStars.size());
-            // allows to exit without iterating over all the stars, in most cases
-            int added = 0;
-            for (Star star : builder.stars()) {
-                // if the indices to add hold the star that's currently being iterated
-                // add it to the stars of the asterism
-                if (hipIndicesStars.contains(star.hipparcosId())) {
-                    asterismStars.add(star);
-                    added++;
+        try (final BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream,
+                StandardCharsets.US_ASCII))) {
+            String str;
+            while ((str = reader.readLine()) != null && !str.equals("")) {
+                // convert to a list of integers
+                final List<Integer> hipIndicesStars = Arrays.stream(str.split(","))
+                        .map(Integer::parseInt)
+                        .collect(Collectors.toUnmodifiableList());
+                // allocate directly the maximal (and the very likely) size of the List
+                final List<Star> asterismStars = new ArrayList<>(hipIndicesStars.size());
+                // allows to exit without iterating over all the stars, in most cases
+                int added = 0;
+                for (Star star : builder.stars()) {
+                    // if the indices to add hold the star that's currently being iterated
+                    // add it to the stars of the asterism
+                    if (hipIndicesStars.contains(star.hipparcosId())) {
+                        asterismStars.add(star);
+                        added++;
+                    }
+                    // add all stars: done!
+                    if (added == hipIndicesStars.size()) {
+                        break;
+                    }
                 }
-                // add all stars: done!
-                if (added == hipIndicesStars.size()) {
-                    break;
-                }
+                builder.addAsterism(new Asterism(asterismStars));
             }
-            builder.addAsterism(new Asterism(asterismStars));
         }
     }
 
