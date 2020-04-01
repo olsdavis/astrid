@@ -1,5 +1,6 @@
 package ch.epfl.rigel.astronomy;
 
+import ch.epfl.rigel.coordinates.EquatorialCoordinates;
 import ch.epfl.test.TestRandomizer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -66,6 +67,26 @@ public class LHygDatabaseLoaderTest {
         return Integer.parseInt(str);
     }
 
+    /**
+     * @param proper the proper name of the star
+     * @param bayer  the bayer designation of the star
+     * @param con    the shortened name of the constellation
+     * @return the the name of the star, as it should be built by {@link HygDatabaseLoader}.
+     */
+    private static String buildName(String proper, String bayer, String con) {
+        return proper.equals("")
+                ? (bayer.equals("") ? "?" : bayer) + " " + con
+                : proper;
+    }
+
+    /**
+     * @param colorIndex the color index of a star
+     * @return the color temperature that a star of the given {@code colorIndex} should return.
+     */
+    private static int calculateTemperature(float colorIndex) {
+        return new Star(0, "", EquatorialCoordinates.of(0, 0), 0, colorIndex).colorTemperature();
+    }
+
     private StarCatalogue catalogue;
 
     private StarCatalogue loadWithBuilder() throws IOException {
@@ -126,15 +147,17 @@ public class LHygDatabaseLoaderTest {
         final List<String> lines = Files
                 .readAllLines(Paths.get(getClass().getResource(HYG_CATALOGUE_NAME).toURI()),
                         StandardCharsets.US_ASCII);
-        for (int i = 0; i < TestRandomizer.RANDOM_ITERATIONS; i++) {
+        for (int i = 0; i < Math.min(TestRandomizer.RANDOM_ITERATIONS, lines.size()); i++) {
             final int x = random.nextInt(1, lines.size() + 1);
             final String[] data = lines.get(x).split(",");
-            final Star star = catalogue.stars().stream().filter(s -> {
-                return s.hipparcosId() == toInt(data[1])
-                        && (float) s.magnitude() == toFloat(data[13])
-                        && s.equatorialPos().ra() == toDouble(data[23])
-                        && s.equatorialPos().dec() == toDouble(data[24]);
-            }).findAny().orElse(null);
+            final Star star = catalogue.stars().stream()
+                    .filter(s -> s.hipparcosId() == toInt(data[1])
+                            && (float) s.magnitude() == toFloat(data[13])
+                            && s.equatorialPos().ra() == toDouble(data[23])
+                            && s.equatorialPos().dec() == toDouble(data[24])
+                            && s.name().equals(buildName(data[6], data[27], data[29]))
+                            && s.colorTemperature() == calculateTemperature(toFloat(data[16])))
+                    .findAny().orElse(null);
             assertNotNull(star);
         }
     }
