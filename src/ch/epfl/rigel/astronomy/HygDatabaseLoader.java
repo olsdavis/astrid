@@ -6,9 +6,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.nio.Buffer;
 import java.nio.charset.StandardCharsets;
-import java.util.Locale;
 
 /**
  * Loads an entire stars catalogue (in this case, an HYG one), using an {@code InputStream}.
@@ -19,6 +17,9 @@ import java.util.Locale;
  */
 public enum HygDatabaseLoader implements StarCatalogue.Loader {
 
+    /**
+     * The single instance of the HygDatabaseLoader.
+     */
     INSTANCE;
 
     /*
@@ -50,7 +51,7 @@ public enum HygDatabaseLoader implements StarCatalogue.Loader {
     /**
      * Column of the declination's value (in radians).
      */
-    private static final int DECRAC = 24;
+    private static final int DECRAD = 24;
     /**
      * Column of the Bayer designation.
      */
@@ -60,23 +61,32 @@ public enum HygDatabaseLoader implements StarCatalogue.Loader {
      */
     private static final int CON = 29;
 
-
     @Override
     public void load(InputStream inputStream, StarCatalogue.Builder builder) throws IOException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.US_ASCII));
+        final BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream,
+                StandardCharsets.US_ASCII));
         String str;
+        // we skip the first line, since it provides the names of the columns
+        reader.readLine();
         while ((str = reader.readLine()) != null && !str.equals("")) {
-            String[] dataLine = str.split(",");
-            String properName = dataLine[PROPER].equals("")
-                    ? (dataLine[BAYER].equals("") ? "?" : dataLine[BAYER]) + " " + dataLine[CON]
+            final String[] dataLine = str.split(",");
+            final String properName = dataLine[PROPER].equals("")
+                    ? ((dataLine[BAYER].equals("") ? "?" : dataLine[BAYER]))  // default bayer value = '?'
+                        + " " + dataLine[CON]
                     : dataLine[PROPER];
             builder.addStar(new Star(
-                    (dataLine[HIP].equals("") ? 0 : Integer.parseInt(dataLine[HIP])), // Hipparcos Id
-                    properName, // Proper name of the star
-                    EquatorialCoordinates.of(Double.parseDouble(dataLine[RARAD]), Double.parseDouble(dataLine[DECRAC])), // Equatorial coordinates of the star
-                    (dataLine[MAG].equals("") ? 0 : Float.parseFloat(dataLine[MAG])), // Magnitude of the star
-                    (dataLine[CI].equals("") ? 0 : Float.parseFloat(dataLine[CI])) // G-B color index of the star
+                    // Hipparcos ID
+                    (dataLine[HIP].equals("") ? 0 : Integer.parseInt(dataLine[HIP])),
+                    // proper name
+                    properName,
+                    // coordinates
+                    EquatorialCoordinates.of(Double.parseDouble(dataLine[RARAD]), Double.parseDouble(dataLine[DECRAD])),
+                    // magnitude
+                    (dataLine[MAG].equals("") ? 0f : Float.parseFloat(dataLine[MAG])),
+                    // color index
+                    (dataLine[CI].equals("") ? 0f : Float.parseFloat(dataLine[CI]))
             ));
         }
     }
+
 }

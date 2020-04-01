@@ -105,7 +105,7 @@ public final class StarCatalogue {
         }
 
         /**
-         * @return an unmodifiable view of {@code asterismCatalogue}.
+         * @return an unmodifiable view of the underlying list that holds the asterisms of the catalogue.
          */
         public List<Asterism> asterisms() {
             return Collections.unmodifiableList(asterismCatalogue);

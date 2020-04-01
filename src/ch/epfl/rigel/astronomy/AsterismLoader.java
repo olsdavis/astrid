@@ -19,37 +19,39 @@ import java.util.stream.Collectors;
  */
 public enum AsterismLoader implements StarCatalogue.Loader {
 
+    /**
+     * The single instance of the AsterismLoader.
+     */
     INSTANCE;
 
     @Override
     public void load(InputStream inputStream, StarCatalogue.Builder builder) throws IOException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.US_ASCII));
+        final BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream,
+                StandardCharsets.US_ASCII));
         String str;
         while ((str = reader.readLine()) != null && !str.equals("")) {
-            List<Star> asterismStars = new ArrayList<>();
-            List<Integer> hipIndicesStars = parseOnArray(str.split(","));
-            int count = 0;
+            // convert to a list of integers
+            final List<Integer> hipIndicesStars = Arrays.stream(str.split(","))
+                    .map(Integer::parseInt)
+                    .collect(Collectors.toUnmodifiableList());
+            // allocate directly the maximal (and the very likely) size of the List
+            final List<Star> asterismStars = new ArrayList<>(hipIndicesStars.size());
+            // allows to exit without iterating over all the stars, in most cases
+            int added = 0;
             for (Star star : builder.stars()) {
+                // if the indices to add hold the star that's currently being iterated
+                // add it to the stars of the asterism
                 if (hipIndicesStars.contains(star.hipparcosId())) {
                     asterismStars.add(star);
-                    count++;
+                    added++;
                 }
-                if (count == hipIndicesStars.size()) {
+                // add all stars: done!
+                if (added == hipIndicesStars.size()) {
                     break;
                 }
             }
             builder.addAsterism(new Asterism(asterismStars));
         }
-    }
-
-    /**
-     * Utility method to get a list of HipparcosIds from a String array.
-     *
-     * @param stringArray the array from which to extract the list of hipparcosIds.
-     * @return a list of HipparcosIds.
-     */
-    private List<Integer> parseOnArray(String[] stringArray) {
-        return Arrays.stream(stringArray).map(Integer::parseInt).collect(Collectors.toList());
     }
 
 }
