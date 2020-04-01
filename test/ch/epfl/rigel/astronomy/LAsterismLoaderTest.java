@@ -12,8 +12,7 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Oscar Davis (SCIPER: 311193)
@@ -86,12 +85,12 @@ public class LAsterismLoaderTest {
                     .map(indicesMap::get)
                     .collect(Collectors.toList());
             Asterism asterism = catalogue.asterisms().stream()
-                    .filter(s -> s.stars().containsAll(allStars) && allStars.containsAll(s.stars()))
+                    .filter(s -> s.stars().equals(allStars))
                     .findAny()
                     .orElse(null);
             assertNotNull(asterism);
-            assertTrue(catalogue.asterismIndices(asterism).containsAll(allIds)
-                    && allIds.containsAll(catalogue.asterismIndices(asterism)));
+            assertEquals(hipIndices.size(), catalogue.asterismIndices(asterism).size());
+            assertEquals(allIds, catalogue.asterismIndices(asterism));
         }
     }
 

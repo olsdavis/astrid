@@ -5,9 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -26,6 +24,10 @@ public enum AsterismLoader implements StarCatalogue.Loader {
 
     @Override
     public void load(InputStream inputStream, StarCatalogue.Builder builder) throws IOException {
+        final Map<Integer, Integer> indicesMap = new HashMap<>();
+        for (int i = 0; i < builder.stars().size(); i++) {
+            indicesMap.put(builder.stars().get(i).hipparcosId(), i);
+        }
         try (final BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream,
                 StandardCharsets.US_ASCII))) {
             String str;
@@ -34,22 +36,10 @@ public enum AsterismLoader implements StarCatalogue.Loader {
                 final List<Integer> hipIndicesStars = Arrays.stream(str.split(","))
                         .map(Integer::parseInt)
                         .collect(Collectors.toUnmodifiableList());
-                // allocate directly the maximal (and the very likely) size of the List
-                final List<Star> asterismStars = new ArrayList<>(hipIndicesStars.size());
-                // allows to exit without iterating over all the stars, in most cases
-                int added = 0;
-                for (Star star : builder.stars()) {
-                    // if the indices to add hold the star that's currently being iterated
-                    // add it to the stars of the asterism
-                    if (hipIndicesStars.contains(star.hipparcosId())) {
-                        asterismStars.add(star);
-                        added++;
-                    }
-                    // add all stars: done!
-                    if (added == hipIndicesStars.size()) {
-                        break;
-                    }
-                }
+                final List<Star> asterismStars = hipIndicesStars.stream()
+                        .map(indicesMap::get)
+                        .map(i -> builder.stars().get(i))
+                        .collect(Collectors.toList());
                 builder.addAsterism(new Asterism(asterismStars));
             }
         }

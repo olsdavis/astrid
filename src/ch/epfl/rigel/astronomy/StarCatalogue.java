@@ -34,8 +34,11 @@ public final class StarCatalogue {
             indices.put(stars.get(i), i);
         }
         for (Asterism asterism : asterisms) {
-            asterismMap.put(asterism,
-                    asterism.stars().stream().map(indices::get).collect(Collectors.toList()));
+            final List<Integer> s = new ArrayList<>(asterism.stars().size());
+            for (Star star : asterism.stars()) {
+                s.add(indices.get(star));
+            }
+            asterismMap.put(asterism, s);
         }
     }
 
@@ -61,7 +64,7 @@ public final class StarCatalogue {
      * of the stars of the {@code asterism}.
      */
     public List<Integer> asterismIndices(Asterism asterism) {
-        Preconditions.checkArgument(asterisms().contains(asterism));
+        Preconditions.checkArgument(asterismMap.containsKey(asterism));
         return asterismMap.get(asterism);
     }
 
