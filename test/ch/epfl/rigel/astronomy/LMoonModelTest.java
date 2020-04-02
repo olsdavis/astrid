@@ -1,6 +1,7 @@
 package ch.epfl.rigel.astronomy;
 
 import ch.epfl.rigel.coordinates.EclipticToEquatorialConversion;
+import ch.epfl.rigel.math.Angle;
 import org.junit.jupiter.api.Test;
 
 import java.time.*;
@@ -33,6 +34,12 @@ public class LMoonModelTest {
         assertEquals("Lune (22.5%)", MoonModel.MOON.at(J2010.daysUntil(ZonedDateTime.of(LocalDate.of(2003, 9, 1), LocalTime.of(0, 0),
                 ZoneOffset.UTC)), new EclipticToEquatorialConversion(ZonedDateTime.of(LocalDate.of(2003, 9, 1),
                 LocalTime.of(0, 0), ZoneOffset.UTC))).info());
+        assertEquals(Angle.ofDeg(214.862515), MoonModel.MOON.at(-2313, new EclipticToEquatorialConversion(ZonedDateTime.of(LocalDate.of(2003, 9, 1),
+                LocalTime.of(0, 0),
+                ZoneOffset.UTC))).equatorialPos().ra());
+        assertEquals(1.716257, MoonModel.MOON.at(-2313, new EclipticToEquatorialConversion(ZonedDateTime.of(LocalDate.of(2003, 9, 1),
+                LocalTime.of(0, 0),
+                ZoneOffset.UTC))).equatorialPos().decDeg());
     }
 
 }
