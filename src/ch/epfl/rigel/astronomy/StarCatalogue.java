@@ -34,11 +34,9 @@ public final class StarCatalogue {
             indices.put(stars.get(i), i);
         }
         for (Asterism asterism : asterisms) {
-            final List<Integer> s = new ArrayList<>(asterism.stars().size());
-            for (Star star : asterism.stars()) {
-                s.add(indices.get(star));
-            }
-            asterismMap.put(asterism, s);
+            asterismMap.put(asterism, asterism.stars().stream()
+                    .map(indices::get)
+                    .collect(Collectors.toUnmodifiableList()));
         }
     }
 

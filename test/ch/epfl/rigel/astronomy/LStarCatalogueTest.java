@@ -2,9 +2,9 @@ package ch.epfl.rigel.astronomy;
 
 import ch.epfl.rigel.coordinates.EquatorialCoordinates;
 import ch.epfl.test.TestRandomizer;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -15,6 +15,9 @@ import static org.junit.jupiter.api.Assertions.*;
  * Creation date: 01/04/2020
  */
 public class LStarCatalogueTest {
+
+    private static final String HYG_CATALOGUE_NAME = "/hygdata_v3.csv";
+    private static final String ASTERISMS_FILE = "/asterisms.txt";
 
     @Test
     void constructorFails() {
@@ -105,6 +108,21 @@ public class LStarCatalogueTest {
                 trueIndices.add((int) stars.get(star));
             }
             assertEquals(trueIndices, indices);
+        }
+    }
+
+    @Test
+    void asterismIndicesIsOrderedCorrectly() throws IOException {
+        StarCatalogue catalogue = new StarCatalogue.Builder()
+                .loadFrom(getClass().getResourceAsStream(HYG_CATALOGUE_NAME), HygDatabaseLoader.INSTANCE)
+                .loadFrom(getClass().getResourceAsStream(ASTERISMS_FILE), AsterismLoader.INSTANCE)
+                .build();
+        for (Asterism asterism : catalogue.asterisms()) {
+            final List<Integer> indices = catalogue.asterismIndices(asterism);
+            assertNotEquals(List.of(), indices);
+            for (int i = 0; i < indices.size(); i++) {
+                assertEquals(asterism.stars().get(i), catalogue.stars().get(indices.get(i)));
+            }
         }
     }
 
