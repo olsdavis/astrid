@@ -2,7 +2,6 @@ package ch.epfl.rigel.gui;
 
 import ch.epfl.test.TestRandomizer;
 import javafx.scene.paint.Color;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;

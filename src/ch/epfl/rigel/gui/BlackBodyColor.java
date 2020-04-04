@@ -33,6 +33,10 @@ public class BlackBodyColor {
      */
     private static final Map<Integer, Color> COLOR_MAP = new HashMap<>();
 
+    static {
+        loadFile();
+    }
+
     /**
      * @param temperature the temperature, in Kelvins, between 1000K and 40_000K
      * @return the color associated to the provided {@code temperature} if there is such
@@ -40,9 +44,6 @@ public class BlackBodyColor {
      */
     public static Color fromTemperature(int temperature) {
         Preconditions.checkArgument(temperature >= 1000 && temperature <= 40_000);
-        if (COLOR_MAP.isEmpty()) {
-            loadFile();
-        }
 
         if (COLOR_MAP.containsKey(temperature)) {
             return COLOR_MAP.get(temperature);
