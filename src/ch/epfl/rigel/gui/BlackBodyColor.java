@@ -62,8 +62,7 @@ public class BlackBodyColor {
                 if (line.charAt(0) == '#' || !DEG_10.equals(line.substring(10, 15))) {
                     continue;
                 }
-                // remove trailing white spaces
-                final int temperature = Integer.parseInt(line.substring(1, 6).trim());
+                final int temperature = Integer.parseInt(line.substring(1, 6).trim()); // remove trailing white spaces
                 final String hex = line.substring(80, 87);
                 COLOR_MAP.put(temperature, Color.web(hex));
             }
