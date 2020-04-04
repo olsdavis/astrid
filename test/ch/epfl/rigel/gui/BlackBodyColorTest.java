@@ -35,8 +35,10 @@ public class BlackBodyColorTest {
             final Color nextColor = Color.web(nextLine.substring(80, 87));
 
             assertEquals(color, BlackBodyColor.fromTemperature(temperature));
-            assertEquals(color, BlackBodyColor.fromTemperature(temperature + 49));
-            assertEquals(nextColor, BlackBodyColor.fromTemperature(temperature + 51));
+            for (int j = 0; j < 49; j++) {
+                assertEquals(color, BlackBodyColor.fromTemperature(temperature + j));
+                assertEquals(nextColor, BlackBodyColor.fromTemperature(temperature + 50 + j));
+            }
         }
     }
 
