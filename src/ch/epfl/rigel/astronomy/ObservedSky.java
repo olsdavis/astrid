@@ -100,16 +100,29 @@ public class ObservedSky {
     private class SkyChunk {
         private final List<CelestialPair> objects = new ArrayList<>();
 
+        /**
+         * Represents a result of {@link #closestTo(CartesianCoordinates, double)}.
+         */
         class SearchResult {
             double distance;
             CelestialObject object;
 
+            /**
+             * @param distance the distance of the closest object
+             * @param object   the object itself
+             */
             SearchResult(double distance, CelestialObject object) {
                 this.distance = distance;
                 this.object = object;
             }
         }
 
+        /**
+         * @param point the original point of the {@link #objectClosestTo(CartesianCoordinates, double)} search
+         * @param maxDistance the maximal distance to the point {@code point}
+         * @return the closest object in this chunk to the provided {@code point}
+         * if it is closer to the point {@code point} than {@code maxDistance}.
+         */
         Optional<SearchResult> closestTo(CartesianCoordinates point, double maxDistance) {
             CelestialPair closest = null;
             double best = Double.POSITIVE_INFINITY;
