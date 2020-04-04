@@ -3,7 +3,7 @@ package ch.epfl.rigel.coordinates;
 import ch.epfl.rigel.math.Angle;
 
 /**
- * Mother class for all spherical coordinates systems used.
+ * Abstract model for all variants of spherical systems of coordinates.
  *
  * @author Alexandre Doukhan (SCIPER: 316706)
  * @author Oscar Davis (SCIPER: 311193)

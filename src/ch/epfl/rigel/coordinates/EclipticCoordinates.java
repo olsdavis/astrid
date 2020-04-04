@@ -8,7 +8,7 @@ import java.util.Locale;
 import static ch.epfl.rigel.Preconditions.checkInInterval;
 
 /**
- * Implementation of SphericalCoordinates for the ecliptic coordinates system.
+ * Implementation of SphericalCoordinates for the ecliptic system of coordinates.
  *
  * @author Alexandre Doukhan (SCIPER: 316706)
  * @author Oscar Davis (SCIPER: 311193)
@@ -66,9 +66,6 @@ public final class EclipticCoordinates extends SphericalCoordinates {
         return super.latDeg();
     }
 
-    /**
-     * @throws UnsupportedOperationException this operation is forbidden.
-     */
     @Override
     public String toString() {
         return String.format(Locale.ROOT, "(\u03BB=%.4f°, \u03B2=%.4f°)", lonDeg(), latDeg());

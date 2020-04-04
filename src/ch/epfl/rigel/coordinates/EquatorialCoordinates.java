@@ -9,7 +9,7 @@ import java.util.Locale;
 import static ch.epfl.rigel.Preconditions.checkInInterval;
 
 /**
- * Implementation of SphericalCoordinates for the equatorial coordinates system.
+ * Implementation of SphericalCoordinates for the equatorial system of coordinates.
  *
  * @author Alexandre Doukhan (SCIPER: 316706)
  * @author Oscar Davis (SCIPER: 311193)

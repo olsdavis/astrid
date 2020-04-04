@@ -9,7 +9,7 @@ import ch.epfl.rigel.math.RightOpenInterval;
 import java.util.Locale;
 
 /**
- * Implementation of SphericalCoordinates for the horizontal coordinates system.
+ * Implementation of SphericalCoordinates for the horizontal system of coordinates.
  *
  * @author Alexandre Doukhan (SCIPER: 316706)
  * @author Oscar Davis (SCIPER: 311193)
