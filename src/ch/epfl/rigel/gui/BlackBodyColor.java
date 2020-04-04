@@ -1,6 +1,8 @@
 package ch.epfl.rigel.gui;
 
 import ch.epfl.rigel.Preconditions;
+import ch.epfl.rigel.math.ClosedInterval;
+import ch.epfl.rigel.math.Interval;
 import javafx.scene.paint.Color;
 
 import java.io.BufferedReader;
@@ -20,6 +22,10 @@ import java.util.Map;
  */
 public class BlackBodyColor {
 
+    /**
+     * This interval represents the span of colors covered by {@link #fromTemperature(int)}.
+     */
+    private static final Interval TEMPERATURE_INTERVAL = ClosedInterval.of(1000, 40_000);
     /**
      * This constant allows us to skip lines of the file that are not in "2deg".
      *
@@ -43,7 +49,7 @@ public class BlackBodyColor {
      * a map for the provided color; otherwise, rounds to the closest 100 multiple.
      */
     public static Color fromTemperature(int temperature) {
-        Preconditions.checkArgument(temperature >= 1000 && temperature <= 40_000);
+        Preconditions.checkInInterval(TEMPERATURE_INTERVAL, temperature);
 
         if (COLOR_MAP.containsKey(temperature)) {
             return COLOR_MAP.get(temperature);

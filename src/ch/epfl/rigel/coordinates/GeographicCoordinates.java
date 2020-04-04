@@ -2,6 +2,7 @@ package ch.epfl.rigel.coordinates;
 
 import ch.epfl.rigel.math.Angle;
 import ch.epfl.rigel.math.ClosedInterval;
+import ch.epfl.rigel.math.Interval;
 import ch.epfl.rigel.math.RightOpenInterval;
 
 import java.util.Locale;
@@ -18,13 +19,22 @@ import static ch.epfl.rigel.Preconditions.checkInInterval;
 public final class GeographicCoordinates extends SphericalCoordinates {
 
     /**
+     * This interval represents the possible values for a longitude (in degrees).
+     */
+    private static final Interval LONGITUDE_INTERVAL = RightOpenInterval.symmetric(360);
+    /**
+     * This interval represents the possible values for a latitude (in degrees).
+     */
+    private static final Interval LATITUDE_INTERVAL = ClosedInterval.symmetric(180);
+
+    /**
      * @param lon Longitude in degrees. Must be in the interval {@code [-180, 180[}.
      * @param lat Latitude in degrees. Must be in the interval {@code [-90, 90]}.
      * @return a new instance of GeographicalCoordinates with given parameters.
      */
     public static GeographicCoordinates ofDeg(double lon, double lat) {
-        return new GeographicCoordinates(Angle.ofDeg(checkInInterval(RightOpenInterval.symmetric(360), lon)),
-                Angle.ofDeg(checkInInterval(ClosedInterval.symmetric(180), lat)));
+        return new GeographicCoordinates(Angle.ofDeg(checkInInterval(LONGITUDE_INTERVAL, lon)),
+                Angle.ofDeg(checkInInterval(LATITUDE_INTERVAL, lat)));
     }
 
     /**
@@ -32,7 +42,7 @@ public final class GeographicCoordinates extends SphericalCoordinates {
      * @return true if and only if the parameter is in {@code [-180, 180[}.
      */
     public static boolean isValidLonDeg(double lonDeg) {
-        return RightOpenInterval.symmetric(360).contains(lonDeg);
+        return LONGITUDE_INTERVAL.contains(lonDeg);
     }
 
     /**
@@ -40,7 +50,7 @@ public final class GeographicCoordinates extends SphericalCoordinates {
      * @return true if and only if the parameter is in {@code [-90, 90]}.
      */
     public static boolean isValidLatDeg(double latDeg) {
-        return ClosedInterval.symmetric(180).contains(latDeg);
+        return LATITUDE_INTERVAL.contains(latDeg);
     }
 
     /**

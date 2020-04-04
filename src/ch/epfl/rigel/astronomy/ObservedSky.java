@@ -185,7 +185,7 @@ public class ObservedSky {
                 .filter(p -> p != PlanetModel.EARTH) // filtering the Earth
                 .map(p -> p.at(d, eclipticToEq))
                 .collect(Collectors.toList());
-        planetPositions = new double[planets.size()];
+        planetPositions = new double[2 * planets.size()];
         for (int i = 0; i < planets.size(); i++) {
             final Planet current = planets.get(i);
             final CartesianCoordinates coordinates = projection.apply(eqToHorizontal.apply(current.equatorialPos()));
@@ -196,7 +196,7 @@ public class ObservedSky {
             putInChunk(current, coordinates);
         }
 
-        starPositions = new double[catalogue.stars().size()];
+        starPositions = new double[2 * catalogue.stars().size()];
         for (int i = 0; i < catalogue.stars().size(); i++) {
             final Star current = catalogue.stars().get(i);
             final CartesianCoordinates coordinates = projection.apply(eqToHorizontal.apply(current.equatorialPos()));
@@ -218,9 +218,9 @@ public class ObservedSky {
         ChunkPair pair = new ChunkPair(coordinates.x(), coordinates.y());
         SkyChunk chunk;
         if (chunks.containsKey(pair)) {
-            chunks.put(pair, chunk = new SkyChunk());
-        } else {
             chunk = chunks.get(pair);
+        } else {
+            chunks.put(pair, chunk = new SkyChunk());
         }
         chunk.objects.add(new CelestialPair(coordinates, object));
     }

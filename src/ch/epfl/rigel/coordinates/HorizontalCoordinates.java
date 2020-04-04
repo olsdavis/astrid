@@ -4,6 +4,7 @@ import static ch.epfl.rigel.Preconditions.*;
 
 import ch.epfl.rigel.math.Angle;
 import ch.epfl.rigel.math.ClosedInterval;
+import ch.epfl.rigel.math.Interval;
 import ch.epfl.rigel.math.RightOpenInterval;
 
 import java.util.Locale;
@@ -18,13 +19,22 @@ import java.util.Locale;
 public final class HorizontalCoordinates extends SphericalCoordinates {
 
     /**
+     * This interval represents the possible values for an azimut (in radians).
+     */
+    private static final Interval AZ_INTERVAL = RightOpenInterval.of(0, 2 * Math.PI);
+    /**
+     * This interval represents the possible values for an altitude (in radians).
+     */
+    private static final Interval ALT_INTERVAL = ClosedInterval.symmetric(Math.PI);
+
+    /**
      * @param az  azimut in radians. Must be in the interval [0, 2*PI[.
      * @param alt altitude in radians. Must be in the interval [-PI/2, PI/2].
      * @return a new instance of HorizontalCoordinates based on provided parameters.
      */
     public static HorizontalCoordinates of(double az, double alt) {
-        return new HorizontalCoordinates(checkInInterval(RightOpenInterval.of(0, 2 * Math.PI), az),
-                checkInInterval(ClosedInterval.symmetric(Math.PI), alt));
+        return new HorizontalCoordinates(checkInInterval(AZ_INTERVAL, az),
+                checkInInterval(ALT_INTERVAL, alt));
     }
 
     /**

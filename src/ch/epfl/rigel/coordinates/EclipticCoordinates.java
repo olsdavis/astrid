@@ -1,6 +1,7 @@
 package ch.epfl.rigel.coordinates;
 
 import ch.epfl.rigel.math.ClosedInterval;
+import ch.epfl.rigel.math.Interval;
 import ch.epfl.rigel.math.RightOpenInterval;
 
 import java.util.Locale;
@@ -17,13 +18,22 @@ import static ch.epfl.rigel.Preconditions.checkInInterval;
 public final class EclipticCoordinates extends SphericalCoordinates {
 
     /**
+     * This interval represents the possible values for a longitude (in radians).
+     */
+    private static final Interval LONGITUDE_INTERVAL = RightOpenInterval.of(0, 2 * Math.PI);
+    /**
+     * This interval represents the possible values for a latitude (in radians).
+     */
+    private static final Interval LATITUDE_INTERVAL = ClosedInterval.symmetric(Math.PI);
+
+    /**
      * @param lon Longitude in radians. Must be in the interval [0, 2*PI[.
      * @param lat Latitude in radians. Must be in the interval [-PI/2, PI/2].
-     * @return a new instance of GeographicalCoordinates with given parameters.
+     * @return a new instance of EclipticCoordinates from the given parameters.
      */
     public static EclipticCoordinates of(double lon, double lat) {
-        return new EclipticCoordinates(checkInInterval(RightOpenInterval.of(0, 2 * Math.PI), lon),
-                checkInInterval(ClosedInterval.symmetric(Math.PI), lat));
+        return new EclipticCoordinates(checkInInterval(LONGITUDE_INTERVAL, lon),
+                checkInInterval(LATITUDE_INTERVAL, lat));
     }
 
     /**

@@ -9,17 +9,21 @@ import static ch.epfl.rigel.Preconditions.checkInInterval;
  * @author Oscar Davis (SCIPER: 311193)
  */
 public final class Angle {
+
+    /**
+     * This interval represents the possible values for minutes and seconds.
+     */
+    private static final Interval MIN_SEC_INTERVAL = RightOpenInterval.of(0, 60);
     /**
      * The double of {@code PI}.
      */
-    public static final double TAU = 2 * Math.PI;
+    public static final double TAU = 2d * Math.PI;
     /**
      * The number of radians per hour.
      */
     public static final double RAD_PER_HR = TAU / 24d;
 
     private Angle() {
-        // private constructor, forbids external instantiations
     }
 
     /**
@@ -53,11 +57,10 @@ public final class Angle {
      * @return the converted angle in radians.
      */
     public static double ofDMS(int deg, int min, double sec) {
-        RightOpenInterval interval = RightOpenInterval.of(0, 60);
-        checkInInterval(interval, min);
-        checkInInterval(interval, sec);
-        final double res = deg + (min / 60d) + (sec / 3600d);
-        return ofDeg(res);
+        return ofDeg(
+                deg + (checkInInterval(MIN_SEC_INTERVAL, min) / 60d) +
+                        (checkInInterval(MIN_SEC_INTERVAL, sec) / 3600d)
+        );
     }
 
     /**

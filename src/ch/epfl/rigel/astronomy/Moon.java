@@ -2,6 +2,7 @@ package ch.epfl.rigel.astronomy;
 
 import ch.epfl.rigel.coordinates.EquatorialCoordinates;
 import ch.epfl.rigel.math.ClosedInterval;
+import ch.epfl.rigel.math.Interval;
 
 import java.util.Locale;
 
@@ -17,6 +18,11 @@ import static ch.epfl.rigel.Preconditions.checkInInterval;
  */
 public final class Moon extends CelestialObject {
 
+    /**
+     * This interval represents the possible values for Moon's phase.
+     */
+    private static final Interval PHASE_INTERVAL = ClosedInterval.of(0, 1);
+
     private final float phase;
 
     /**
@@ -27,7 +33,9 @@ public final class Moon extends CelestialObject {
      */
     public Moon(EquatorialCoordinates equatorialPos, float angularSize, float magnitude, float phase) {
         super("Lune", equatorialPos, angularSize, magnitude);
-        checkInInterval(ClosedInterval.of(0, 1), phase);
+        // here, we do not write: this.phase = checkInInterval(...)
+        // to avoid casting the value of phase twice (first to a double and then back to a float)
+        checkInInterval(PHASE_INTERVAL, phase);
         this.phase = phase;
     }
 
