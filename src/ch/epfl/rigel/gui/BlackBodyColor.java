@@ -56,7 +56,7 @@ public class BlackBodyColor {
      * Loads the file containing the color mapping. Can throw an {@link UncheckedIOException}.
      */
     private static void loadFile() {
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(BlackBodyColor.class.getResourceAsStream("/bbr_color.txt")))) {
+        try (final BufferedReader reader = new BufferedReader(new InputStreamReader(BlackBodyColor.class.getResourceAsStream("/bbr_color.txt")))) {
             String line;
             while ((line = reader.readLine()) != null && !line.isBlank()) {
                 // if it is a comment or not in 10deg mode
