@@ -27,7 +27,7 @@ public class BlackBodyColor {
      */
     private static final String DEG_10 = "10deg";
     /**
-     * This is the mapping of temperatures to their colours.
+     * This is the mapping of temperatures to their colors.
      *
      * @see #fromTemperature(int)
      */
@@ -59,11 +59,11 @@ public class BlackBodyColor {
             String line;
             while ((line = reader.readLine()) != null && !line.isBlank()) {
                 // if it is a comment or not in 10deg mode
-                if (line.charAt(0) != '#' || !DEG_10.equals(line.substring(10, 15))) {
+                if (line.charAt(0) == '#' || !DEG_10.equals(line.substring(10, 15))) {
                     continue;
                 }
-                // no need to trim: it is already done internally
-                final int temperature = Integer.parseInt(line.substring(1, 6));
+                // remove trailing white spaces
+                final int temperature = Integer.parseInt(line.substring(1, 6).trim());
                 final String hex = line.substring(80, 87);
                 COLOR_MAP.put(temperature, Color.web(hex));
             }
