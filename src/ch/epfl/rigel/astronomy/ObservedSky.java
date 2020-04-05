@@ -354,19 +354,11 @@ public class ObservedSky {
         for (int i = -limit; i <= limit; i++) {
             for (int j = -limit; j <= limit; j++) {
                 final CartesianCoordinates trans = where.translate(i * CHUNK_SIZE, j * CHUNK_SIZE);
-                final double dist = trans.distSquared(where);
-                // if it simply is in the radius
-                if (dist <= maxDistance) {
-                    pairs.add(new ChunkPair(trans));
-                } else {
-                    final ChunkPair closest = new ChunkPair(
-                            closestChunkSub(trans.x()),
-                            closestChunkSub(trans.y())
-                    );
-                    if (closest.toPoint().distSquared(where) <= maxDistance * maxDistance) {
-                        pairs.add(closest);
-                    }
-                }
+                // IMPROVEMENT: here, we should make the criteria stronger
+                // so we can reduce the number of linear searches
+                // need to work on the distance between the point and the farthest
+                // point accessible
+                pairs.add(new ChunkPair(trans));
             }
         }
 

@@ -91,9 +91,24 @@ public class ObservedSkyTest {
             final double dist = random.nextDouble(0, 10d);
             final CartesianCoordinates coordinates = CartesianCoordinates.of(random.nextDouble(-1, 1),
                     random.nextDouble(-1, 1));
-            assertEquals(linearSearch(all, sky, coordinates, dist),
-                    sky.objectClosestTo(coordinates, dist).orElse(null));
+            final CelestialObject obj = linearSearch(all, sky, coordinates, dist);
+            final CelestialObject found = sky.objectClosestTo(coordinates, dist).orElse(null);
+            assertEquals(obj, found);
         }
+    }
+
+    @Test
+    void notWorking() {
+        final CartesianCoordinates coordinates = CartesianCoordinates.of(-0.5027, 0.1949);
+        final double dist = 0.1218880416988799;
+        final ObservedSky sky = new ObservedSky(ZonedDateTime.now(), GeographicCoordinates.ofDeg(0, 0),
+                new StereographicProjection(HorizontalCoordinates.of(0, 0)),
+                catalogue
+        );
+        final List<Pair> all = all(sky);
+        final CelestialObject obj = linearSearch(all, sky, coordinates, dist);
+        final CelestialObject found = sky.objectClosestTo(coordinates, dist).orElse(null);
+        assertEquals(obj, found);
     }
 
     // DISABLED: Benchmarking
