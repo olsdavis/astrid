@@ -185,9 +185,11 @@ public class ObservedSky {
 
         sun = SunModel.SUN.at(d, eclipticToEq);
         sunProjection = projection.apply(eqToHorizontal.apply(sun.equatorialPos()));
+        putInChunk(sun, sunProjection);
 
         moon = MoonModel.MOON.at(d, eclipticToEq);
         moonProjection = projection.apply(eqToHorizontal.apply(moon.equatorialPos()));
+        putInChunk(moon, moonProjection);
 
         planets = PlanetModel.ALL.stream()
                 .filter(p -> p != PlanetModel.EARTH) // filtering the Earth
