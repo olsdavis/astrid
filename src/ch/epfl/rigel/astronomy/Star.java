@@ -15,7 +15,10 @@ import static ch.epfl.rigel.Preconditions.checkInInterval;
  * Creation date: 10/03/2020
  */
 public final class Star extends CelestialObject {
-    private static final Interval COLOR_INTERVAL = ClosedInterval.of(-0.5, 5.5);
+    /**
+     * This interval represents the possible values that color indices take.
+     */
+    private static final Interval COLOR_INTERVAL = ClosedInterval.of(-0.5d, 5.5d);
 
     private final int hipparcosId;
     private final float colorIndex;
@@ -26,6 +29,8 @@ public final class Star extends CelestialObject {
      * @param equatorialPos the position represented by EquatorialCoordinates
      * @param magnitude     the magnitude
      * @param colorIndex    the color index
+     * @throws IllegalArgumentException if {@code hipparcosId} is negative
+     * @throws IllegalArgumentException if {@code colorIndex} is not between -0.5 and 5.5, inclusive.
      */
     public Star(int hipparcosId, String name, EquatorialCoordinates equatorialPos, float magnitude, float colorIndex) {
         super(name, equatorialPos, 0, magnitude);

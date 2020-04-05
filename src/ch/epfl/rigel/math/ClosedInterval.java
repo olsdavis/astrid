@@ -18,6 +18,8 @@ public final class ClosedInterval extends Interval {
      * @param low  lower bound
      * @param high upper bound
      * @return a closed interval of the given bounds.
+     * @throws IllegalArgumentException if the lower bound ({@code low}) is higher than or equal
+     *                                  to the upper bound ({@code high})
      */
     public static ClosedInterval of(double low, double high) {
         checkArgument(low < high);
@@ -28,6 +30,7 @@ public final class ClosedInterval extends Interval {
     /**
      * @param size the size of the interval
      * @return a closed interval of size {@code size}, centered on 0.
+     * @throws IllegalArgumentException if {@code size} is not positive
      */
     public static ClosedInterval symmetric(double size) {
         checkArgument(size > 0);

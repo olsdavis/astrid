@@ -30,6 +30,8 @@ public final class EclipticCoordinates extends SphericalCoordinates {
      * @param lon Longitude in radians. Must be in the interval [0, 2*PI[.
      * @param lat Latitude in radians. Must be in the interval [-PI/2, PI/2].
      * @return a new instance of EclipticCoordinates from the given parameters.
+     * @throws IllegalArgumentException if {@code lon} or {@code lat} is not in
+     *                                  the right interval
      */
     public static EclipticCoordinates of(double lon, double lat) {
         return new EclipticCoordinates(checkInInterval(LONGITUDE_INTERVAL, lon),

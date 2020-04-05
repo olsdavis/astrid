@@ -47,6 +47,7 @@ public class BlackBodyColor {
      * @param temperature the temperature, in Kelvins, between 1000K and 40_000K
      * @return the color associated to the provided {@code temperature} if there is such
      * a map for the provided color; otherwise, rounds to the closest 100 multiple.
+     * @throws IllegalArgumentException if the temperature is not in the right interval
      */
     public static Color fromTemperature(int temperature) {
         Preconditions.checkInInterval(TEMPERATURE_INTERVAL, temperature);
@@ -59,7 +60,9 @@ public class BlackBodyColor {
     }
 
     /**
-     * Loads the file containing the color mapping. Can throw an {@link UncheckedIOException}.
+     * Loads the file containing the color mapping.
+     *
+     * @throws UncheckedIOException if the file could not have been read
      */
     private static void loadFile() {
         try (final BufferedReader reader = new BufferedReader(new InputStreamReader(BlackBodyColor.class.getResourceAsStream("/bbr_color.txt")))) {

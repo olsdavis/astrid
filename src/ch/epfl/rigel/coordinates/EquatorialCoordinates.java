@@ -31,6 +31,8 @@ public final class EquatorialCoordinates extends SphericalCoordinates {
      * @param ra  Right ascension in radians. Must be in the interval [0, 2*PI[.
      * @param dec Declination in radians. Must be in the interval [-PI/2, PI/2].
      * @return a new instance of EquatorialCoordinates with given parameters.
+     * @throws IllegalArgumentException if {@code ra} or {@code dec} is not in the
+     *                                  right interval
      */
     public static EquatorialCoordinates of(double ra, double dec) {
         return new EquatorialCoordinates(checkInInterval(RA_INTERVAL, ra),

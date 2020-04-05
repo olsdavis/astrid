@@ -17,6 +17,7 @@ public final class Asterism {
 
     /**
      * @param stars the stars constituting the Asterism
+     * @throws IllegalArgumentException if {@code stars} is empty or null
      */
     public Asterism(List<Star> stars) {
         checkArgument(stars != null && !stars.isEmpty());

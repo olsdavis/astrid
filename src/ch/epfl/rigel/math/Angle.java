@@ -52,9 +52,13 @@ public final class Angle {
      * Conversion method from degrees, arcmins, arcsecs to radians (normalized).
      *
      * @param deg the degree component of the angle to convert
-     * @param min the arcmin component of the angle to convert
-     * @param sec the arcsec component of the angle to convert
+     * @param min the arcmin component of the angle to convert. Must be between
+     *            0 (inclusive) and 60 (exclusive)
+     * @param sec the arcsec component of the angle to convert. Must be between
+     *            0 (inclusive) and 60 (exclusive)
      * @return the converted angle in radians.
+     * @throws IllegalArgumentException if {@code min} of {@code sec} is not in the right
+     *                                  interval
      */
     public static double ofDMS(int deg, int min, double sec) {
         return ofDeg(

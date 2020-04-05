@@ -30,6 +30,7 @@ public final class Moon extends CelestialObject {
      * @param angularSize   the angular size of the Moon
      * @param magnitude     the magnitude of the Moon
      * @param phase         the phase of the Moon
+     * @throws IllegalArgumentException if {@code phase} is not in between 0 and 1, inclusive
      */
     public Moon(EquatorialCoordinates equatorialPos, float angularSize, float magnitude, float phase) {
         super("Lune", equatorialPos, angularSize, magnitude);

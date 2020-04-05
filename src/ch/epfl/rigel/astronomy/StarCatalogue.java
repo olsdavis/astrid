@@ -22,6 +22,9 @@ public final class StarCatalogue {
     /**
      * @param stars     the stars of the star catalogue
      * @param asterisms the asterisms of the star catalogue
+     *
+     * @throws IllegalArgumentException if there is an asterism, from {@code asterisms}, that
+     * has a star that is not in {@code star}
      */
     public StarCatalogue(List<Star> stars, List<Asterism> asterisms) {
         for (Asterism ast : asterisms) {
@@ -60,6 +63,8 @@ public final class StarCatalogue {
      * @param asterism of which we want to find the indices of the start composing it.
      * @return a {@code List} of integers corresponding to the positions in the {@code starCatalogue}
      * of the stars of the {@code asterism}.
+     *
+     * @throws IllegalArgumentException if there is no such asterism in this catalogue
      */
     public List<Integer> asterismIndices(Asterism asterism) {
         Preconditions.checkArgument(asterismMap.containsKey(asterism));

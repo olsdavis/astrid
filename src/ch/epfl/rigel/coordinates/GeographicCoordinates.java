@@ -31,6 +31,8 @@ public final class GeographicCoordinates extends SphericalCoordinates {
      * @param lon Longitude in degrees. Must be in the interval {@code [-180, 180[}.
      * @param lat Latitude in degrees. Must be in the interval {@code [-90, 90]}.
      * @return a new instance of GeographicalCoordinates with given parameters.
+     * @throws IllegalArgumentException if {@code lon} or {@code lat} is not in the right
+     *                                  interval
      */
     public static GeographicCoordinates ofDeg(double lon, double lat) {
         return new GeographicCoordinates(Angle.ofDeg(checkInInterval(LONGITUDE_INTERVAL, lon)),

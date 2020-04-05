@@ -31,6 +31,8 @@ public final class HorizontalCoordinates extends SphericalCoordinates {
      * @param az  azimut in radians. Must be in the interval [0, 2*PI[.
      * @param alt altitude in radians. Must be in the interval [-PI/2, PI/2].
      * @return a new instance of HorizontalCoordinates based on provided parameters.
+     * @throws IllegalArgumentException if {@code az} or {@code alt} is not
+     *                                  in the right interval
      */
     public static HorizontalCoordinates of(double az, double alt) {
         return new HorizontalCoordinates(checkInInterval(AZ_INTERVAL, az),

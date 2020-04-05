@@ -24,10 +24,12 @@ public class Polynomial {
      *                 Will be placed at the start of the coefficients list.
      * @param c        The rest of the coefficients. Will be placed after coeffDom.
      * @return a new Polynomial instance with given coefficients.
+     *
+     * @throws IllegalArgumentException if {@code coeffDom} is zero
      */
     public static Polynomial of(double coeffDom, double... c) {
         checkArgument(coeffDom != 0);
-        double[] coefficients = new double[c.length + 1];
+        final double[] coefficients = new double[c.length + 1];
         coefficients[0] = coeffDom;
         System.arraycopy(c, 0, coefficients, 1, c.length);
         return new Polynomial(coefficients);
