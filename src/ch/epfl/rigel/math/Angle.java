@@ -11,13 +11,17 @@ import static ch.epfl.rigel.Preconditions.checkInInterval;
 public final class Angle {
 
     /**
+     * The double of {@code PI}.
+     */
+    public static final double TAU = 2d * Math.PI;
+    /**
      * This interval represents the possible values for minutes and seconds.
      */
     private static final Interval MIN_SEC_INTERVAL = RightOpenInterval.of(0, 60);
     /**
-     * The double of {@code PI}.
+     * This interval represents the possible values of a normalized angle.
      */
-    public static final double TAU = 2d * Math.PI;
+    private static final RightOpenInterval NORMALIZED = RightOpenInterval.of(0, TAU);
     /**
      * The number of radians per hour.
      */
@@ -33,7 +37,7 @@ public final class Angle {
      * @return an angle in radians in the interval {@code [0;TAU[}.
      */
     public static double normalizePositive(double rad) {
-        return RightOpenInterval.of(0, TAU).reduce(rad);
+        return NORMALIZED.reduce(rad);
     }
 
     /**

@@ -31,20 +31,6 @@ public class ObservedSky {
     }
 
     /**
-     * @param a a coordinate
-     * @return the closest {@link SkyChunk} subdivision to the provided
-     * double {@code a}. If the number is negative, it returns its {@link Math#ceil(double)};
-     * otherwise, it returns its {@link Math#floor(double)}.
-     */
-    private static int closestChunkSub(double a) {
-        if (a < 0d) {
-            return (int) Math.ceil(a / CHUNK_SIZE);
-        } else {
-            return (int) Math.floor(a / CHUNK_SIZE);
-        }
-    }
-
-    /**
      * Represents a pair of {@link SkyChunk} coordinates. Its coordinates
      * on the plan correspond are {@code (x * CHUNK_SIZE, y * CHUNK_SIZE}).
      * It covers an area of {@code CHUNK_SIZE * CHUNK_SIZE}.
@@ -83,13 +69,6 @@ public class ObservedSky {
          */
         ChunkPair(CartesianCoordinates coordinates) {
             this(coordinates.x(), coordinates.y());
-        }
-
-        /**
-         * @return the point at which begins the current chunk.
-         */
-        CartesianCoordinates toPoint() {
-            return CartesianCoordinates.of(x * CHUNK_SIZE, y * CHUNK_SIZE);
         }
 
         @Override
