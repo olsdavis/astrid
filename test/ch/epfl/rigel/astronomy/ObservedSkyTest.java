@@ -57,6 +57,11 @@ public class ObservedSkyTest {
                 .build();
     }
 
+    /**
+     * @param sky the {@link ObservedSky} instance
+     * @return a list containing pairs of all celestial objects from the passed {@code sky} instance
+     * with their {@link CartesianCoordinates} on the plan.
+     */
     private List<Pair> all(ObservedSky sky) {
         final List<Pair> all = new ArrayList<>(sky.planets().size() + sky.stars().size() + 2);
         final double[] planets = sky.planetPositions();
@@ -83,10 +88,11 @@ public class ObservedSkyTest {
         );
         final List<Pair> all = all(sky);
         for (int i = 0; i < TestRandomizer.RANDOM_ITERATIONS; i++) {
+            final double dist = random.nextDouble(0, 10d);
             final CartesianCoordinates coordinates = CartesianCoordinates.of(random.nextDouble(-1, 1),
                     random.nextDouble(-1, 1));
-            assertEquals(linearSearch(all, sky, coordinates, 0.5d),
-                    sky.objectClosestTo(coordinates, 0.5d).orElse(null));
+            assertEquals(linearSearch(all, sky, coordinates, dist),
+                    sky.objectClosestTo(coordinates, dist).orElse(null));
         }
     }
 

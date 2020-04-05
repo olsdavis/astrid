@@ -19,7 +19,7 @@ public class ObservedSky {
     /**
      * Represents the size of a chunk.
      */
-    private static final double CHUNK_SIZE = 0.5d;
+    private static final double CHUNK_SIZE = 0.25d;
 
     /**
      * @param a a coordinate
@@ -52,12 +52,23 @@ public class ObservedSky {
         }
 
         /**
+         * Creates the chunk pair of the given subdivision.
+         *
          * @param x the x subdivision of the plan
          * @param y the y subdivision of the plan
          */
         ChunkPair(int x, int y) {
             this.x = x;
             this.y = y;
+        }
+
+        /**
+         * Creates the chunk pair associated to the provided coordinates {@code coordinates}.
+         *
+         * @param coordinates the coordinates of a point on the plan
+         */
+        ChunkPair(CartesianCoordinates coordinates) {
+            this(coordinates.x(), coordinates.y());
         }
 
         @Override
@@ -126,7 +137,7 @@ public class ObservedSky {
         }
 
         /**
-         * @param point the original point of the {@link #objectClosestTo(CartesianCoordinates, double)} search
+         * @param point       the original point of the {@link #objectClosestTo(CartesianCoordinates, double)} search
          * @param maxDistance the maximal distance to the point {@code point}
          * @return the closest object in this chunk to the provided {@code point}
          * if it is closer to the point {@code point} than {@code maxDistance}.
@@ -225,8 +236,8 @@ public class ObservedSky {
      * @param coordinates its cartesian coordinates on the plan
      */
     private void putInChunk(CelestialObject object, CartesianCoordinates coordinates) {
-        ChunkPair pair = new ChunkPair(coordinates.x(), coordinates.y());
-        SkyChunk chunk;
+        final ChunkPair pair = new ChunkPair(coordinates);
+        final SkyChunk chunk;
         if (chunks.containsKey(pair)) {
             chunk = chunks.get(pair);
         } else {
@@ -299,31 +310,46 @@ public class ObservedSky {
      * @param where       a position on the plan
      * @param maxDistance the maximal distance allowed, from the point {@code where}
      *                    and the celestial objects.
-     * @return an {@code Optional} containing the closest object to the provided point {@code where}
-     * closer to it than {@code maxDistance}, or an empty {@code Optional} if there is no such object.
+     * @return an {@link Optional} containing the closest object to the provided point {@code where}
+     * closer to it than {@code maxDistance}, or {@link Optional#empty()} if there is no such object.
      */
     public Optional<CelestialObject> objectClosestTo(CartesianCoordinates where, double maxDistance) {
-        // The initial capacity is set to 9, because we assume
-        // that the worst case scenario, is that all 8 surrounding
-        // chunks are being looked up + the current chunk.
-        final List<ChunkPair> pairs = new ArrayList<>(9);
+        // The algorithm behind this method is pretty simple:
+        // we split the sky into chunks (called SkyChunks), and,
+        // to lookup for the closest object to the provided point,
+        // we simply look in all candidate chunks, i.e. the ones
+        // that are in range of maxDistance.
+
+        // Overall, this method is much more efficient than a simple linear search,
+        // and it is way faster for small distances, since less chunks are loaded.
+
+        // This value represents the radius in which we are going
+        // to look for chunks. We let it be at least 1.
+        final int limit = (int) Math.ceil(maxDistance / CHUNK_SIZE);
+        // (limit + 2)^2 represents the area covered by all the squares in the radius
+        final List<ChunkPair> pairs = new ArrayList<>((limit + 2) * (limit + 2));
         // add all the chunks that are in range
-        for (int i = -1; i < 2; i++) {
-            for (int j = -1; j < 2; j++) {
+        for (int i = -limit; i <= limit; i++) {
+            for (int j = -limit; j <= limit; j++) {
                 final CartesianCoordinates trans = where.translate(i * CHUNK_SIZE, j * CHUNK_SIZE);
                 if (trans.distSquared(where) <= maxDistance * maxDistance) {
-                    pairs.add(new ChunkPair(trans.x(), trans.y()));
+                    pairs.add(new ChunkPair(trans));
                 }
             }
         }
+        // We need to check for the current chunk, too
+        pairs.add(new ChunkPair(where));
+
+        // apply a linear search over the best results
         CelestialObject closest = null;
         double best = Double.POSITIVE_INFINITY;
         for (ChunkPair pair : pairs) {
-            SkyChunk chunk = chunks.get(pair);
+            final SkyChunk chunk = chunks.get(pair);
             if (chunk == null) { // no such chunk => no objects at this location, anyway
                 continue;
             }
-            Optional<SkyChunk.SearchResult> result = chunk.closestTo(where, maxDistance);
+            final Optional<SkyChunk.SearchResult> result = chunk.closestTo(where, maxDistance);
+            // no need to check for the < maxDistance criteria, since the chunks already took care of it
             if (result.isPresent() && best > result.get().distance) {
                 closest = result.get().object;
                 best = result.get().distance;

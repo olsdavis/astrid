@@ -11,7 +11,7 @@ public class Bench {
         runnable.run();
         final long diff = System.currentTimeMillis() - start;
         System.out.println("Time: " + diff + "ms, ns/op: "
-                + ((float) diff / iterations) * 1_000_000f);
+                + ((double) diff / iterations) * 1_000_000d);
     }
 
 }
