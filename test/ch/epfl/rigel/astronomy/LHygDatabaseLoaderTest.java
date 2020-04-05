@@ -162,6 +162,13 @@ public class LHygDatabaseLoaderTest {
                             && s.colorTemperature() == calculateTemperature(toFloat(data[16])))
                     .findAny().orElse(null);
             assertNotNull(star);
+            assertEquals(1, catalogue.stars().stream()
+                    .filter(s -> s.hipparcosId() == toInt(data[1])
+                            && (float) s.magnitude() == toFloat(data[13])
+                            && s.equatorialPos().ra() == toDouble(data[23])
+                            && s.equatorialPos().dec() == toDouble(data[24])
+                            && s.name().equals(buildName(data[6], data[27], data[29]))
+                            && s.colorTemperature() == calculateTemperature(toFloat(data[16]))).count());
         }
     }
 

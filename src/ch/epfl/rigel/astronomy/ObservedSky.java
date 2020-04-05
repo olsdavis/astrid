@@ -72,6 +72,14 @@ public class ObservedSky {
         public int hashCode() {
             return Objects.hash(x, y);
         }
+
+        @Override
+        public String toString() {
+            return "ChunkPair{" +
+                    "x=" + x +
+                    ", y=" + y +
+                    '}';
+        }
     }
 
     /**
@@ -128,7 +136,7 @@ public class ObservedSky {
             double best = Double.POSITIVE_INFINITY;
             for (CelestialPair object : objects) {
                 final double d = point.distSquared(object.coordinates);
-                if (best > d || (closest == null && d < maxDistance)) {
+                if (best > d && d < maxDistance) {
                     closest = object;
                     best = d;
                 }
@@ -293,19 +301,19 @@ public class ObservedSky {
      * closer to it than {@code maxDistance}, or an empty {@code Optional} if there is no such object.
      */
     public Optional<CelestialObject> objectClosestTo(CartesianCoordinates where, double maxDistance) {
-        // The initial capacity is set to 8, because we assume
+        // The initial capacity is set to 9, because we assume
         // that the worst case scenario, is that all 8 surrounding
-        // chunks are being looked up.
-        final List<ChunkPair> pairs = new ArrayList<>(8);
-        final ChunkPair currentPair = new ChunkPair(where.x(), where.y());
-        pairs.add(currentPair); // first add the current chunk
+        // chunks are being looked up + the current chunk.
+        final List<ChunkPair> pairs = new ArrayList<>(9);
         // add all the chunks that are in range
-        for (int i = 0; currentPair.x * CHUNK_SIZE + i * CHUNK_SIZE < currentPair.x + maxDistance; i++) {
-            for (int j = 0; currentPair.y * CHUNK_SIZE + j * CHUNK_SIZE < currentPair.y + maxDistance; j++) {
-                pairs.add(new ChunkPair(currentPair.x + i, currentPair.y + j));
+        for (int i = -1; i < 2; i++) {
+            for (int j = -1; j < 2; j++) {
+                final CartesianCoordinates trans = where.translate(i * CHUNK_SIZE, j * CHUNK_SIZE);
+                if (trans.distSquared(where) <= maxDistance * maxDistance) {
+                    pairs.add(new ChunkPair(trans.x(), trans.y()));
+                }
             }
         }
-
         CelestialObject closest = null;
         double best = Double.POSITIVE_INFINITY;
         for (ChunkPair pair : pairs) {
@@ -314,7 +322,7 @@ public class ObservedSky {
                 continue;
             }
             Optional<SkyChunk.SearchResult> result = chunk.closestTo(where, maxDistance);
-            if (result.isPresent() && (best > result.get().distance || closest == null)) {
+            if (result.isPresent() && best > result.get().distance) {
                 closest = result.get().object;
                 best = result.get().distance;
             }

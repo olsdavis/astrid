@@ -63,6 +63,15 @@ public final class CartesianCoordinates {
         return Math.sqrt(distSquared(other));
     }
 
+    /**
+     * @param dx the x translation
+     * @param dy the y translation
+     * @return CartesianCoordinates of this point translated by {@code x} and {@code y}.
+     */
+    public CartesianCoordinates translate(double dx, double dy) {
+        return of(x + dx, y + dy);
+    }
+
     @Override
     public String toString() {
         return String.format(Locale.ROOT, "(x=%.4f, y=%.4f)", x, y);
