@@ -19,7 +19,7 @@ public class ObservedSky {
     /**
      * Represents the size of a chunk.
      */
-    private static final double CHUNK_SIZE = 0.25d;
+    private static final double CHUNK_SIZE = 0.5d;
 
     /**
      * @param a a coordinate
@@ -28,6 +28,20 @@ public class ObservedSky {
      */
     private static int pairOf(double a) {
         return (int) Math.floor(a / CHUNK_SIZE);
+    }
+
+    /**
+     * @param a a coordinate
+     * @return the closest {@link SkyChunk} subdivision to the provided
+     * double {@code a}. If the number is negative, it returns its {@link Math#ceil(double)};
+     * otherwise, it returns its {@link Math#floor(double)}.
+     */
+    private static int closestChunkSub(double a) {
+        if (a < 0d) {
+            return (int) Math.ceil(a / CHUNK_SIZE);
+        } else {
+            return (int) Math.floor(a / CHUNK_SIZE);
+        }
     }
 
     /**
@@ -69,6 +83,13 @@ public class ObservedSky {
          */
         ChunkPair(CartesianCoordinates coordinates) {
             this(coordinates.x(), coordinates.y());
+        }
+
+        /**
+         * @return the point at which begins the current chunk.
+         */
+        CartesianCoordinates toPoint() {
+            return CartesianCoordinates.of(x * CHUNK_SIZE, y * CHUNK_SIZE);
         }
 
         @Override
@@ -147,7 +168,7 @@ public class ObservedSky {
             double best = Double.POSITIVE_INFINITY;
             for (CelestialPair object : objects) {
                 final double d = point.distSquared(object.coordinates);
-                if (best > d && d < maxDistance) {
+                if (best > d && d < maxDistance * maxDistance) {
                     closest = object;
                     best = d;
                 }
@@ -326,18 +347,30 @@ public class ObservedSky {
         // This value represents the radius in which we are going
         // to look for chunks. We let it be at least 1.
         final int limit = (int) Math.ceil(maxDistance / CHUNK_SIZE);
-        // (limit + 2)^2 represents the area covered by all the squares in the radius
-        final List<ChunkPair> pairs = new ArrayList<>((limit + 2) * (limit + 2));
+        // LinkedLists allow O(1) time for adding elements.
+        // It has shown better results while benchmarking.
+        final List<ChunkPair> pairs = new LinkedList<>();
         // add all the chunks that are in range
         for (int i = -limit; i <= limit; i++) {
             for (int j = -limit; j <= limit; j++) {
                 final CartesianCoordinates trans = where.translate(i * CHUNK_SIZE, j * CHUNK_SIZE);
-                if (trans.distSquared(where) <= maxDistance * maxDistance) {
+                final double dist = trans.distSquared(where);
+                // if it simply is in the radius
+                if (dist <= maxDistance) {
                     pairs.add(new ChunkPair(trans));
+                } else {
+                    final ChunkPair closest = new ChunkPair(
+                            closestChunkSub(trans.x()),
+                            closestChunkSub(trans.y())
+                    );
+                    if (closest.toPoint().distSquared(where) <= maxDistance * maxDistance) {
+                        pairs.add(closest);
+                    }
                 }
             }
         }
-        // We need to check for the current chunk, too
+
+        // we need to check for the current chunk, too
         pairs.add(new ChunkPair(where));
 
         // apply a linear search over the best results

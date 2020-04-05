@@ -42,7 +42,7 @@ public class ObservedSkyTest {
         CelestialObject closest = null;
         for (Pair pair : all) {
             final double dist = pair.coordinates.distSquared(coordinates);
-            if (best > dist && dist <= d) {
+            if (best > dist && dist <= d * d) {
                 closest = pair.object;
                 best = dist;
             }
@@ -87,7 +87,7 @@ public class ObservedSkyTest {
                 catalogue
         );
         final List<Pair> all = all(sky);
-        for (int i = 0; i < TestRandomizer.RANDOM_ITERATIONS; i++) {
+        for (int i = 0; i < 10 * TestRandomizer.RANDOM_ITERATIONS; i++) {
             final double dist = random.nextDouble(0, 10d);
             final CartesianCoordinates coordinates = CartesianCoordinates.of(random.nextDouble(-1, 1),
                     random.nextDouble(-1, 1));
@@ -96,12 +96,13 @@ public class ObservedSkyTest {
         }
     }
 
+    // DISABLED: Benchmarking
     @Disabled
     @Test
     void benchmark() {
         final List<CartesianCoordinates> coordinates = new ArrayList<>(TestRandomizer.RANDOM_ITERATIONS);
         final SplittableRandom random = TestRandomizer.newRandom();
-        for (int i = 0; i < 1000 * TestRandomizer.RANDOM_ITERATIONS; i++) {
+        for (int i = 0; i < 500 * TestRandomizer.RANDOM_ITERATIONS; i++) {
             coordinates.add(CartesianCoordinates.of(random.nextDouble(-1, 1), random.nextDouble(-1, 1)));
         }
         final ObservedSky sky = new ObservedSky(ZonedDateTime.now(), GeographicCoordinates.ofDeg(0, 0),
