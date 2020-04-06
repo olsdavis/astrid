@@ -63,7 +63,7 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
             30.1985, 1.7673, 131.879, 62.20, -6.87);
 
     /**
-     * The list of all models (ordered).
+     * The list of all models (ordered increasingly by their distance to the Sun).
      */
     public static final List<PlanetModel> ALL = List.of(PlanetModel.values());
 
@@ -78,22 +78,22 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
     private final double angularSize;
     private final double V0;
 
-    // Pre-calculated values
+    // pre-calculated values
     private final double eSquare;
     private final double cosI;
     private final double sinI;
 
     /**
-     * @param name         The name of the planet
-     * @param tropicalYear The revolution period
-     * @param epsilon      The longitude at {@link Epoch#J2010} (in degrees)
-     * @param omegaBar     The longitude at the perigee (in degrees)
-     * @param e            The eccentricity
-     * @param a            The length of the semi-major axis
-     * @param i            The inclination (in degrees)
-     * @param omega        The longitude of the ascending node (in degrees)
-     * @param angularSize  The angular size (in seconds)
-     * @param V0           The apparent magnitude
+     * @param name         the name of the planet
+     * @param tropicalYear the revolution period
+     * @param epsilon      the longitude at {@link Epoch#J2010} (in degrees)
+     * @param omegaBar     the longitude at the perigee (in degrees)
+     * @param e            the eccentricity
+     * @param a            the length of the semi-major axis
+     * @param i            the inclination (in degrees)
+     * @param omega        the longitude of the ascending node (in degrees)
+     * @param angularSize  the angular size (in seconds)
+     * @param V0           the apparent magnitude
      */
     PlanetModel(String name, double tropicalYear, double epsilon,
                 double omegaBar, double e, double a,
@@ -109,7 +109,7 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
         this.angularSize = Angle.ofArcsec(angularSize);
         this.V0 = V0;
 
-        // Pre-calculated values
+        // pre-calculated values
         this.eSquare = e * e;
         this.cosI = cos(this.i);
         this.sinI = sin(this.i);
@@ -117,7 +117,7 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
 
     @Override
     public Planet at(double D, EclipticToEquatorialConversion conversion) {
-        // Position calculations
+        // position calculations
         final double M = (Angle.TAU / 365.242191d) * (D / tropicalYear)
                 + epsilon - omegaBar;
         final double nu = M + 2 * e * sin(M);
@@ -125,18 +125,18 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
         final double l = nu + omegaBar;
         final double psi = asin(sin(l - omega) * sinI);
         final double cosPsi = cos(psi);
-        // Projected radius
+        // projected radius
         final double rPrime = r * cosPsi;
-        // Projected longitude
+        // projected longitude
         final double lPrime = atan2(sin(l - omega) * cosI,
                 cos(l - omega)) + omega;
 
         // Earth calculations
         final double R;
         final double L;
-        // Shorten the scope of variables used for Earth calculations
+        // shorten the scope of variables used for Earth calculations
         {
-            // We assume that PlanetModel.EARTH#at is never called
+            // we assume that PlanetModel.EARTH#at is never called
             final double MEarth = (Angle.TAU / 365.242191d) * (D / EARTH.tropicalYear)
                     + EARTH.epsilon - EARTH.omegaBar;
             final double nuEarth = MEarth + 2 * EARTH.e * sin(MEarth);
@@ -148,14 +148,14 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
         final double lambda;
         final double x = R * sin(lPrime - L);
         switch (this) {
-            // Inferior planets
+            // inferior planets
             case VENUS:
             case MERCURY:
                 lambda = Angle.normalizePositive(
                         PI + L + atan2(rPrime * sin(L - lPrime), R - rPrime * cos(L - lPrime))
                 );
                 break;
-            // Superior planets
+            // superior planets
             default:
                 lambda = Angle.normalizePositive(
                         lPrime + atan2(x, rPrime - R * cos(lPrime - L))
@@ -164,11 +164,11 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
         }
         final double beta = atan(rPrime * tan(psi) * sin(lambda - lPrime) / x);
 
-        // Angular size calculations
+        // angular size calculations
         final double rho = sqrt(R * R + r * r - 2 * R * r * cos(l - L) * cosPsi);
         final double as = angularSize / rho;
 
-        // Magnitude calculations
+        // magnitude calculations
         final double F = (1 + cos(lambda - l)) / 2d;
         final double m = V0 + 5 * log10(r * rho / sqrt(F));
         return new Planet(name, conversion.apply(EclipticCoordinates.of(lambda, beta)), (float) as, (float) m);

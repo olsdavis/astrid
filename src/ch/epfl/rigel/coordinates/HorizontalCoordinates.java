@@ -40,52 +40,56 @@ public final class HorizontalCoordinates extends SphericalCoordinates {
     }
 
     /**
-     * @param azDeg  Azimut in degrees. Must be in interval [0, 360[.
-     * @param altDeg Altitude in degrees. Must be interval [-90, 90].
+     * @param azDeg  the azimut in degrees. Must be in interval [0, 360[.
+     * @param altDeg the altitude in degrees. Must be interval [-90, 90].
      * @return a new instance of HorizontalCoordinates based on provided parameters (converted to radians).
      */
     public static HorizontalCoordinates ofDeg(double azDeg, double altDeg) {
         return of(Angle.ofDeg(azDeg), Angle.ofDeg(altDeg));
     }
 
+    /**
+     * @param az the azimut (in radians)
+     * @param alt the altitude (in radians)
+     */
     private HorizontalCoordinates(double az, double alt) {
         super(az, alt);
     }
 
     /**
-     * @return azimut in radians.
+     * @return the azimut in radians.
      */
     public double az() {
         return lon();
     }
 
     /**
-     * @return azimut in degrees.
+     * @return the azimut in degrees.
      */
     public double azDeg() {
         return lonDeg();
     }
 
     /**
-     * @return altitude in radians.
+     * @return the altitude in radians.
      */
     public double alt() {
         return lat();
     }
 
     /**
-     * @return altitude in degrees.
+     * @return the altitude in degrees.
      */
     public double altDeg() {
         return latDeg();
     }
 
     /**
-     * @param n String indicating the North cardinal point.
-     * @param e String indicating the East cardinal point.
-     * @param s String indicating the South cardinal point.
-     * @param w String indicating the West cardinal point.
-     * @return the string corresponding to the octant in which lies the current instance's azimut.
+     * @param n a String representing the North cardinal point
+     * @param e a String representing the East cardinal point
+     * @param s a String representing the South cardinal point
+     * @param w a String representing the West cardinal point
+     * @return the String corresponding to the octant in which lies the current instance's azimut.
      * Note that border coordinates are in the "next" octant (<i>e.g.</i> {@code 22.5}° is {@code "NE"}).
      */
     public String azOctantName(String n, String e, String s, String w) {
@@ -117,9 +121,9 @@ public final class HorizontalCoordinates extends SphericalCoordinates {
     }
 
     /**
-     * Calculates the angular distance between the current instance and a given HorizontalCoordinates parameter.
+     * Calculates the angular distance between the current coordinates and the provided ones.
      *
-     * @param that HorizontalCoordinates object to which we measure the angular distance.
+     * @param that the HorizontalCoordinates of the object to which we measure the angular distance.
      * @return the value of the angular distance.
      */
     public double angularDistanceTo(HorizontalCoordinates that) {

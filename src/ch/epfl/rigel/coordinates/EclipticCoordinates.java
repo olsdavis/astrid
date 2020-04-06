@@ -27,8 +27,8 @@ public final class EclipticCoordinates extends SphericalCoordinates {
     private static final Interval LATITUDE_INTERVAL = ClosedInterval.symmetric(Math.PI);
 
     /**
-     * @param lon Longitude in radians. Must be in the interval [0, 2*PI[.
-     * @param lat Latitude in radians. Must be in the interval [-PI/2, PI/2].
+     * @param lon longitude in radians. Must be in the interval [0, 2*PI[.
+     * @param lat latitude in radians. Must be in the interval [-PI/2, PI/2].
      * @return a new instance of EclipticCoordinates from the given parameters.
      * @throws IllegalArgumentException if {@code lon} or {@code lat} is not in
      *                                  the right interval
@@ -39,8 +39,8 @@ public final class EclipticCoordinates extends SphericalCoordinates {
     }
 
     /**
-     * @param lon The longitude (in radians)
-     * @param lat The latitude (in radians)
+     * @param lon the longitude (in radians)
+     * @param lat the latitude (in radians)
      */
     private EclipticCoordinates(double lon, double lat) {
         super(lon, lat);

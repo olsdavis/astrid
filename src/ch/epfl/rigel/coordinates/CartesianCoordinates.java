@@ -14,8 +14,8 @@ public final class CartesianCoordinates {
     private final double y;
 
     /**
-     * @param x The x-coordinate
-     * @param y The y-coordinate
+     * @param x the x-coordinate
+     * @param y the y-coordinate
      */
     private CartesianCoordinates(double x, double y) {
         this.x = x;
@@ -23,8 +23,8 @@ public final class CartesianCoordinates {
     }
 
     /**
-     * @param x The x-coordinates of the point
-     * @param y The y-coordinates of the point
+     * @param x the x-coordinate of the point
+     * @param y the y-coordinate of the point
      * @return an instance of CartesianCoordinates representing the given {@code (x,y)} 2D point.
      */
     public static CartesianCoordinates of(double x, double y) {
@@ -46,7 +46,7 @@ public final class CartesianCoordinates {
     }
 
     /**
-     * @param other Another point
+     * @param other another point
      * @return the square of the distance between this point and the other provided point.
      */
     public double distSquared(CartesianCoordinates other) {
@@ -56,7 +56,7 @@ public final class CartesianCoordinates {
     }
 
     /**
-     * @param other Another point
+     * @param other another point
      * @return the distance between this point and the other provided point.
      */
     public double dist(CartesianCoordinates other) {
@@ -64,8 +64,8 @@ public final class CartesianCoordinates {
     }
 
     /**
-     * @param dx The x translation
-     * @param dy The y translation
+     * @param dx the x translation
+     * @param dy the y translation
      * @return CartesianCoordinates of this point translated by {@code x} and {@code y}.
      */
     public CartesianCoordinates translate(double dx, double dy) {
@@ -78,7 +78,7 @@ public final class CartesianCoordinates {
     }
 
     /**
-     * @throws UnsupportedOperationException This operation is forbidden.
+     * @throws UnsupportedOperationException this operation is forbidden.
      */
     @Override
     public int hashCode() {

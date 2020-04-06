@@ -14,8 +14,8 @@ abstract class SphericalCoordinates {
     private double lat;
 
     /**
-     * @param lon The longitude (in radians)
-     * @param lat The latitude (in radians)
+     * @param lon the longitude (in radians)
+     * @param lat the latitude (in radians)
      */
     SphericalCoordinates(double lon, double lat) {
         this.lon = lon;
@@ -50,11 +50,17 @@ abstract class SphericalCoordinates {
         return Angle.toDeg(lat);
     }
 
+    /**
+     * @throws UnsupportedOperationException this operation is forbidden.
+     */
     @Override
     public final int hashCode() {
         throw new UnsupportedOperationException("unsupported operation");
     }
 
+    /**
+     * @throws UnsupportedOperationException this operation is forbidden.
+     */
     @Override
     public final boolean equals(Object o) {
         throw new UnsupportedOperationException("unsupported operation");

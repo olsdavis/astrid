@@ -17,11 +17,15 @@ import java.time.temporal.ChronoUnit;
  */
 public final class SiderealTime {
 
+    /*
+     * The two following polynomials are unnamed, because they were only provided for the calculations.
+     */
+
     private static final Polynomial S_0 = Polynomial.of(0.000025862d, 2400.051336d, 6.697374558d);
     private static final Polynomial S_1 = Polynomial.of(1.002737909d, 0);
 
     /**
-     * @param when A date
+     * @param when a date
      * @return the not normalized value of the greenwich sidereal time (not necessarily
      * in the [0, 2*PI[ interval). Avoids normalizing the angle twice for
      * {@link #local(ZonedDateTime, GeographicCoordinates)}.
@@ -34,7 +38,7 @@ public final class SiderealTime {
     }
 
     /**
-     * @param when A date
+     * @param when a date
      * @return the greenwich sidereal time of the provided date {@code when} (in radians, in the [0, 2*PI[ interval).
      */
     public static double greenwich(ZonedDateTime when) {
@@ -42,8 +46,8 @@ public final class SiderealTime {
     }
 
     /**
-     * @param when  A date
-     * @param where The position of the observer
+     * @param when  a date
+     * @param where the position of the observer
      * @return the local sidereal time (in radians, in the [0, 2*PI[ interval), according to the provided date
      * {@code when} and the provided position of the observer {@code where}.
      */
@@ -54,7 +58,6 @@ public final class SiderealTime {
     }
 
     private SiderealTime() {
-        // Private constructor, forbids external instantiation
     }
 
 }

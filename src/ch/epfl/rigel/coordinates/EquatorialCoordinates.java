@@ -28,8 +28,8 @@ public final class EquatorialCoordinates extends SphericalCoordinates {
     private static final Interval DEC_INTERVAL = ClosedInterval.symmetric(Math.PI);
 
     /**
-     * @param ra  Right ascension in radians. Must be in the interval [0, 2*PI[.
-     * @param dec Declination in radians. Must be in the interval [-PI/2, PI/2].
+     * @param ra  right ascension in radians. Must be in the interval [0, 2*PI[.
+     * @param dec declination in radians. Must be in the interval [-PI/2, PI/2].
      * @return a new instance of EquatorialCoordinates with given parameters.
      * @throws IllegalArgumentException if {@code ra} or {@code dec} is not in the
      *                                  right interval
@@ -40,8 +40,8 @@ public final class EquatorialCoordinates extends SphericalCoordinates {
     }
 
     /**
-     * @param lon The longitude (in radians)
-     * @param lat The latitude (in radians)
+     * @param lon the longitude (in radians)
+     * @param lat the latitude (in radians)
      */
     private EquatorialCoordinates(double lon, double lat) {
         super(lon, lat);

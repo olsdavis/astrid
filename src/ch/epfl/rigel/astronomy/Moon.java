@@ -26,16 +26,16 @@ public final class Moon extends CelestialObject {
     private final float phase;
 
     /**
-     * @param equatorialPos The position of the Moon
-     * @param angularSize   The angular size of the Moon
-     * @param magnitude     The magnitude of the Moon
-     * @param phase         The phase of the Moon
+     * @param equatorialPos the position of the Moon
+     * @param angularSize   the angular size of the Moon
+     * @param magnitude     the magnitude of the Moon
+     * @param phase         the phase of the Moon
      * @throws IllegalArgumentException if {@code phase} is not in between 0 and 1, inclusive
      */
     public Moon(EquatorialCoordinates equatorialPos, float angularSize, float magnitude, float phase) {
         super("Lune", equatorialPos, angularSize, magnitude);
         // Here, we do not write: this.phase = checkInInterval(...)
-        // to avoid casting the value of phase twice (first to a double and then back to a float)
+        // to avoid casting the value of phase twice (first to a double and then back to a float).
         checkInInterval(PHASE_INTERVAL, phase);
         this.phase = phase;
     }

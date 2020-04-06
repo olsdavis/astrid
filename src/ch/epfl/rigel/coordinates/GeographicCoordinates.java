@@ -28,8 +28,8 @@ public final class GeographicCoordinates extends SphericalCoordinates {
     private static final Interval LATITUDE_INTERVAL = ClosedInterval.symmetric(180);
 
     /**
-     * @param lon Longitude in degrees. Must be in the interval {@code [-180, 180[}.
-     * @param lat Latitude in degrees. Must be in the interval {@code [-90, 90]}.
+     * @param lon longitude in degrees. Must be in the interval {@code [-180, 180[}.
+     * @param lat latitude in degrees. Must be in the interval {@code [-90, 90]}.
      * @return a new instance of GeographicalCoordinates with given parameters.
      * @throws IllegalArgumentException if {@code lon} or {@code lat} is not in the right
      *                                  interval
@@ -40,7 +40,7 @@ public final class GeographicCoordinates extends SphericalCoordinates {
     }
 
     /**
-     * @param lonDeg Longitude given in degrees.
+     * @param lonDeg a longitude (in degrees)
      * @return true if and only if the parameter is in {@code [-180, 180[}.
      */
     public static boolean isValidLonDeg(double lonDeg) {
@@ -48,7 +48,7 @@ public final class GeographicCoordinates extends SphericalCoordinates {
     }
 
     /**
-     * @param latDeg Latitude given in degrees.
+     * @param latDeg a latitude (in degrees)
      * @return true if and only if the parameter is in {@code [-90, 90]}.
      */
     public static boolean isValidLatDeg(double latDeg) {
@@ -56,8 +56,8 @@ public final class GeographicCoordinates extends SphericalCoordinates {
     }
 
     /**
-     * @param lon The longitude (in radians)
-     * @param lat The latitude (in radians)
+     * @param lon the longitude (in radians)
+     * @param lat the latitude (in radians)
      */
     private GeographicCoordinates(double lon, double lat) {
         super(lon, lat);

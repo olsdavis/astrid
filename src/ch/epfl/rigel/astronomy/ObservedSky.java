@@ -329,7 +329,7 @@ public class ObservedSky {
         // LinkedLists allow O(1) time for adding elements.
         // It has shown better results while benchmarking.
         final List<ChunkPair> pairs = new LinkedList<>();
-        // Add all the chunks that are in range
+        // add all the chunks that are in range
         for (int i = -limit; i <= limit; i++) {
             for (int j = -limit; j <= limit; j++) {
                 final CartesianCoordinates trans = where.translate(i * CHUNK_SIZE, j * CHUNK_SIZE);

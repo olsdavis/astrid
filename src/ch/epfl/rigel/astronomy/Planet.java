@@ -14,10 +14,10 @@ import ch.epfl.rigel.coordinates.EquatorialCoordinates;
 public final class Planet extends CelestialObject {
 
     /**
-     * @param name          The name of the planet this object represents
-     * @param equatorialPos The position of the planet this object represents
-     * @param angularSize   The angular size of the planet this object represents
-     * @param magnitude     The magnitude of the planet this object represents
+     * @param name          the name of the planet
+     * @param equatorialPos the position of the planet
+     * @param angularSize   the angular size of the planet
+     * @param magnitude     the magnitude of the planet
      */
     public Planet(String name, EquatorialCoordinates equatorialPos, float angularSize, float magnitude) {
         super(name, equatorialPos, angularSize, magnitude);

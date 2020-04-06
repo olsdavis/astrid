@@ -22,10 +22,10 @@ public final class Sun extends CelestialObject {
     private final EclipticCoordinates eclipticPos;
 
     /**
-     * @param eclipticPos   The position of the Sun represented by EclipticCoordinates
-     * @param equatorialPos The position of the Sun represented by EquatorialCoordinates
-     * @param angularSize   The angular size of the Sun
-     * @param meanAnomaly   The mean anomaly of the Sun
+     * @param eclipticPos   the position of the Sun
+     * @param equatorialPos the position of the Sun
+     * @param angularSize   the angular size of the Sun
+     * @param meanAnomaly   the mean anomaly of the Sun
      */
     public Sun(EclipticCoordinates eclipticPos, EquatorialCoordinates equatorialPos, float angularSize, float meanAnomaly) {
         super("Soleil", equatorialPos, angularSize, -26.7f);
@@ -41,7 +41,7 @@ public final class Sun extends CelestialObject {
     }
 
     /**
-     * @return the position of the Sun represented by EquatorialCoordinates.
+     * @return the position of the Sun represented by {@link EclipticCoordinates}.
      */
     public EclipticCoordinates eclipticPos() {
         return eclipticPos;

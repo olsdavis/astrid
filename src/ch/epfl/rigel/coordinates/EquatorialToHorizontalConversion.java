@@ -7,7 +7,8 @@ import java.time.ZonedDateTime;
 import java.util.function.Function;
 
 /**
- * A Function allowing to convert {@link EquatorialCoordinates} to {@link HorizontalCoordinates}.
+ * A Function allowing converting {@link EquatorialCoordinates} to {@link HorizontalCoordinates} with regard
+ * to a certain moment in time and a position on Earth.
  *
  * @author Oscar Davis (SCIPER: 311193)
  * @author Alexandre Doukhan (SCIPER: 316706)
@@ -20,8 +21,8 @@ public final class EquatorialToHorizontalConversion implements Function<Equatori
     private final double cosLat;
 
     /**
-     * @param when  The date of reference for the conversion
-     * @param where The {@link GeographicCoordinates} of the observer
+     * @param when  the date of reference for the conversion
+     * @param where the {@link GeographicCoordinates} of the observer
      */
     public EquatorialToHorizontalConversion(ZonedDateTime when, GeographicCoordinates where) {
         sinLat = Math.sin(where.lat());
@@ -44,7 +45,7 @@ public final class EquatorialToHorizontalConversion implements Function<Equatori
     }
 
     /**
-     * @throws UnsupportedOperationException This operation is forbidden.
+     * @throws UnsupportedOperationException this operation is forbidden.
      */
     @Override
     public int hashCode() {
@@ -52,7 +53,7 @@ public final class EquatorialToHorizontalConversion implements Function<Equatori
     }
 
     /**
-     * @throws UnsupportedOperationException This operation is forbidden.
+     * @throws UnsupportedOperationException this operation is forbidden.
      */
     @Override
     public boolean equals(Object obj) {

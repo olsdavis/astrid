@@ -8,7 +8,8 @@ import java.time.ZonedDateTime;
 import java.util.function.Function;
 
 /**
- * A Function allowing to convert {@link EclipticCoordinates} to {@link EquatorialCoordinates}.
+ * A Function allowing converting {@link EclipticCoordinates} to {@link EquatorialCoordinates} with
+ * regard to a certain moment in time.
  *
  * @author Oscar Davis (SCIPER: 311193)
  * @author Alexandre Doukhan (SCIPER: 316706)
@@ -16,6 +17,10 @@ import java.util.function.Function;
  */
 public final class EclipticToEquatorialConversion implements Function<EclipticCoordinates, EquatorialCoordinates> {
 
+    /**
+     * This polynomial allows the calculation of the obliqueness, used in calculations for
+     * {@link #apply(EclipticCoordinates)}.
+     */
     private static final Polynomial OBLIQUENESS_POLYNOMIAL = Polynomial.of(Angle.ofArcsec(0.00181d),
             Angle.ofArcsec(-0.0006d),
             Angle.ofArcsec(-46.815d),
@@ -26,7 +31,7 @@ public final class EclipticToEquatorialConversion implements Function<EclipticCo
     private final double cosObliqueness;
 
     /**
-     * @param when The date of reference for the conversions
+     * @param when the date of reference for the conversions
      */
     public EclipticToEquatorialConversion(ZonedDateTime when) {
         final double obliqueness = OBLIQUENESS_POLYNOMIAL.at(Epoch.J2000.julianCenturiesUntil(when));
@@ -45,7 +50,7 @@ public final class EclipticToEquatorialConversion implements Function<EclipticCo
     }
 
     /**
-     * @throws UnsupportedOperationException This operation is forbidden.
+     * @throws UnsupportedOperationException this operation is forbidden.
      */
     @Override
     public int hashCode() {
@@ -53,7 +58,7 @@ public final class EclipticToEquatorialConversion implements Function<EclipticCo
     }
 
     /**
-     * @throws UnsupportedOperationException This operation is forbidden.
+     * @throws UnsupportedOperationException this operation is forbidden.
      */
     @Override
     public boolean equals(Object obj) {

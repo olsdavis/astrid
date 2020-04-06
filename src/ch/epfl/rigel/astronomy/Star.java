@@ -24,11 +24,11 @@ public final class Star extends CelestialObject {
     private final float colorIndex;
 
     /**
-     * @param hipparcosId   The Hipparcos identification code
-     * @param name          The name
-     * @param equatorialPos The position represented by EquatorialCoordinates
-     * @param magnitude     The magnitude
-     * @param colorIndex    The color index
+     * @param hipparcosId   the Hipparcos identification code
+     * @param name          the name
+     * @param equatorialPos the position represented by EquatorialCoordinates
+     * @param magnitude     the magnitude
+     * @param colorIndex    the color index
      * @throws IllegalArgumentException if {@code hipparcosId} is negative
      * @throws IllegalArgumentException if {@code colorIndex} is not between -0.5 and 5.5, inclusive.
      */

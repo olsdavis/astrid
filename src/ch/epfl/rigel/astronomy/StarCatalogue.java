@@ -8,7 +8,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * References the entire stars and asterisms catalogues into a single instance.
+ * Holds the entire stars and asterisms catalogues.
  *
  * @author Alexandre Doukhan (SCIPER: 316706)
  * @author Oscar Davis (SCIPER: 311193)
@@ -20,8 +20,8 @@ public final class StarCatalogue {
     private final Map<Asterism, List<Integer>> asterismMap;
 
     /**
-     * @param stars     The stars of the star catalogue
-     * @param asterisms The asterisms of the star catalogue
+     * @param stars     the stars of the star catalogue
+     * @param asterisms the asterisms of the star catalogue
      *
      * @throws IllegalArgumentException if there is an asterism, from {@code asterisms}, that
      * has a star that is not in {@code star}
@@ -60,7 +60,7 @@ public final class StarCatalogue {
     /**
      * Finds the indices of the stars of an asterism in the {@code starCatalogue}.
      *
-     * @param asterism of which we want to find the indices of the start composing it.
+     * @param asterism the asterism of which we want to find the indices of the stars composing it.
      * @return a {@code List} of integers corresponding to the positions in the {@code starCatalogue}
      * of the stars of the {@code asterism}.
      *
@@ -80,10 +80,10 @@ public final class StarCatalogue {
         private List<Asterism> asterismCatalogue = new ArrayList<>();
 
         /**
-         * Adds the given {@link Star} instance to {@code starCatalogue}.
+         * Adds the given Star {@code star} to the list that holds the stars of the catalogue to build.
          *
-         * @param star The star to add to the catalogue.
-         * @return the current {@link Builder} instance ({@code this}).
+         * @param star the star to add to the catalogue
+         * @return the current {@link Builder} instance.
          */
         public Builder addStar(Star star) {
             starCatalogue.add(star);
@@ -91,17 +91,17 @@ public final class StarCatalogue {
         }
 
         /**
-         * @return an unmodifiable view of {@code starCatalogue}.
+         * @return an unmodifiable view of the list of stars.
          */
         public List<Star> stars() {
             return Collections.unmodifiableList(starCatalogue);
         }
 
         /**
-         * Adds the given {@link Asterism} instance to {@code asterismCatalogue}.
+         * Adds the given {@link Asterism} instance to the list of asterisms.
          *
-         * @param asterism The asterism to add to the catalogue.
-         * @return the current {@link Builder} instance ({@code this)}
+         * @param asterism the asterism to add to the catalogue
+         * @return the current {@link Builder} instance.
          */
         public Builder addAsterism(Asterism asterism) {
             asterismCatalogue.add(asterism);
@@ -109,7 +109,7 @@ public final class StarCatalogue {
         }
 
         /**
-         * @return an unmodifiable view of the underlying list that holds the asterisms of the catalogue.
+         * @return an unmodifiable view of the list that holds the asterisms of the catalogue to build.
          */
         public List<Asterism> asterisms() {
             return Collections.unmodifiableList(asterismCatalogue);
@@ -118,10 +118,10 @@ public final class StarCatalogue {
         /**
          * Loads the builder data from the provided input stream.
          *
-         * @param inputStream of data to be loaded.
-         * @param loader      Loads the data into the {@link  Builder}.
-         * @return the {@code Builder} that is loaded.
-         * @throws IOException in case of I/O error.
+         * @param inputStream of data to be loaded
+         * @param loader      loads the data into the {@link  Builder}
+         * @return the current {@code Builder} instance.
+         * @throws IOException if an exception is thrown during the reading of the {@code inputStream}.
          */
         public Builder loadFrom(InputStream inputStream, Loader loader) throws IOException {
             loader.load(inputStream, this);
@@ -129,7 +129,8 @@ public final class StarCatalogue {
         }
 
         /**
-         * @return a new instance of {@link StarCatalogue} with built {@code starCatalogue} and {@code asterismCatalogue}.
+         * @return a new instance of {@link StarCatalogue} with the stars that have been added through {@link #addStar(Star)}}
+         * and the asterisms that have been added through {@link #addAsterism(Asterism)}.
          */
         public StarCatalogue build() {
             return new StarCatalogue(starCatalogue, asterismCatalogue);
@@ -144,9 +145,9 @@ public final class StarCatalogue {
         /**
          * Loads data from an input stream into a builder.
          *
-         * @param inputStream Flow of data to be loaded.
-         * @param builder     {@link Builder} in which we load the data from {@code inputStream}.
-         * @throws IOException in case of I/O error.
+         * @param inputStream an InputStream from which the loader must read data
+         * @param builder     {@link Builder} in which the data is loaded from the provided InputStream {@code inputStream}
+         * @throws IOException if an exception is thrown during the reading of the provided InputStream {@code inputStream}
          *
          * @see AsterismLoader
          * @see HygDatabaseLoader
