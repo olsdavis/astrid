@@ -39,6 +39,13 @@ public final class EclipticToEquatorialConversion implements Function<EclipticCo
         sinObliqueness = Math.sin(obliqueness);
     }
 
+    /**
+     * @param e the coordinates to convert
+     * @return the provided coordinates {@code e} converted to {@link EquatorialCoordinates},
+     * according to the moment of time provided in the constructor.
+     *
+     * @see EclipticToEquatorialConversion#EclipticToEquatorialConversion(ZonedDateTime)
+     */
     @Override
     public EquatorialCoordinates apply(EclipticCoordinates e) {
         return EquatorialCoordinates.of(

@@ -12,7 +12,7 @@ import static ch.epfl.rigel.Preconditions.*;
  * @author Alexandre Doukhan (SCIPER: 316706)
  * Creation date: 17/02/2020
  */
-public class RightOpenInterval extends Interval {
+public final class RightOpenInterval extends Interval {
 
     /**
      * @param x a double

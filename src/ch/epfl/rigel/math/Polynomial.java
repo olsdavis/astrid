@@ -9,7 +9,7 @@ import static ch.epfl.rigel.Preconditions.checkArgument;
  * @author Oscar Davis (SCIPER: 311193)
  * Creation date: 17/02/2020
  */
-public class Polynomial {
+public final class Polynomial {
     private final double[] coefficients;
 
     /**
