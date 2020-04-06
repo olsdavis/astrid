@@ -54,7 +54,7 @@ public final class StarCatalogue {
      * @return a {@link Set} of the asterisms contained in the current instance.
      */
     public Set<Asterism> asterisms() {
-        return Set.copyOf(asterismMap.keySet());
+        return asterismMap.keySet();
     }
 
     /**
