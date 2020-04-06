@@ -45,33 +45,6 @@ public final class CartesianCoordinates {
         return y;
     }
 
-    /**
-     * @param other another point
-     * @return the square of the distance between this point and the other provided point.
-     */
-    public double distSquared(CartesianCoordinates other) {
-        final double diffX = other.x - x;
-        final double diffY = other.y - y;
-        return diffX * diffX + diffY * diffY;
-    }
-
-    /**
-     * @param other another point
-     * @return the distance between this point and the other provided point.
-     */
-    public double dist(CartesianCoordinates other) {
-        return Math.sqrt(distSquared(other));
-    }
-
-    /**
-     * @param dx the x translation
-     * @param dy the y translation
-     * @return CartesianCoordinates of this point translated by {@code x} and {@code y}.
-     */
-    public CartesianCoordinates translate(double dx, double dy) {
-        return of(x + dx, y + dy);
-    }
-
     @Override
     public String toString() {
         return String.format(Locale.ROOT, "(x=%.4f, y=%.4f)", x, y);
