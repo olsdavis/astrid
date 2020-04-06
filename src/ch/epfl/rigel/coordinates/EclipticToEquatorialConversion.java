@@ -26,7 +26,7 @@ public final class EclipticToEquatorialConversion implements Function<EclipticCo
     private final double cosObliqueness;
 
     /**
-     * @param when the date of reference for the conversions
+     * @param when The date of reference for the conversions
      */
     public EclipticToEquatorialConversion(ZonedDateTime when) {
         final double obliqueness = OBLIQUENESS_POLYNOMIAL.at(Epoch.J2000.julianCenturiesUntil(when));
@@ -45,7 +45,7 @@ public final class EclipticToEquatorialConversion implements Function<EclipticCo
     }
 
     /**
-     * @throws UnsupportedOperationException this operation is forbidden.
+     * @throws UnsupportedOperationException This operation is forbidden.
      */
     @Override
     public int hashCode() {
@@ -53,7 +53,7 @@ public final class EclipticToEquatorialConversion implements Function<EclipticCo
     }
 
     /**
-     * @throws UnsupportedOperationException this operation is forbidden.
+     * @throws UnsupportedOperationException This operation is forbidden.
      */
     @Override
     public boolean equals(Object obj) {

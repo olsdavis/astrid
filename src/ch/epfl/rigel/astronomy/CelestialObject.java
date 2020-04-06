@@ -20,10 +20,10 @@ public abstract class CelestialObject {
     private final float magnitude;
 
     /**
-     * @param name          the name
-     * @param equatorialPos the position represented by EquatorialCoordinates
-     * @param angularSize   the angular size
-     * @param magnitude     the magnitude
+     * @param name          The name
+     * @param equatorialPos The position represented by EquatorialCoordinates
+     * @param angularSize   The angular size
+     * @param magnitude     The magnitude
      * @throws IllegalArgumentException if {@code angularSize} is negative
      */
     CelestialObject(String name, EquatorialCoordinates equatorialPos, float angularSize, float magnitude) {

@@ -20,8 +20,8 @@ public final class EquatorialToHorizontalConversion implements Function<Equatori
     private final double cosLat;
 
     /**
-     * @param when  the date of reference for the conversion
-     * @param where the {@link GeographicCoordinates} of the observer
+     * @param when  The date of reference for the conversion
+     * @param where The {@link GeographicCoordinates} of the observer
      */
     public EquatorialToHorizontalConversion(ZonedDateTime when, GeographicCoordinates where) {
         sinLat = Math.sin(where.lat());
@@ -30,7 +30,7 @@ public final class EquatorialToHorizontalConversion implements Function<Equatori
     }
 
     /**
-     * @param e the coordinates to convert
+     * @param e The coordinates to convert
      * @return the converted coordinates in {@link HorizontalCoordinates}.
      */
     @Override
@@ -44,7 +44,7 @@ public final class EquatorialToHorizontalConversion implements Function<Equatori
     }
 
     /**
-     * @throws UnsupportedOperationException this operation is forbidden.
+     * @throws UnsupportedOperationException This operation is forbidden.
      */
     @Override
     public int hashCode() {
@@ -52,7 +52,7 @@ public final class EquatorialToHorizontalConversion implements Function<Equatori
     }
 
     /**
-     * @throws UnsupportedOperationException this operation is forbidden.
+     * @throws UnsupportedOperationException This operation is forbidden.
      */
     @Override
     public boolean equals(Object obj) {

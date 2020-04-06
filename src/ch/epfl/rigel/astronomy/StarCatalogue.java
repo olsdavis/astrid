@@ -20,8 +20,8 @@ public final class StarCatalogue {
     private final Map<Asterism, List<Integer>> asterismMap;
 
     /**
-     * @param stars     the stars of the star catalogue
-     * @param asterisms the asterisms of the star catalogue
+     * @param stars     The stars of the star catalogue
+     * @param asterisms The asterisms of the star catalogue
      *
      * @throws IllegalArgumentException if there is an asterism, from {@code asterisms}, that
      * has a star that is not in {@code star}

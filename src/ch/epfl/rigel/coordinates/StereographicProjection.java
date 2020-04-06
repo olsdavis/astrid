@@ -20,7 +20,7 @@ public final class StereographicProjection implements Function<HorizontalCoordin
     private final double cosPhi1;
 
     /**
-     * @param center the center of the projection
+     * @param center The center of the projection
      */
     public StereographicProjection(HorizontalCoordinates center) {
         lambda0 = center.az();
@@ -88,7 +88,7 @@ public final class StereographicProjection implements Function<HorizontalCoordin
      * Computes the {@link HorizontalCoordinates} of the projection point with
      * coordinates given by  {@code xy}.
      *
-     * @param xy the instance of {@link CartesianCoordinates} we wish to un-project.
+     * @param xy The instance of {@link CartesianCoordinates} we wish to un-project.
      * @return an instance of {@link HorizontalCoordinates} with coordinates such that
      * the projection of these gives us {@code xy}.
      */

@@ -24,8 +24,8 @@ public class Preconditions {
     }
 
     /**
-     * @param interval the interval
-     * @param value    the value to check
+     * @param interval The interval
+     * @param value    The value to check
      * @return {@code value} if it is inside the provided interval; otherwise
      * throws an {@link IllegalArgumentException}.
      * @throws IllegalArgumentException if {@code interval} does not contain {@code value}

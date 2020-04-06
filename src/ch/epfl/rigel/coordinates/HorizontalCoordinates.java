@@ -40,8 +40,8 @@ public final class HorizontalCoordinates extends SphericalCoordinates {
     }
 
     /**
-     * @param azDeg  azimut in degrees. Must be in interval [0, 360[.
-     * @param altDeg altitude in degrees. Must be interval [-90, 90].
+     * @param azDeg  Azimut in degrees. Must be in interval [0, 360[.
+     * @param altDeg Altitude in degrees. Must be interval [-90, 90].
      * @return a new instance of HorizontalCoordinates based on provided parameters (converted to radians).
      */
     public static HorizontalCoordinates ofDeg(double azDeg, double altDeg) {
@@ -86,7 +86,7 @@ public final class HorizontalCoordinates extends SphericalCoordinates {
      * @param s String indicating the South cardinal point.
      * @param w String indicating the West cardinal point.
      * @return the string corresponding to the octant in which lies the current instance's azimut.
-     * Note that border coordinates are in the "next" octant (<i>e.g.</i> {@code 22.5} is {@code "NE"}).
+     * Note that border coordinates are in the "next" octant (<i>e.g.</i> {@code 22.5}° is {@code "NE"}).
      */
     public String azOctantName(String n, String e, String s, String w) {
         int marker = 0;

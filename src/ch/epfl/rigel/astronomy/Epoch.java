@@ -32,14 +32,14 @@ public enum Epoch {
     private final ZonedDateTime epochStart;
 
     /**
-     * @param epochStart the beginning of the epoch
+     * @param epochStart The beginning of the epoch
      */
     Epoch(ZonedDateTime epochStart) {
         this.epochStart = epochStart;
     }
 
     /**
-     * @param when the other date
+     * @param when The other date
      * @return the number of days between the start of the epoch and the provided date {@code when}.
      */
     public double daysUntil(ZonedDateTime when) {
@@ -47,7 +47,7 @@ public enum Epoch {
     }
 
     /**
-     * @param when the other date
+     * @param when The other date
      * @return the number of julian years (365.25 days) between the start of the epoch
      * and the provided date {@code when}.
      */

@@ -56,8 +56,8 @@ public final class GeographicCoordinates extends SphericalCoordinates {
     }
 
     /**
-     * @param lon the longitude (in radians)
-     * @param lat the latitude (in radians)
+     * @param lon The longitude (in radians)
+     * @param lat The latitude (in radians)
      */
     private GeographicCoordinates(double lon, double lat) {
         super(lon, lat);

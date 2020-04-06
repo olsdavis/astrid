@@ -66,24 +66,24 @@ public enum HygDatabaseLoader implements StarCatalogue.Loader {
         try (final BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream,
                 StandardCharsets.US_ASCII))) {
             String str;
-            // we skip the first line, since it provides the names of the columns
+            // We skip the first line, since it provides the names of the columns
             reader.readLine();
             while ((str = reader.readLine()) != null && !str.equals("")) {
                 final String[] dataLine = str.split(",");
                 final String properName = dataLine[PROPER].isBlank()
-                        ? ((dataLine[BAYER].isBlank() ? "?" : dataLine[BAYER]))  // default bayer value = '?'
+                        ? ((dataLine[BAYER].isBlank() ? "?" : dataLine[BAYER]))  // Default bayer value = '?'
                         + " " + dataLine[CON]
                         : dataLine[PROPER];
                 builder.addStar(new Star(
                         // Hipparcos ID
                         (dataLine[HIP].isBlank() ? 0 : Integer.parseInt(dataLine[HIP])),
-                        // proper name
+                        // Proper name
                         properName,
-                        // coordinates
+                        // Coordinates
                         EquatorialCoordinates.of(Double.parseDouble(dataLine[RARAD]), Double.parseDouble(dataLine[DECRAD])),
-                        // magnitude
+                        // Magnitude
                         (dataLine[MAG].isBlank() ? 0f : (float) Double.parseDouble(dataLine[MAG])),
-                        // color index
+                        // Color index
                         (dataLine[CI].isBlank() ? 0f : (float) Double.parseDouble(dataLine[CI]))
                 ));
             }

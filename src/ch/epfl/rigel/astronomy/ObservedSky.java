@@ -329,7 +329,7 @@ public class ObservedSky {
         // LinkedLists allow O(1) time for adding elements.
         // It has shown better results while benchmarking.
         final List<ChunkPair> pairs = new LinkedList<>();
-        // add all the chunks that are in range
+        // Add all the chunks that are in range
         for (int i = -limit; i <= limit; i++) {
             for (int j = -limit; j <= limit; j++) {
                 final CartesianCoordinates trans = where.translate(i * CHUNK_SIZE, j * CHUNK_SIZE);
@@ -340,9 +340,6 @@ public class ObservedSky {
                 pairs.add(new ChunkPair(trans));
             }
         }
-
-        // we need to check for the current chunk, too
-        pairs.add(new ChunkPair(where));
 
         // apply a linear search over the best results
         CelestialObject closest = null;

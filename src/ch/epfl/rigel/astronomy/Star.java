@@ -24,18 +24,18 @@ public final class Star extends CelestialObject {
     private final float colorIndex;
 
     /**
-     * @param hipparcosId   the Hipparcos identification code
-     * @param name          the name
-     * @param equatorialPos the position represented by EquatorialCoordinates
-     * @param magnitude     the magnitude
-     * @param colorIndex    the color index
+     * @param hipparcosId   The Hipparcos identification code
+     * @param name          The name
+     * @param equatorialPos The position represented by EquatorialCoordinates
+     * @param magnitude     The magnitude
+     * @param colorIndex    The color index
      * @throws IllegalArgumentException if {@code hipparcosId} is negative
      * @throws IllegalArgumentException if {@code colorIndex} is not between -0.5 and 5.5, inclusive.
      */
     public Star(int hipparcosId, String name, EquatorialCoordinates equatorialPos, float magnitude, float colorIndex) {
         super(name, equatorialPos, 0, magnitude);
         checkArgument(hipparcosId >= 0);
-        // here, we do not write: this.colorIndex = checkInInterval(...)
+        // Here, we do not write: this.colorIndex = checkInInterval(...)
         // to avoid casting the value of colorIndex twice (first to a double and then back to a float)
         checkInInterval(COLOR_INTERVAL, colorIndex);
         this.colorIndex = colorIndex;

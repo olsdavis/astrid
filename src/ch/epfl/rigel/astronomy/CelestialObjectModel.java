@@ -17,7 +17,7 @@ public interface CelestialObjectModel<O> {
      * Creates a new instance of the object (of type {@code O}) with coordinates given by the elapsed time,
      * and the coordinates conversion.
      * @param daysSinceJ2010 number of days from the {@link Epoch} {@code J2010}. Can be decimal. Can be negative
-     *                       (meaning we want to model the object {@code O} before {@link Epoch} {@code J2010}.
+     *                       (meaning we want to model the object of type {@code O} before {@link Epoch} {@code J2010}.
      * @param conversion instance of {@link EclipticToEquatorialConversion} used for coordinates conversion.
      * @return a new instance of the object (of type {@code O} with coordinates updated based on the
      * elapsed time given by {@code daysSinceJ2010}.
