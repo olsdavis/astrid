@@ -32,7 +32,10 @@ public final class EquatorialToHorizontalConversion implements Function<Equatori
 
     /**
      * @param e The coordinates to convert
-     * @return the converted coordinates in {@link HorizontalCoordinates}.
+     * @return the converted coordinates in {@link HorizontalCoordinates} according to the
+     * moment in time and the position, provided in the constructor.
+     *
+     * @see EquatorialToHorizontalConversion#EquatorialToHorizontalConversion(ZonedDateTime, GeographicCoordinates)
      */
     @Override
     public HorizontalCoordinates apply(EquatorialCoordinates e) {

@@ -9,7 +9,7 @@ import ch.epfl.rigel.math.Interval;
  * @author Alexandre Doukhan (SCIPER: 316706)
  * Creation date: 17/02/2020
  */
-public class Preconditions {
+public final class Preconditions {
 
     /**
      * Throws an {@link IllegalArgumentException} if {@code isTrue} is {@code false}.
