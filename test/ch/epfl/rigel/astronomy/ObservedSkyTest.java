@@ -37,6 +37,9 @@ public class ObservedSkyTest {
 
     static StarCatalogue catalogue;
 
+    /**
+     * The classic method for finding the closest object, pretty efficient.
+     */
     static CelestialObject linearSearch(List<Pair> all, ObservedSky sky, CartesianCoordinates coordinates, double d) {
         double best = Double.POSITIVE_INFINITY;
         CelestialObject closest = null;
@@ -48,6 +51,27 @@ public class ObservedSkyTest {
             }
         }
         return closest;
+    }
+
+    /**
+     * The classic method implemented with streams (parallelStream), suggested in
+     * the class group. This was written just to prove that it is highly inefficient.
+     */
+    static CelestialObject parallelSearch(List<Pair> all, ObservedSky sky, CartesianCoordinates coordinates, double d) {
+        return all.parallelStream()
+                .filter(p -> p.coordinates.distSquared(coordinates) <= d * d)
+                .min((a, b) -> {
+                    final double dA = a.coordinates.distSquared(coordinates);
+                    final double dB = b.coordinates.distSquared(coordinates);
+                    if (dA > dB) {
+                        return 1;
+                    } else if (dA < dB) {
+                        return -1;
+                    }
+                    return 0;
+                })
+                .map(p -> p.object)
+                .orElse(null);
     }
 
     @BeforeAll
@@ -134,6 +158,12 @@ public class ObservedSkyTest {
         Bench.printBench(() -> {
             for (CartesianCoordinates coordinate : coordinates) {
                 linearSearch(all, sky, coordinate, 0.5d);
+            }
+        }, coordinates.size());
+        // just to prove it's crap
+        Bench.printBench(() -> {
+            for (CartesianCoordinates coordinate : coordinates) {
+                parallelSearch(all, sky, coordinate, 0.5d);
             }
         }, coordinates.size());
     }
