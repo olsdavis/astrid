@@ -307,6 +307,22 @@ public class ObservedSky {
     }
 
     /**
+     * @return the list of the asterisms.
+     */
+    public Set<Asterism> asterisms() {
+        return catalogue.asterisms();
+    }
+
+    /**
+     * @param asterism the asterism to look up the indices for
+     * @return a list of integers containing the indices of its stars
+     * in the same order as in the asterism.
+     */
+    public List<Integer> asterismIndices(Asterism asterism) {
+        return catalogue.asterismIndices(asterism);
+    }
+
+    /**
      * @param where       a position on the plan
      * @param maxDistance the maximal distance allowed, from the point {@code where}
      *                    and the celestial objects.
