@@ -1,9 +1,8 @@
 package ch.epfl.rigel.gui;
 
-import ch.epfl.rigel.astronomy.Asterism;
-import ch.epfl.rigel.astronomy.ObservedSky;
-import ch.epfl.rigel.astronomy.Star;
+import ch.epfl.rigel.astronomy.*;
 import ch.epfl.rigel.coordinates.CartesianCoordinates;
+import ch.epfl.rigel.coordinates.HorizontalCoordinates;
 import ch.epfl.rigel.coordinates.StereographicProjection;
 import ch.epfl.rigel.math.Angle;
 import ch.epfl.rigel.math.ClosedInterval;
@@ -35,6 +34,17 @@ public class SkyCanvasPainter {
      * in between the bounds of this interval.
      */
     private static final ClosedInterval MAGNITUDE_CLIP = ClosedInterval.of(-2d, 5d);
+    private final Canvas canvas;
+    private final Transform correctionTransform;
+
+    /**
+     * @param canvas the canvas to draw to
+     */
+    public SkyCanvasPainter(Canvas canvas) {
+        this.canvas = Objects.requireNonNull(canvas);
+        //TODO: calculate the real value of the scale factor, in a future step
+        correctionTransform = Transform.affine(1300, 0, 0, -1300, canvas.getWidth() / 2d, canvas.getHeight() / 2d);
+    }
 
     /**
      * @param magnitude the magnitude of a CelestialObject
@@ -45,18 +55,6 @@ public class SkyCanvasPainter {
         final double clipped = MAGNITUDE_CLIP.clip(magnitude);
         final double scaleFactor = (99d - 17d * clipped) / 140d;
         return scaleFactor * SUN_SIZE;
-    }
-
-    private final Canvas canvas;
-    private final Transform correctionTransform;
-
-    /**
-     * @param canvas the canvas to draw to
-     */
-    public SkyCanvasPainter(Canvas canvas) {
-        this.canvas = Objects.requireNonNull(canvas);
-        //TODO: calculate the real value of the scale factor, in a future step
-        correctionTransform = Transform.affine(1300, 0, 0, -1300, 400, 300);
     }
 
     /**
@@ -72,28 +70,21 @@ public class SkyCanvasPainter {
      * Draws the stars and the asterisms to the canvas.
      *
      * @param sky        the observed sky to draw
-     * @param projection the projection used to calculate the cyoordinates
+     * @param projection the projection used to calculate the coordinates
      */
     public void drawStars(ObservedSky sky, StereographicProjection projection) {
         Objects.requireNonNull(sky);
         Objects.requireNonNull(projection);
 
-        // draw stars
         final double[] starPositions = sky.starPositions();
+        //Change coordinates system to adapt to the canvas.
         correctionTransform.transform2DPoints(starPositions, 0, starPositions, 0, starPositions.length / 2);
-        for (int i = 0; i < sky.stars().size(); i++) {
-            final Star star = sky.stars().get(i);
-            final Point2D point = new Point2D(starPositions[2 * i], starPositions[2 * i + 1]);
-            final double diameter = correctionTransform.deltaTransform(objectRadius(star.magnitude()), 0).getX();
-            canvas.getGraphicsContext2D().setFill(BlackBodyColor.fromTemperature(star.colorTemperature()));
-            canvas.getGraphicsContext2D().fillOval(point.getX() - diameter / 2d, point.getY() - diameter / 2d, diameter, diameter);
-        }
 
-        //TODO:
-        // draw asterisms
 
-        // set the fill for all lines
-        canvas.getGraphicsContext2D().setFill(Color.BLUE);
+        //draw asterisms first, then stars.
+
+        // set the stroke for all lines
+        canvas.getGraphicsContext2D().setStroke(Color.BLUE);
         canvas.getGraphicsContext2D().setLineWidth(1d);
         for (Asterism asterism : sky.asterisms()) {
             final List<Integer> indices = sky.asterismIndices(asterism);
@@ -110,10 +101,91 @@ public class SkyCanvasPainter {
                         canvas.getGraphicsContext2D().lineTo(pointA.getX(), pointA.getY());
                     }
                     canvas.getGraphicsContext2D().lineTo(pointB.getX(), pointB.getY());
+                    canvas.getGraphicsContext2D().stroke();
+
                 }
             }
             canvas.getGraphicsContext2D().closePath();
         }
+
+        // draw stars
+        for (int i = 0; i < sky.stars().size(); i++) {
+            final Star star = sky.stars().get(i);
+            final Point2D point = new Point2D(starPositions[2 * i], starPositions[2 * i + 1]);
+            final double diameter = correctionTransform.deltaTransform(objectRadius(star.magnitude()), 0).getX();
+            canvas.getGraphicsContext2D().setFill(BlackBodyColor.fromTemperature(star.colorTemperature()));
+            canvas.getGraphicsContext2D().fillOval(point.getX() - diameter / 2d, point.getY() - diameter / 2d, diameter, diameter);
+        }
     }
 
+    /**
+     * Draws the planets to the canvas.
+     *
+     * @param sky        the observed sky to draw
+     * @param projection the projection used to calculate the coordinates
+     */
+    public void drawPlanets(ObservedSky sky, StereographicProjection projection) {
+        Objects.requireNonNull(sky);
+        Objects.requireNonNull(projection);
+        final double[] planetPositions = sky.planetPositions();
+        //Change system coordinates to adapt to the canvas.
+        correctionTransform.transform2DPoints(planetPositions, 0, planetPositions, 0, planetPositions.length / 2);
+
+        //set fill for all planets
+        //BONUS: modify the fill depending on the planet to get more adequate colors
+        canvas.getGraphicsContext2D().setFill(Color.LIGHTGRAY);
+
+        for (int i = 0; i < sky.planets().size(); i++) {
+            final Planet planet = sky.planets().get(i);
+            final Point2D point = new Point2D(planetPositions[2 * i], planetPositions[2 * i + 1]);
+            final double diameter = correctionTransform.deltaTransform(objectRadius(planet.magnitude()), 0).getX();
+            canvas.getGraphicsContext2D().fillOval(point.getX() - diameter / 2d, point.getY() - diameter / 2d, diameter, diameter);
+        }
+    }
+
+    /**
+     * Draws the Moon to the canvas.
+     *
+     * @param sky        the observed sky to draw
+     * @param projection the projection used to calculate the coordinates
+     */
+    public void drawMoon(ObservedSky sky, StereographicProjection projection) {
+        Objects.requireNonNull(sky);
+        Objects.requireNonNull(projection);
+        canvas.getGraphicsContext2D().setFill(Color.WHITE);
+        final Point2D point = correctionTransform.transform(sky.moonPosition().x(), sky.moonPosition().y());
+        final double radius = correctionTransform.deltaTransform(sky.moon().angularSize() / 2d, 0).getX();
+        canvas.getGraphicsContext2D().fillOval(point.getX() - radius, point.getY() - radius, 2 * radius, 2 * radius);
+    }
+
+    public void drawSun(ObservedSky sky, StereographicProjection projection) {
+        Objects.requireNonNull(sky);
+        Objects.requireNonNull(projection);
+
+        final Point2D point = correctionTransform.transform(sky.sunPosition().x(), sky.sunPosition().y());
+        if (canvas.contains(point)) {
+            final double diameter = correctionTransform.deltaTransform(sky.sun().angularSize(), 0).getX();
+            canvas.getGraphicsContext2D().setFill(Color.YELLOW.deriveColor(0, 1d, 1d, 0.25));
+            canvas.getGraphicsContext2D().fillOval(point.getX() - diameter * 2.2 / 2d, point.getY() - diameter * 2.2 / 2d, diameter * 2.2, diameter * 2.2);
+            canvas.getGraphicsContext2D().setFill(Color.YELLOW);
+            canvas.getGraphicsContext2D().fillOval(point.getX() - (diameter + 2) / 2d, point.getY() - (diameter + 2) / 2d, diameter + 2, diameter + 2);
+            canvas.getGraphicsContext2D().setFill(Color.WHITE);
+            canvas.getGraphicsContext2D().fillOval(point.getX() - diameter / 2d, point.getY() - diameter / 2d, diameter, diameter);
+        }
+    }
+
+    public void drawHorizon(ObservedSky sky, StereographicProjection projection) {
+        Objects.requireNonNull(sky);
+        Objects.requireNonNull(projection);
+
+        canvas.getGraphicsContext2D().setStroke(Color.RED);
+        canvas.getGraphicsContext2D().setLineWidth(2d);
+        CartesianCoordinates center = projection.circleCenterForParallel(HorizontalCoordinates.of(0, 0));
+        double radius = projection.circleRadiusForParallel(HorizontalCoordinates.of(0, 0));
+        final Point2D point = correctionTransform.transform(center.x(), center.y());
+        radius = correctionTransform.deltaTransform(radius, 0).getX();
+        System.out.println(radius);
+        System.out.println(point.toString());
+        canvas.getGraphicsContext2D().strokeOval(point.getX()-radius, point.getY()-radius*1.2d, radius*2, radius*2);
+    }
 }
