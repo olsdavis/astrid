@@ -158,6 +158,12 @@ public class SkyCanvasPainter {
         canvas.getGraphicsContext2D().fillOval(point.getX() - radius, point.getY() - radius, 2 * radius, 2 * radius);
     }
 
+    /**
+     * Draws the Sun to the canvas.
+     *
+     * @param sky        the osberved sky to draw
+     * @param projection the projection used to calculate the coordinates
+     */
     public void drawSun(ObservedSky sky, StereographicProjection projection) {
         Objects.requireNonNull(sky);
         Objects.requireNonNull(projection);
@@ -174,18 +180,22 @@ public class SkyCanvasPainter {
         }
     }
 
+    /**
+     * Draws the horizon line and the cardinal points.
+     *
+     * @param sky        the osberved sky to draw
+     * @param projection the projection used to calculate the coordinates
+     */
     public void drawHorizon(ObservedSky sky, StereographicProjection projection) {
         Objects.requireNonNull(sky);
         Objects.requireNonNull(projection);
 
         canvas.getGraphicsContext2D().setStroke(Color.RED);
         canvas.getGraphicsContext2D().setLineWidth(2d);
-        CartesianCoordinates center = projection.circleCenterForParallel(HorizontalCoordinates.of(0, 0));
-        double radius = projection.circleRadiusForParallel(HorizontalCoordinates.of(0, 0));
+        final CartesianCoordinates center = projection.circleCenterForParallel(HorizontalCoordinates.ofDeg(0, 0));
+        final double radius = correctionTransform.deltaTransform(projection.circleRadiusForParallel(HorizontalCoordinates.ofDeg(0, 0)), 0).getX();
         final Point2D point = correctionTransform.transform(center.x(), center.y());
-        radius = correctionTransform.deltaTransform(radius, 0).getX();
-        System.out.println(radius);
-        System.out.println(point.toString());
-        canvas.getGraphicsContext2D().strokeOval(point.getX()-radius, point.getY()-radius*1.2d, radius*2, radius*2);
+        canvas.getGraphicsContext2D().strokeOval(point.getX() - radius, point.getY() - radius, radius * 2d, radius * 2d);
+        // TODO: cardinal points
     }
 }
