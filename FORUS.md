@@ -8,3 +8,8 @@ to bits of code that are possibly improvable.
 the tests that are disabled by default.
 -You can look for comments containing "BONUS". They refer to bits of code
 that are expected to be changed for bonuses.
+
+Bonus
+---
+- Add a Hyg/Asterisms database live loader
+("Load database > Navigate to file...")
