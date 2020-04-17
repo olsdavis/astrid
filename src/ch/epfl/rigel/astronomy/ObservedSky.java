@@ -37,9 +37,9 @@ public class ObservedSky {
      *
      * @see SkyChunk
      */
-    private class ChunkPair {
-        private int x;
-        private int y;
+    private static final class ChunkPair {
+        private final int x;
+        private final int y;
 
         /**
          * Converts the passed parameters to their chunk subdivision.
@@ -76,7 +76,8 @@ public class ObservedSky {
             if (!(obj instanceof ChunkPair)) {
                 return false;
             }
-            return ((ChunkPair) obj).x == x && ((ChunkPair) obj).y == y;
+            final ChunkPair other = (ChunkPair) obj;
+            return other.x == x && other.y == y;
         }
 
         @Override
@@ -97,7 +98,7 @@ public class ObservedSky {
      * Represents a pair of a CelestialObject and its cartesian coordinates
      * on the plan. Used for {@link SkyChunk}s.
      */
-    private class CelestialPair {
+    private static final class CelestialPair {
         private final CartesianCoordinates coordinates;
         private final CelestialObject object;
 
@@ -116,15 +117,15 @@ public class ObservedSky {
      * all the celestial objects in its area. It allows faster search for
      * {@link #objectClosestTo(CartesianCoordinates, double)}.
      */
-    private class SkyChunk {
+    private static class SkyChunk {
         private final List<CelestialPair> objects = new ArrayList<>();
 
         /**
          * Represents a result of {@link #closestTo(CartesianCoordinates, double)}.
          */
-        class SearchResult {
-            double distance;
-            CelestialObject object;
+        static final class SearchResult {
+            final double distance;
+            final CelestialObject object;
 
             /**
              * @param distance the distance of the closest object
@@ -344,6 +345,9 @@ public class ObservedSky {
         final int limit = (int) Math.ceil(maxDistance / CHUNK_SIZE);
         // LinkedLists allow O(1) time for adding elements.
         // It has shown better results while benchmarking.
+        // Moreover, if we find a stronger criteria (as suggested below,
+        // in the "IMPROVEMENT" comment), we will not know the size of the list.
+        // Thus, we can save some space.
         final List<ChunkPair> pairs = new LinkedList<>();
         // add all the chunks that are in range
         for (int i = -limit; i <= limit; i++) {

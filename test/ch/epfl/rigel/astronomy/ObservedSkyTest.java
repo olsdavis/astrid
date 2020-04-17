@@ -141,7 +141,7 @@ public class ObservedSkyTest {
     void benchmark() {
         final List<CartesianCoordinates> coordinates = new ArrayList<>(TestRandomizer.RANDOM_ITERATIONS);
         final SplittableRandom random = TestRandomizer.newRandom();
-        for (int i = 0; i < 500 * TestRandomizer.RANDOM_ITERATIONS; i++) {
+        for (int i = 0; i < 1000 * TestRandomizer.RANDOM_ITERATIONS; i++) {
             coordinates.add(CartesianCoordinates.of(random.nextDouble(-1, 1), random.nextDouble(-1, 1)));
         }
         final ObservedSky sky = new ObservedSky(ZonedDateTime.now(), GeographicCoordinates.ofDeg(0, 0),
