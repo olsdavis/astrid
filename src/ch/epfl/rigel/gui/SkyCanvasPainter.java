@@ -21,12 +21,7 @@ import java.util.Objects;
  */
 public class SkyCanvasPainter {
 
-    /**
-     * Since the sun's size doesn't vary much according to one's position on
-     * Earth, we store it as a constant which approximates it well.
-     */
-    private static final double SUN_SIZE = 2 * Math.tan(Angle.ofDeg(0.5d) / 4d);
-    //TODO: calculate this in the method directly with projection.applyToAngle ?
+    private static final double SUN_ANGLE = Angle.ofDeg(0.5d);
 
     /**
      * This interval represents the values we keep for the magnitude of a
@@ -34,6 +29,18 @@ public class SkyCanvasPainter {
      * in between the bounds of this interval.
      */
     private static final ClosedInterval MAGNITUDE_CLIP = ClosedInterval.of(-2d, 5d);
+
+    /**
+     * @param magnitude the magnitude of a CelestialObject
+     * @return the radius of the circle representing a CelestialObject
+     * according to its provided magnitude {@code magnitude}.
+     */
+    private static double objectRadius(double magnitude, StereographicProjection projection) {
+        final double clipped = MAGNITUDE_CLIP.clip(magnitude);
+        final double scaleFactor = (99d - 17d * clipped) / 140d;
+        return scaleFactor * projection.applyToAngle(SUN_ANGLE);
+    }
+
     private final Canvas canvas;
     private final Transform correctionTransform;
 
@@ -44,17 +51,6 @@ public class SkyCanvasPainter {
         this.canvas = Objects.requireNonNull(canvas);
         //TODO: calculate the real value of the scale factor, in a future step
         correctionTransform = Transform.affine(1300, 0, 0, -1300, canvas.getWidth() / 2d, canvas.getHeight() / 2d);
-    }
-
-    /**
-     * @param magnitude the magnitude of a CelestialObject
-     * @return the radius of the circle representing a CelestialObject
-     * according to its provided magnitude {@code magnitude}.
-     */
-    private static double objectRadius(double magnitude) {
-        final double clipped = MAGNITUDE_CLIP.clip(magnitude);
-        final double scaleFactor = (99d - 17d * clipped) / 140d;
-        return scaleFactor * SUN_SIZE;
     }
 
     /**
@@ -81,7 +77,7 @@ public class SkyCanvasPainter {
         correctionTransform.transform2DPoints(starPositions, 0, starPositions, 0, starPositions.length / 2);
 
 
-        //draw asterisms first, then stars.
+        // draw asterisms first, then stars
 
         // set the stroke for all lines
         canvas.getGraphicsContext2D().setStroke(Color.BLUE);
@@ -112,7 +108,7 @@ public class SkyCanvasPainter {
         for (int i = 0; i < sky.stars().size(); i++) {
             final Star star = sky.stars().get(i);
             final Point2D point = new Point2D(starPositions[2 * i], starPositions[2 * i + 1]);
-            final double diameter = correctionTransform.deltaTransform(objectRadius(star.magnitude()), 0).getX();
+            final double diameter = correctionTransform.deltaTransform(objectRadius(star.magnitude(), projection), 0).getX();
             canvas.getGraphicsContext2D().setFill(BlackBodyColor.fromTemperature(star.colorTemperature()));
             canvas.getGraphicsContext2D().fillOval(point.getX() - diameter / 2d, point.getY() - diameter / 2d, diameter, diameter);
         }
@@ -138,7 +134,7 @@ public class SkyCanvasPainter {
         for (int i = 0; i < sky.planets().size(); i++) {
             final Planet planet = sky.planets().get(i);
             final Point2D point = new Point2D(planetPositions[2 * i], planetPositions[2 * i + 1]);
-            final double diameter = correctionTransform.deltaTransform(objectRadius(planet.magnitude()), 0).getX();
+            final double diameter = correctionTransform.deltaTransform(objectRadius(planet.magnitude(), projection), 0).getX();
             canvas.getGraphicsContext2D().fillOval(point.getX() - diameter / 2d, point.getY() - diameter / 2d, diameter, diameter);
         }
     }
