@@ -167,10 +167,10 @@ public class SkyCanvasPainter {
         final Point2D point = correctionTransform.transform(sky.sunPosition().x(), sky.sunPosition().y());
         if (canvas.contains(point)) {
             final double diameter = correctionTransform.deltaTransform(sky.sun().angularSize(), 0).getX();
-            canvas.getGraphicsContext2D().setFill(Color.YELLOW.deriveColor(0, 1d, 1d, 0.25));
-            canvas.getGraphicsContext2D().fillOval(point.getX() - diameter * 2.2 / 2d, point.getY() - diameter * 2.2 / 2d, diameter * 2.2, diameter * 2.2);
+            canvas.getGraphicsContext2D().setFill(Color.YELLOW.deriveColor(0, 1d, 1d, 0.25d));
+            canvas.getGraphicsContext2D().fillOval(point.getX() - ((diameter / 2d) * 2.2d), point.getY() - ((diameter / 2d) * 2.2d), diameter * 2.2d, diameter * 2.2d);
             canvas.getGraphicsContext2D().setFill(Color.YELLOW);
-            canvas.getGraphicsContext2D().fillOval(point.getX() - (diameter + 2) / 2d, point.getY() - (diameter + 2) / 2d, diameter + 2, diameter + 2);
+            canvas.getGraphicsContext2D().fillOval(point.getX() - (diameter + 2d) / 2d, point.getY() - (diameter + 2d) / 2d, diameter + 2d, diameter + 2d);
             canvas.getGraphicsContext2D().setFill(Color.WHITE);
             canvas.getGraphicsContext2D().fillOval(point.getX() - diameter / 2d, point.getY() - diameter / 2d, diameter, diameter);
         }
