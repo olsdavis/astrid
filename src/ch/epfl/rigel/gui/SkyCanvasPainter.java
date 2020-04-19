@@ -179,19 +179,28 @@ public class SkyCanvasPainter {
     /**
      * Draws the horizon line and the cardinal points.
      *
-     * @param sky        the osberved sky to draw
+     * @param sky        the observed sky to draw
      * @param projection the projection used to calculate the coordinates
      */
-    public void drawHorizon(ObservedSky sky, StereographicProjection projection) {
+    public void drawHorizon(ObservedSky sky, StereographicProjection projection, HorizontalCoordinates proj) {
         Objects.requireNonNull(sky);
         Objects.requireNonNull(projection);
 
-        canvas.getGraphicsContext2D().setStroke(Color.RED);
-        canvas.getGraphicsContext2D().setLineWidth(2d);
-        final CartesianCoordinates center = projection.circleCenterForParallel(HorizontalCoordinates.ofDeg(0, 0));
-        final double radius = correctionTransform.deltaTransform(projection.circleRadiusForParallel(HorizontalCoordinates.ofDeg(0, 0)), 0).getX();
-        final Point2D point = correctionTransform.transform(center.x(), center.y());
-        canvas.getGraphicsContext2D().strokeOval(point.getX() - radius, point.getY() - radius, radius * 2d, radius * 2d);
+        // draw the horizon line
+        {
+            canvas.getGraphicsContext2D().setStroke(Color.RED);
+            canvas.getGraphicsContext2D().setLineWidth(2d);
+            final CartesianCoordinates center = projection.circleCenterForParallel(HorizontalCoordinates.ofDeg(0, 0));
+            final double radius = correctionTransform.deltaTransform(projection.circleRadiusForParallel(HorizontalCoordinates.ofDeg(0, 0)), 0).getX();
+            final Point2D point = correctionTransform.transform(center.x(), center.y());
+            canvas.getGraphicsContext2D().strokeOval(point.getX() - radius, point.getY() - radius, radius * 2d, radius * 2d);
+        }
         // TODO: cardinal points
+        {
+            final CartesianCoordinates center = projection.apply(HorizontalCoordinates.ofDeg(proj.azDeg(), -1));
+            final Point2D point = correctionTransform.transform(center.x(), center.y());
+            canvas.getGraphicsContext2D().setFill(Color.RED);
+            canvas.getGraphicsContext2D().fillText(proj.azOctantName("N", "E", "S", "W"), point.getX(), point.getY());
+        }
     }
 }
