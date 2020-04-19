@@ -11,6 +11,8 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.MathContext;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -166,6 +168,33 @@ public class ObservedSkyTest {
                 parallelSearch(all, sky, coordinate, 0.5d);
             }
         }, coordinates.size());
+    }
+
+    // DISABLED: outputs a value
+    @Disabled
+    @Test
+    void meanDistance() {
+        final ObservedSky sky = new ObservedSky(ZonedDateTime.now(), GeographicCoordinates.ofDeg(0, 0),
+                new StereographicProjection(HorizontalCoordinates.of(0, 0)),
+                catalogue
+        );
+        final List<CartesianCoordinates> coordinates = new ArrayList<>(catalogue.stars().size());
+        final double[] positions = sky.starPositions();
+        for (int i = 0; i < catalogue.stars().size(); i++) {
+            coordinates.add(CartesianCoordinates.of(positions[2 * i], positions[2 * i + 1]));
+        }
+        BigDecimal decimal = new BigDecimal("0");
+        int count = 0;
+        for (int i = 0; i < coordinates.size(); i++) {
+            final CartesianCoordinates a = coordinates.get(i);
+            for (int j = i; j < coordinates.size(); j++) {
+                final CartesianCoordinates b = coordinates.get(j);
+                decimal = decimal.add(new BigDecimal(String.valueOf(a.dist(b))));
+                count++;
+            }
+        }
+        System.out.println(decimal.divide(new BigDecimal(count), MathContext.DECIMAL32));
+        // result = 2.557845
     }
 
 }
