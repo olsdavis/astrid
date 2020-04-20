@@ -206,7 +206,7 @@ public class ObservedSky {
         planets = PlanetModel.ALL.stream()
                 .filter(p -> p != PlanetModel.EARTH) // filtering the Earth
                 .map(p -> p.at(d, eclipticToEq))
-                .collect(Collectors.toList());
+                .collect(Collectors.toUnmodifiableList());
         planetPositions = new double[2 * planets.size()];
         for (int i = 0; i < planets.size(); i++) {
             final Planet current = planets.get(i);

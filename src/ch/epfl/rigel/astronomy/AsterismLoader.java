@@ -39,7 +39,7 @@ public enum AsterismLoader implements StarCatalogue.Loader {
                 final List<Star> asterismStars = hipIndicesStars.stream()
                         .map(indicesMap::get)
                         .map(builder.stars()::get)
-                        .collect(Collectors.toList());
+                        .collect(Collectors.toUnmodifiableList());
                 builder.addAsterism(new Asterism(asterismStars));
             }
         }
