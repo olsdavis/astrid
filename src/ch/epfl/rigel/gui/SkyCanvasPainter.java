@@ -201,11 +201,11 @@ public class SkyCanvasPainter {
         //draw the cardinal points
         {
             canvas.getGraphicsContext2D().setFill(Color.RED);
-            for (CardinalPoint points : CardinalPoint.values()) {
-                final CartesianCoordinates card = projection.apply(HorizontalCoordinates.ofDeg(points.azDeg(), -0.5d));
+            for (CardinalPoint cardinal : CardinalPoint.values()) {
+                final CartesianCoordinates card = projection.apply(HorizontalCoordinates.ofDeg(cardinal.azDeg(), -0.5d));
                 final Point2D point = correctionTransform.transform(card.x(), card.y());
                 if (canvas.contains(point)) {
-                    canvas.getGraphicsContext2D().fillText(points.toString(), point.getX(), point.getY());
+                    canvas.getGraphicsContext2D().fillText(cardinal.toString(), point.getX(), point.getY());
                 }
             }
         }
