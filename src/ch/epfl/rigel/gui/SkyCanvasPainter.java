@@ -198,15 +198,13 @@ public class SkyCanvasPainter {
             canvas.getGraphicsContext2D().strokeOval(point.getX() - radius, point.getY() - radius, radius * 2d, radius * 2d);
         }
 
-        //draw the cardinal points
-        {
-            canvas.getGraphicsContext2D().setFill(Color.RED);
-            for (CardinalPoint cardinal : CardinalPoint.values()) {
-                final CartesianCoordinates raw = projection.apply(HorizontalCoordinates.ofDeg(cardinal.azDeg(), -1.25d));
-                final Point2D point = correctionTransform.transform(raw.x(), raw.y());
-                if (canvas.contains(point)) {
-                    canvas.getGraphicsContext2D().fillText(cardinal.toString(), point.getX(), point.getY());
-                }
+        // draw the cardinal points
+        canvas.getGraphicsContext2D().setFill(Color.RED);
+        for (CardinalPoint cardinal : CardinalPoint.values()) {
+            final CartesianCoordinates raw = projection.apply(HorizontalCoordinates.ofDeg(cardinal.azDeg(), -1.25d));
+            final Point2D point = correctionTransform.transform(raw.x(), raw.y());
+            if (canvas.contains(point)) {
+                canvas.getGraphicsContext2D().fillText(cardinal.toString(), point.getX(), point.getY());
             }
         }
 
