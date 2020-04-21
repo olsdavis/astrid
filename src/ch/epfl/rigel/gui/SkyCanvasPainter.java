@@ -182,7 +182,7 @@ public class SkyCanvasPainter {
      * @param sky        the observed sky to draw
      * @param projection the projection used to calculate the coordinates
      */
-    public void drawHorizon(ObservedSky sky, StereographicProjection projection, HorizontalCoordinates proj) {
+    public void drawHorizon(ObservedSky sky, StereographicProjection projection) {
         Objects.requireNonNull(sky);
         Objects.requireNonNull(projection);
 
@@ -195,12 +195,75 @@ public class SkyCanvasPainter {
             final Point2D point = correctionTransform.transform(center.x(), center.y());
             canvas.getGraphicsContext2D().strokeOval(point.getX() - radius, point.getY() - radius, radius * 2d, radius * 2d);
         }
-        // TODO: cardinal points
+
+        //draw the cardinal points
         {
-            final CartesianCoordinates center = projection.apply(HorizontalCoordinates.ofDeg(proj.azDeg(), -1));
-            final Point2D point = correctionTransform.transform(center.x(), center.y());
             canvas.getGraphicsContext2D().setFill(Color.RED);
-            canvas.getGraphicsContext2D().fillText(proj.azOctantName("N", "E", "S", "W"), point.getX(), point.getY());
+            for (CardinalPoints points: CardinalPoints.ALL) {
+                final CartesianCoordinates card = projection.apply(HorizontalCoordinates.ofDeg(points.azimuth, -1));
+                final Point2D point = correctionTransform.transform(card.x(), card.y());
+                canvas.getGraphicsContext2D().fillText(points.toString(), point.getX(), point.getY());
+            }
+        }
+
+    }
+
+    /**
+     * Private enum for cardinal points.
+     * @see SkyCanvasPainter#drawHorizon
+     */
+    private enum CardinalPoints {
+
+        /**
+         * Cardinal points were chosen to be named after their capital letters for {@code toString} purposes.
+         */
+
+        /**
+         * North
+         */
+        N(0),
+
+        /**
+         * North-East
+         */
+        NE(45),
+
+        /**
+         * East
+         */
+        E(90),
+
+        /**
+         * South-East
+         */
+        SE(135),
+
+        /**
+         * South
+         */
+        S(180),
+
+        /**
+         * South-West
+         */
+        SW(225),
+
+        /**
+         * West
+         */
+        W(270),
+
+        /**
+         * North-West
+         */
+        NW(315);
+
+        static final List<CardinalPoints> ALL = List.of(CardinalPoints.values());
+
+        private final int azimuth;
+
+        private CardinalPoints(int azDeg) {
+            this.azimuth = azDeg;
         }
     }
 }

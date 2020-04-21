@@ -54,7 +54,7 @@ public final class DrawSky extends Application {
             painter.drawPlanets(sky, projection);
             painter.drawMoon(sky, projection);
             painter.drawSun(sky, projection);
-            painter.drawHorizon(sky, projection, projCenter);
+            painter.drawHorizon(sky, projection);
 
             Scene scene = new Scene(new BorderPane(canvas));
             primaryStage.setScene(scene);
