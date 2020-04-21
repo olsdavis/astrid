@@ -202,7 +202,7 @@ public class SkyCanvasPainter {
         {
             canvas.getGraphicsContext2D().setFill(Color.RED);
             for (CardinalPoint cardinal : CardinalPoint.values()) {
-                final CartesianCoordinates raw = projection.apply(HorizontalCoordinates.ofDeg(cardinal.azDeg(), -0.5d));
+                final CartesianCoordinates raw = projection.apply(HorizontalCoordinates.ofDeg(cardinal.azDeg(), -1.25d));
                 final Point2D point = correctionTransform.transform(raw.x(), raw.y());
                 if (canvas.contains(point)) {
                     canvas.getGraphicsContext2D().fillText(cardinal.toString(), point.getX(), point.getY());

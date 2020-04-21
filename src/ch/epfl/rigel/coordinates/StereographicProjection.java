@@ -93,6 +93,9 @@ public final class StereographicProjection implements Function<HorizontalCoordin
      * the projection of these gives us {@code xy}.
      */
     public HorizontalCoordinates inverseApply(CartesianCoordinates xy) {
+        if (xy.x() == 0 && xy.y() == 0) {
+            return HorizontalCoordinates.of(lambda0, phi1);
+        }
         // rho squared
         final double rhoS = xy.x() * xy.x() + xy.y() * xy.y();
         // the square root of rho
