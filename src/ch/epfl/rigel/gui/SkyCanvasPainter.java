@@ -129,8 +129,8 @@ public class SkyCanvasPainter {
         //Change system coordinates to adapt to the canvas.
         correctionTransform.transform2DPoints(planetPositions, 0, planetPositions, 0, planetPositions.length / 2);
 
-        //set fill for all planets
-        //BONUS: modify the fill depending on the planet to get more adequate colors
+        // set fill for all planets
+        // BONUS: modify the fill depending on the planet to get more adequate colors
         canvas.getGraphicsContext2D().setFill(Color.LIGHTGRAY);
 
         for (int i = 0; i < sky.planets().size(); i++) {
