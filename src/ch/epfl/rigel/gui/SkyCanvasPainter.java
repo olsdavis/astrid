@@ -207,7 +207,6 @@ public class SkyCanvasPainter {
                 canvas.getGraphicsContext2D().fillText(cardinal.toString(), point.getX(), point.getY());
             }
         }
-
     }
 
 }
