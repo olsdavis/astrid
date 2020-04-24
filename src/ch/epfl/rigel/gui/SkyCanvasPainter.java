@@ -79,7 +79,6 @@ public class SkyCanvasPainter {
         //Change coordinates system to adapt to the canvas.
         correctionTransform.transform2DPoints(starPositions, 0, starPositions, 0, starPositions.length / 2);
 
-
         // draw asterisms first, then stars
         // set the stroke for all lines
         canvas.getGraphicsContext2D().setStroke(Color.BLUE);
@@ -100,7 +99,6 @@ public class SkyCanvasPainter {
                     }
                     canvas.getGraphicsContext2D().lineTo(pointB.getX(), pointB.getY());
                     canvas.getGraphicsContext2D().stroke();
-
                 }
             }
             canvas.getGraphicsContext2D().closePath();
@@ -110,7 +108,9 @@ public class SkyCanvasPainter {
         for (int i = 0; i < sky.stars().size(); i++) {
             final Star star = sky.stars().get(i);
             final Point2D point = new Point2D(starPositions[2 * i], starPositions[2 * i + 1]);
-            final double diameter = correctionTransform.deltaTransform(objectRadius(star.magnitude(), projection), 0).getX();
+            final double diameter = Math.abs(
+                    correctionTransform.deltaTransform(objectRadius(star.magnitude(), projection), 0).getX()
+            );
             canvas.getGraphicsContext2D().setFill(BlackBodyColor.fromTemperature(star.colorTemperature()));
             canvas.getGraphicsContext2D().fillOval(point.getX() - diameter / 2d, point.getY() - diameter / 2d, diameter, diameter);
         }
@@ -126,17 +126,20 @@ public class SkyCanvasPainter {
         Objects.requireNonNull(sky);
         Objects.requireNonNull(projection);
         final double[] planetPositions = sky.planetPositions();
-        //Change system coordinates to adapt to the canvas.
+
+        // Change system coordinates to adapt to the canvas.
         correctionTransform.transform2DPoints(planetPositions, 0, planetPositions, 0, planetPositions.length / 2);
 
-        // set fill for all planets
         // BONUS: modify the fill depending on the planet to get more adequate colors
+        // set fill for all planets
         canvas.getGraphicsContext2D().setFill(Color.LIGHTGRAY);
-
         for (int i = 0; i < sky.planets().size(); i++) {
             final Planet planet = sky.planets().get(i);
             final Point2D point = new Point2D(planetPositions[2 * i], planetPositions[2 * i + 1]);
-            final double diameter = correctionTransform.deltaTransform(objectRadius(planet.magnitude(), projection), 0).getX();
+            //TODO: is there any use to apply abs everywhere?
+            final double diameter = Math.abs(
+                    correctionTransform.deltaTransform(objectRadius(planet.magnitude(), projection), 0).getX()
+            );
             canvas.getGraphicsContext2D().fillOval(point.getX() - diameter / 2d, point.getY() - diameter / 2d, diameter, diameter);
         }
     }
@@ -150,9 +153,13 @@ public class SkyCanvasPainter {
     public void drawMoon(ObservedSky sky, StereographicProjection projection) {
         Objects.requireNonNull(sky);
         Objects.requireNonNull(projection);
+
         canvas.getGraphicsContext2D().setFill(Color.WHITE);
         final Point2D point = correctionTransform.transform(sky.moonPosition().x(), sky.moonPosition().y());
-        final double radius = correctionTransform.deltaTransform(sky.moon().angularSize() / 2d, 0).getX();
+        //TODO: verify formula for diameter (projection.applyToAngle...)
+        final double radius = Math.abs(
+                correctionTransform.deltaTransform(projection.applyToAngle(sky.moon().angularSize()), 0).getX()
+        ) / 2d;
         canvas.getGraphicsContext2D().fillOval(point.getX() - radius, point.getY() - radius, 2 * radius, 2 * radius);
     }
 
@@ -168,7 +175,9 @@ public class SkyCanvasPainter {
 
         final Point2D point = correctionTransform.transform(sky.sunPosition().x(), sky.sunPosition().y());
         if (canvas.contains(point)) {
-            final double diameter = correctionTransform.deltaTransform(sky.sun().angularSize(), 0).getX();
+            final double diameter = Math.abs(
+                    correctionTransform.deltaTransform(projection.applyToAngle(sky.sun().angularSize()), 0).getX()
+            );
             canvas.getGraphicsContext2D().setFill(Color.YELLOW.deriveColor(0, 1d, 1d, 0.25d));
             canvas.getGraphicsContext2D().fillOval(point.getX() - ((diameter / 2d) * 2.2d), point.getY() - ((diameter / 2d) * 2.2d), diameter * 2.2d, diameter * 2.2d);
             canvas.getGraphicsContext2D().setFill(Color.YELLOW);
@@ -193,7 +202,9 @@ public class SkyCanvasPainter {
             canvas.getGraphicsContext2D().setStroke(Color.RED);
             canvas.getGraphicsContext2D().setLineWidth(2d);
             final CartesianCoordinates center = projection.circleCenterForParallel(HorizontalCoordinates.ofDeg(0, 0));
-            final double radius = correctionTransform.deltaTransform(projection.circleRadiusForParallel(HorizontalCoordinates.ofDeg(0, 0)), 0).getX();
+            final double radius = Math.abs(
+                    correctionTransform.deltaTransform(projection.circleRadiusForParallel(HorizontalCoordinates.ofDeg(0, 0)), 0).getX()
+            );
             final Point2D point = correctionTransform.transform(center.x(), center.y());
             canvas.getGraphicsContext2D().strokeOval(point.getX() - radius, point.getY() - radius, radius * 2d, radius * 2d);
         }
@@ -201,6 +212,7 @@ public class SkyCanvasPainter {
         // draw the cardinal points
         canvas.getGraphicsContext2D().setFill(Color.RED);
         for (CardinalPoint cardinal : CardinalPoint.values()) {
+            // TODO: find out why -1.25 and not -0.5
             final CartesianCoordinates raw = projection.apply(HorizontalCoordinates.ofDeg(cardinal.azDeg(), -1.25d));
             final Point2D point = correctionTransform.transform(raw.x(), raw.y());
             if (canvas.contains(point)) {
