@@ -37,65 +37,73 @@ public final class DateTimeBean {
     }
 
     /**
-     * @param date the other date
+     * Updates the value held by the date property.
+     *
+     * @param date the new value of the date
      */
     public void setDate(LocalDate date) {
         dateProperty.setValue(date);
     }
 
     /**
-     * @return the property of the {@code time}
+     * @return the property holding the {@code time}.
      */
     public ObjectProperty<LocalTime> timeProperty() {
         return timeProperty;
     }
 
     /**
-     * @return the time
+     * @return the value of the time.
      */
     public LocalTime getTime() {
         return timeProperty.get();
     }
 
     /**
-     * @param time the other time
+     * Updates the value held by the time property.
+     *
+     * @param time the new value of the time
      */
     public void setTime(LocalTime time) {
         timeProperty.setValue(time);
     }
 
     /**
-     * @return the property of the {@code zone}
+     * @return the property of the {@code zone}.
      */
     public ObjectProperty<ZoneId> zoneProperty() {
         return zoneProperty;
     }
 
     /**
-     * @return the zone
+     * @return the value of the zone.
      */
     public ZoneId getZone() {
         return zoneProperty.get();
     }
 
     /**
-     * @param zone the other zone
+     * Updates the value held by the property of the zone.
+     *
+     * @param zone the new value of the zone
      */
     public void setZone(ZoneId zone) {
         zoneProperty.setValue(zone);
     }
 
     /**
-     * @return a new {@code ZonedDateTime} with parameters from {@code this}
+     * @return a new {@code ZonedDateTime} built from the date, time and zone held by
+     * this instance's properties.
      */
     public ZonedDateTime getZonedDateTime() {
         return ZonedDateTime.of(getDate(), getTime(), getZone());
     }
 
     /**
-     * Changes the values of the instance's attributes to those of the parameter.
+     * Changes the values of the instance's zone, date and time attributes to those
+     * of the provided {@link ZonedDateTime}.
      *
-     * @param zonedDateTime the other {@code ZonedDateTime}.
+     * @param zonedDateTime the new ZonedDateTime value
      */
     public void setZonedDateTime(ZonedDateTime zonedDateTime) {
         setDate(zonedDateTime.toLocalDate());

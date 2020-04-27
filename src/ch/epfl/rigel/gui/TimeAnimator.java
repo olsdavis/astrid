@@ -19,7 +19,7 @@ public final class TimeAnimator extends AnimationTimer {
     // the used accelerator
     private TimeAccelerator accelerator;
     // the beginning date of the simulation
-    private DateTimeBean date;
+    private final DateTimeBean date;
     // the initial handle(long) argument value
     private long start = -1L;
     // the previous handle(long) argument value
@@ -55,7 +55,8 @@ public final class TimeAnimator extends AnimationTimer {
     }
 
     /**
-     * @return {@code true} if the current TimeAnimator is running.
+     * @return a property holding {@code true} if and only if the TimeAnimator
+     * is running.
      */
     public ReadOnlyBooleanProperty running() {
         return running;
