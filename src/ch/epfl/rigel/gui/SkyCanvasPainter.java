@@ -147,7 +147,6 @@ public class SkyCanvasPainter {
         for (int i = 0; i < sky.planets().size(); i++) {
             final Planet planet = sky.planets().get(i);
             final Point2D point = new Point2D(planetPositions[2 * i], planetPositions[2 * i + 1]);
-            //TODO: is there any use to apply abs everywhere?
             final double diameter = Math.abs(
                     correctionTransform.deltaTransform(objectRadius(planet.magnitude(), projection), 0).getX()
             );
@@ -167,7 +166,6 @@ public class SkyCanvasPainter {
 
         canvas.getGraphicsContext2D().setFill(Color.WHITE);
         final Point2D point = correctionTransform.transform(sky.moonPosition().x(), sky.moonPosition().y());
-        //TODO: verify formula for diameter (projection.applyToAngle...)
         final double radius = Math.abs(
                 correctionTransform.deltaTransform(projection.applyToAngle(sky.moon().angularSize()), 0).getX()
         ) / 2d;
@@ -209,16 +207,14 @@ public class SkyCanvasPainter {
         Objects.requireNonNull(projection);
 
         // draw the horizon line
-        {
-            canvas.getGraphicsContext2D().setStroke(Color.RED);
-            canvas.getGraphicsContext2D().setLineWidth(2d);
-            final CartesianCoordinates center = projection.circleCenterForParallel(HorizontalCoordinates.ofDeg(0, 0));
-            final double radius = Math.abs(
-                    correctionTransform.deltaTransform(projection.circleRadiusForParallel(HorizontalCoordinates.ofDeg(0, 0)), 0).getX()
-            );
-            final Point2D point = correctionTransform.transform(center.x(), center.y());
-            canvas.getGraphicsContext2D().strokeOval(point.getX() - radius, point.getY() - radius, radius * 2d, radius * 2d);
-        }
+        canvas.getGraphicsContext2D().setStroke(Color.RED);
+        canvas.getGraphicsContext2D().setLineWidth(2d);
+        final CartesianCoordinates center = projection.circleCenterForParallel(HorizontalCoordinates.ofDeg(0, 0));
+        final double radius = Math.abs(
+                correctionTransform.deltaTransform(projection.circleRadiusForParallel(HorizontalCoordinates.ofDeg(0, 0)), 0).getX()
+        );
+        final Point2D point = correctionTransform.transform(center.x(), center.y());
+        canvas.getGraphicsContext2D().strokeOval(point.getX() - radius, point.getY() - radius, radius * 2d, radius * 2d);
 
         // draw the cardinal points
         canvas.getGraphicsContext2D().setFill(Color.RED);
@@ -226,10 +222,12 @@ public class SkyCanvasPainter {
         for (int i = 0; i < 360; i += 45) {
             final HorizontalCoordinates coordinates = HorizontalCoordinates.ofDeg(i, -0.5d);
             final CartesianCoordinates raw = projection.apply(coordinates);
-            final Point2D point = correctionTransform.transform(raw.x(), raw.y());
-            if (canvas.contains(point)) {
-                canvas.getGraphicsContext2D().fillText(coordinates.azOctantName(NORTH, EAST, SOUTH, WEST),
-                        point.getX(), point.getY());
+            final Point2D projected = correctionTransform.transform(raw.x(), raw.y());
+            if (canvas.contains(projected)) {
+                canvas.getGraphicsContext2D().fillText(
+                        coordinates.azOctantName(NORTH, EAST, SOUTH, WEST),
+                        projected.getX(), projected.getY()
+                );
             }
         }
     }

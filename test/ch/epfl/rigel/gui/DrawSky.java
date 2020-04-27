@@ -68,7 +68,6 @@ public final class DrawSky extends Application {
             BufferedImage swingImage =
                     SwingFXUtils.fromFXImage(fxImage, null);
             ImageIO.write(swingImage, "png", new File("sky.png"));
-            //TODO: figure out why asterisms' lines do not shine the same way
         }
         Platform.exit();
     }
