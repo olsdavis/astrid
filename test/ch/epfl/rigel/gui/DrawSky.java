@@ -14,6 +14,7 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.transform.Transform;
 import javafx.stage.Stage;
 
 import javax.imageio.ImageIO;
@@ -39,6 +40,8 @@ public final class DrawSky extends Application {
                     .loadFrom(resourceStream("/asterisms.txt"), AsterismLoader.INSTANCE)
                     .build();
 
+            Transform t =
+                    Transform.affine(1300, 0, 0, -1300, 400, 300);
             ZonedDateTime when =
                     ZonedDateTime.parse("2020-02-17T20:15:00+01:00");
             GeographicCoordinates where =
@@ -57,11 +60,11 @@ public final class DrawSky extends Application {
 
             painter.clear();
             // true order: stars, planets, sun, moon, horizon
-            painter.drawStars(sky, projection);
-            painter.drawPlanets(sky, projection);
-            painter.drawSun(sky, projection);
-            painter.drawMoon(sky, projection);
-            painter.drawHorizon(sky, projection);
+            painter.drawStars(sky, projection, t);
+            painter.drawPlanets(sky, projection, t);
+            painter.drawSun(sky, projection, t);
+            painter.drawMoon(sky, projection, t);
+            painter.drawHorizon(sky, projection, t);
 
             WritableImage fxImage =
                     canvas.snapshot(null, null);
