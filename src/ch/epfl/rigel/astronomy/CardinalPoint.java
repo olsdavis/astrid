@@ -43,6 +43,8 @@ public enum CardinalPoint {
      */
     NW(315d);
 
+    //TODO: French names! i.e. Nord-Ouest NO and not NW
+
     private final double azimuth;
 
     /**

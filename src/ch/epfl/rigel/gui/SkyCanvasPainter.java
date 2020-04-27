@@ -7,6 +7,7 @@ import ch.epfl.rigel.coordinates.StereographicProjection;
 import ch.epfl.rigel.math.Angle;
 import ch.epfl.rigel.math.ClosedInterval;
 import javafx.geometry.Point2D;
+import javafx.geometry.VPos;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.paint.Color;
 import javafx.scene.transform.Transform;
@@ -53,7 +54,7 @@ public class SkyCanvasPainter {
     public SkyCanvasPainter(Canvas canvas) {
         this.canvas = Objects.requireNonNull(canvas);
         //TODO: calculate the real value of the scale factor, in a future step
-        correctionTransform = Transform.affine(1300, 0, 0, -1300, canvas.getWidth() / 2d, canvas.getHeight() / 2d);
+        correctionTransform = Transform.affine(260, 0, 0, -260, 400, 300);
     }
 
     /**
@@ -211,9 +212,10 @@ public class SkyCanvasPainter {
 
         // draw the cardinal points
         canvas.getGraphicsContext2D().setFill(Color.RED);
+        canvas.getGraphicsContext2D().setTextBaseline(VPos.TOP);
+        //TODO: fix this! How to draw properly? cf. framapad test, small shift to side
         for (CardinalPoint cardinal : CardinalPoint.values()) {
-            // TODO: find out why -1.25 and not -0.5
-            final CartesianCoordinates raw = projection.apply(HorizontalCoordinates.ofDeg(cardinal.azDeg(), -1.25d));
+            final CartesianCoordinates raw = projection.apply(HorizontalCoordinates.ofDeg(cardinal.azDeg(), -0.5d));
             final Point2D point = correctionTransform.transform(raw.x(), raw.y());
             if (canvas.contains(point)) {
                 canvas.getGraphicsContext2D().fillText(cardinal.toString(), point.getX(), point.getY());

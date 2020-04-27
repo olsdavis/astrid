@@ -114,6 +114,10 @@ class StereographicProjectionTest {
         assertEquals(-0.6945319987205353, p.inverseApply(c4).alt(), 1e-8);
         assertEquals(3.828042199469258, p.inverseApply(c5).az(), 1e-8);
         assertEquals(0.3625637559048031, p.inverseApply(c5).alt(), 1e-8);
+        // after correction
+        var c6 = CartesianCoordinates.of(0, 0);
+        assertEquals(c.alt(), p.inverseApply(c6).alt(), 1e-8);
+        assertEquals(c.az(), p.inverseApply(c6).az(), 1e-8);
     }
 
     @Test
