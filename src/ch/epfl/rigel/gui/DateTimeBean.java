@@ -9,6 +9,9 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 /**
+ * Wraps {@link ZonedDateTime} into three time fields held by JFX properties, and allows
+ * its mutability.
+ *
  * @author Alexandre Doukhan (SCIPER: 316706)
  * @author Oscar Davis (SCIPER: 311193)
  * Creation date: 22/04/2020
