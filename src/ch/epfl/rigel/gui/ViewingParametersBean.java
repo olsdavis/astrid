@@ -68,6 +68,11 @@ public class ViewingParametersBean {
         return fieldOfView;
     }
 
+    /**
+     * Updates the value of the field of view.
+     *
+     * @param fov the field of view, in degrees
+     */
     public void setFieldOfViewDeg(double fov) {
         fieldOfView.set(fov);
     }

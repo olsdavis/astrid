@@ -6,6 +6,7 @@ import ch.epfl.rigel.astronomy.StarCatalogue;
 import ch.epfl.rigel.coordinates.CartesianCoordinates;
 import ch.epfl.rigel.coordinates.HorizontalCoordinates;
 import ch.epfl.rigel.coordinates.StereographicProjection;
+import ch.epfl.rigel.math.Angle;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
@@ -28,13 +29,13 @@ public class SkyCanvasManager {
     private final DateTimeBean dateTime;
     private final ObserverLocationBean observerLocation;
     private final ViewingParametersBean viewingParameters;
-    private final Canvas canvas;
-    private final SkyCanvasPainter painter;
+    private final Canvas canvas = new Canvas();
+    private final SkyCanvasPainter painter = new SkyCanvasPainter(canvas);
 
     // the following values are stored into floats
     private final SimpleObjectProperty<Point2D> mousePosition = new SimpleObjectProperty<>(new Point2D(0, 0));
 
-    private final ObservableObjectValue<Optional<CelestialObject>> objectUnderMouse;
+    private final ObservableObjectValue<CelestialObject> objectUnderMouse;
     private final ObservableObjectValue<StereographicProjection> projection;
     private final ObservableObjectValue<ObservedSky> observedSky;
     private final ObservableObjectValue<Transform> transform;
@@ -54,7 +55,6 @@ public class SkyCanvasManager {
         this.dateTime = dateTime;
         this.observerLocation = observerLocation;
         this.viewingParameters = viewingParameters;
-        canvas = new Canvas();
 
         projection = Bindings.createObjectBinding(
                 () -> new StereographicProjection(viewingParameters.getCenter()),
@@ -64,7 +64,7 @@ public class SkyCanvasManager {
         transform = Bindings.createObjectBinding(
                 () -> {
                     final double dilatation =
-                            canvas.getWidth() / (2d * Math.tan(viewingParameters.getFieldOfView() / 4d));
+                            canvas.getWidth() / (2d * Math.tan(Angle.ofDeg(viewingParameters.getFieldOfView()) / 4d));
                     return Transform.affine(
                             dilatation,
                             0,
@@ -113,7 +113,10 @@ public class SkyCanvasManager {
         objectUnderMouse = Bindings.createObjectBinding(
                 () -> {
                     final Point2D mouse = transform.get().inverseDeltaTransform(mousePosition.get());
-                    return observedSky.get().objectClosestTo(CartesianCoordinates.of(mouse.getX(), mouse.getY()), 1d);
+                    return observedSky
+                            .get()
+                            .objectClosestTo(CartesianCoordinates.of(mouse.getX(), mouse.getY()), 1d)
+                            .orElse(null);
                 },
                 mousePosition,
                 observedSky,
@@ -122,14 +125,36 @@ public class SkyCanvasManager {
         // JFX events
         canvas.setOnMouseMoved(event -> {
             mousePosition.set(new Point2D(event.getX(), event.getY()));
-            event.consume();
         });
         canvas.setOnMouseClicked(event -> {
-            canvas.requestFocus();
+            if (event.isPrimaryButtonDown()) {
+                canvas.requestFocus();
+                event.consume();
+            }
+        });
+        canvas.setOnScroll(event -> {
+            final double apply;
+            if (Math.abs(event.getDeltaY()) >= Math.abs(event.getDeltaX())) {
+                apply = event.getDeltaY();
+            } else {
+                apply = event.getDeltaX();
+            }
+            viewingParameters.setFieldOfViewDeg(viewingParameters.getFieldOfView() + apply);
+        });
+        canvas.setOnKeyPressed(event -> {
+            switch (event.getCode()) {
+                case LEFT:
+                    final HorizontalCoordinates current = viewingParameters.getCenter();
+                    viewingParameters.setCenter(HorizontalCoordinates.ofDeg(current.azDeg() - 10, current.altDeg()));
+                    break;
+                case RIGHT:
+                    final HorizontalCoordinates c = viewingParameters.getCenter();
+                    viewingParameters.setCenter(HorizontalCoordinates.ofDeg(c.azDeg() + 10, c.altDeg()));
+                    break;
+            }
             event.consume();
         });
         // draw listeners
-        painter = new SkyCanvasPainter(canvas);
         final ChangeListener<Object> listener = (observable, oldValue, newValue) -> {
             painter.clear();
             final ObservedSky s = observedSky.get();
@@ -146,10 +171,16 @@ public class SkyCanvasManager {
         projection.addListener(listener);
     }
 
-    public ObservableObjectValue<Optional<CelestialObject>> objectUnderMouseProperty() {
+    /**
+     * @return the property that holds the object under the mouse.
+     */
+    public ObservableObjectValue<CelestialObject> objectUnderMouseProperty() {
         return objectUnderMouse;
     }
 
+    /**
+     * @return the canvas used for drawing.
+     */
     public Canvas canvas() {
         return canvas;
     }
