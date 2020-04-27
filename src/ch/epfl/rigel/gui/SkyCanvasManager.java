@@ -134,6 +134,7 @@ public class SkyCanvasManager {
         });
         canvas.setOnScroll(event -> {
             final double apply;
+            // choose the biggest change
             if (Math.abs(event.getDeltaY()) >= Math.abs(event.getDeltaX())) {
                 apply = event.getDeltaY();
             } else {
@@ -152,7 +153,6 @@ public class SkyCanvasManager {
                     viewingParameters.setCenter(HorizontalCoordinates.ofDeg(c.azDeg() + 10, c.altDeg()));
                     break;
             }
-            event.consume();
         });
         // draw listeners
         final ChangeListener<Object> listener = (observable, oldValue, newValue) -> {
