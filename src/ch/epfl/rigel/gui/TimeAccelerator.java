@@ -36,8 +36,8 @@ public interface TimeAccelerator {
     /**
      * Calculates the new simulated time.
      *
-     * @param initial The initial simulation time.
-     * @param elapsed The real time elapsed from the beginning of the simulation until now.
+     * @param initial the beginning time of the simulation
+     * @param elapsed the time elapsed from the beginning of the simulation, in nanoseconds
      * @return the new simulated time in the form of a {@link ZonedDateTime}.
      */
     ZonedDateTime adjust(ZonedDateTime initial, long elapsed);
