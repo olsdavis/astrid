@@ -6,10 +6,6 @@ import javafx.stage.Stage;
 
 import java.time.ZonedDateTime;
 
-/**
- * @author Oscar Davis
- * Creation date: 27/04/2020
- */
 public class UseTimeAnimator extends Application {
 
     public static void main(String[] args) { launch(args); }
