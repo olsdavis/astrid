@@ -27,6 +27,16 @@ public class SkyCanvasPainter {
 
     private static final double SUN_ANGLE = Angle.ofDeg(0.5d);
 
+    /*
+    The four following fields hold the names of the cardinal points.
+    They are used for drawHorizon.
+     */
+
+    private static final String NORTH = "N";
+    private static final String SOUTH = "S";
+    private static final String WEST = "O"; // Ouest
+    private static final String EAST = "E";
+
     /**
      * This interval represents the values we keep for the magnitude of a
      * celestial object drawn on the canvas, since most of the magnitudes are
@@ -54,7 +64,7 @@ public class SkyCanvasPainter {
     public SkyCanvasPainter(Canvas canvas) {
         this.canvas = Objects.requireNonNull(canvas);
         //TODO: calculate the real value of the scale factor, in a future step
-        correctionTransform = Transform.affine(260, 0, 0, -260, 400, 300);
+        correctionTransform = Transform.affine(1300, 0, 0, -1300, 400, 300);
     }
 
     /**
@@ -213,12 +223,13 @@ public class SkyCanvasPainter {
         // draw the cardinal points
         canvas.getGraphicsContext2D().setFill(Color.RED);
         canvas.getGraphicsContext2D().setTextBaseline(VPos.TOP);
-        //TODO: fix this! How to draw properly? cf. framapad test, small shift to side
-        for (CardinalPoint cardinal : CardinalPoint.values()) {
-            final CartesianCoordinates raw = projection.apply(HorizontalCoordinates.ofDeg(cardinal.azDeg(), -0.5d));
+        for (int i = 0; i < 360; i += 45) {
+            final HorizontalCoordinates coordinates = HorizontalCoordinates.ofDeg(i, -0.5d);
+            final CartesianCoordinates raw = projection.apply(coordinates);
             final Point2D point = correctionTransform.transform(raw.x(), raw.y());
             if (canvas.contains(point)) {
-                canvas.getGraphicsContext2D().fillText(cardinal.toString(), point.getX(), point.getY());
+                canvas.getGraphicsContext2D().fillText(coordinates.azOctantName(NORTH, EAST, SOUTH, WEST),
+                        point.getX(), point.getY());
             }
         }
     }

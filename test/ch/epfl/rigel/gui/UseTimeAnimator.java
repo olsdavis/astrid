@@ -31,6 +31,7 @@ public class UseTimeAnimator extends Application {
             System.out.printf("Nouvelle heure : %s%n", n);
         });
         timeAnimator.start();
+        //TODO: valeurs satisfaisantes ?
     }
 
 }
