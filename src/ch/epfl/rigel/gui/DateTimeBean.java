@@ -14,84 +14,78 @@ import java.time.ZonedDateTime;
  * Creation date: 22/04/2020
  */
 public final class DateTimeBean {
-    private ObjectProperty<LocalDate> dateProperty;
-    private ObjectProperty<LocalTime> timeProperty;
-    private ObjectProperty<ZoneId> zoneProperty;
 
-
-    public DateTimeBean() {
-        dateProperty = new SimpleObjectProperty<>(null);
-        timeProperty = new SimpleObjectProperty<>(null);
-        zoneProperty = new SimpleObjectProperty<>(null);
-    }
+    private final ObjectProperty<LocalDate> dateProperty = new SimpleObjectProperty<>(null);
+    private final ObjectProperty<LocalTime> timeProperty = new SimpleObjectProperty<>(null);
+    private final ObjectProperty<ZoneId> zoneProperty = new SimpleObjectProperty<>(null);
 
     /**
      * @return the property of {@code date}
      */
-    ObjectProperty<LocalDate> dateProperty() {
+    public ObjectProperty<LocalDate> dateProperty() {
         return dateProperty;
     }
 
     /**
      * @return the date
      */
-    LocalDate getDate() {
+    public LocalDate getDate() {
         return dateProperty.get();
     }
 
     /**
      * @param date the other date
      */
-    void setDate(LocalDate date) {
+    public void setDate(LocalDate date) {
         dateProperty.setValue(date);
     }
 
     /**
      * @return the property of the {@code time}
      */
-    ObjectProperty<LocalTime> timeProperty() {
+    public ObjectProperty<LocalTime> timeProperty() {
         return timeProperty;
     }
 
     /**
      * @return the time
      */
-    LocalTime getTime() {
+    public LocalTime getTime() {
         return timeProperty.get();
     }
 
     /**
      * @param time the other time
      */
-    void setTime(LocalTime time) {
+    public void setTime(LocalTime time) {
         timeProperty.setValue(time);
     }
 
     /**
      * @return the property of the {@code zone}
      */
-    ObjectProperty<ZoneId> zoneProperty() {
+    public ObjectProperty<ZoneId> zoneProperty() {
         return zoneProperty;
     }
 
     /**
      * @return the zone
      */
-    ZoneId getZone() {
+    public ZoneId getZone() {
         return zoneProperty.get();
     }
 
     /**
      * @param zone the other zone
      */
-    void setZone(ZoneId zone) {
+    public void setZone(ZoneId zone) {
         zoneProperty.setValue(zone);
     }
 
     /**
      * @return a new {@code ZonedDateTime} with parameters from {@code this}
      */
-    ZonedDateTime getZonedDateTime() {
+    public ZonedDateTime getZonedDateTime() {
         return ZonedDateTime.of(getDate(), getTime(), getZone());
     }
 
@@ -100,9 +94,10 @@ public final class DateTimeBean {
      *
      * @param zonedDateTime the other {@code ZonedDateTime}.
      */
-    void setZonedDateTime(ZonedDateTime zonedDateTime) {
+    public void setZonedDateTime(ZonedDateTime zonedDateTime) {
         setDate(zonedDateTime.toLocalDate());
         setTime(zonedDateTime.toLocalTime());
         setZone(zonedDateTime.getZone());
     }
+
 }
