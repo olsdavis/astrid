@@ -82,7 +82,7 @@ public final class CartesianCoordinates {
      */
     @Override
     public int hashCode() {
-        throw new UnsupportedOperationException("unsupported operation");
+        throw new UnsupportedOperationException("tried to call hashCode on CartesianCoordinates");
     }
 
     /**
@@ -90,6 +90,6 @@ public final class CartesianCoordinates {
      */
     @Override
     public boolean equals(Object o) {
-        throw new UnsupportedOperationException("unsupported operation");
+        throw new UnsupportedOperationException("tried to call equals on CartesianCoordinates");
     }
 }

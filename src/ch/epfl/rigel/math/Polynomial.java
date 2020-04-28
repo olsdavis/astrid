@@ -88,11 +88,11 @@ public final class Polynomial {
 
     @Override
     public boolean equals(Object o) {
-        throw new UnsupportedOperationException("unsupported operation");
+        throw new UnsupportedOperationException("tried to call equals on Polynomial");
     }
 
     @Override
     public int hashCode() {
-        throw new UnsupportedOperationException("unsupported operation");
+        throw new UnsupportedOperationException("tried to call hashCode on Polynomial");
     }
 }

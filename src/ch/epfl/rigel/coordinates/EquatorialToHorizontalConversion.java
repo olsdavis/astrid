@@ -40,10 +40,12 @@ public final class EquatorialToHorizontalConversion implements Function<Equatori
     @Override
     public HorizontalCoordinates apply(EquatorialCoordinates e) {
         final double hourAngle = sidereal - e.ra();
-        final double h = Math.asin(Math.sin(e.dec()) * sinLat + Math.cos(e.dec()) * cosLat * Math.cos(hourAngle));
+        final double sinDec = Math.sin(e.dec());
+        final double cosDec = Math.cos(e.dec());
+        final double alt = Math.asin(sinDec * sinLat + cosDec * cosLat * Math.cos(hourAngle));
         return HorizontalCoordinates.of(
-                Angle.normalizePositive(Math.atan2(-Math.cos(e.dec()) * cosLat * Math.sin(hourAngle), Math.sin(e.dec()) - sinLat * Math.sin(h))),
-                h
+                Angle.normalizePositive(Math.atan2(-cosDec * cosLat * Math.sin(hourAngle), sinDec - sinLat * Math.sin(alt))),
+                alt
         );
     }
 
@@ -52,7 +54,7 @@ public final class EquatorialToHorizontalConversion implements Function<Equatori
      */
     @Override
     public int hashCode() {
-        throw new UnsupportedOperationException("unsupported operation");
+        throw new UnsupportedOperationException("tried to call hashCode on EquatorialToHorizontalConversion");
     }
 
     /**
@@ -60,7 +62,7 @@ public final class EquatorialToHorizontalConversion implements Function<Equatori
      */
     @Override
     public boolean equals(Object obj) {
-        throw new UnsupportedOperationException("unsupported operation");
+        throw new UnsupportedOperationException("tried to call equals on EquatorialToHorizontalConversion");
     }
 
 }

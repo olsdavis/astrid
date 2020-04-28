@@ -28,10 +28,8 @@ public abstract class CelestialObject {
      */
     CelestialObject(String name, EquatorialCoordinates equatorialPos, float angularSize, float magnitude) {
         checkArgument(angularSize >= 0);
-        requireNonNull(name, "the name of the CelestialObject cannot be null");
-        requireNonNull(equatorialPos, "the position of the CelestialObject cannot be null");
-        this.name = name;
-        this.equatorialPos = equatorialPos;
+        this.name = requireNonNull(name, "the name of the CelestialObject cannot be null");
+        this.equatorialPos = requireNonNull(equatorialPos, "the position of the CelestialObject cannot be null");
         this.angularSize = angularSize;
         this.magnitude = magnitude;
     }

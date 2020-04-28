@@ -67,7 +67,7 @@ public final class Angle {
      *                                  interval
      */
     public static double ofDMS(int deg, int min, double sec) {
-        Preconditions.checkArgument(deg>=0);
+        Preconditions.checkArgument(deg >= 0);
         return ofDeg(
                 deg + (checkInInterval(MIN_SEC_INTERVAL, min) / 60d) +
                         (checkInInterval(MIN_SEC_INTERVAL, sec) / 3600d)

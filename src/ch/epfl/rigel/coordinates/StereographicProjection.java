@@ -77,11 +77,13 @@ public final class StereographicProjection implements Function<HorizontalCoordin
     @Override
     public CartesianCoordinates apply(HorizontalCoordinates azAlt) {
         final double lambdaD = azAlt.az() - lambda0;
-        final double d = 1d / (1 + sin(azAlt.alt()) * sinPhi1
-                + cos(azAlt.alt()) * cosPhi1 * cos(lambdaD));
-        return CartesianCoordinates.of(d * cos(azAlt.alt()) * sin(lambdaD),
-                d * (sin(azAlt.alt()) * cosPhi1 -
-                        cos(azAlt.alt()) * sinPhi1 * cos(lambdaD)));
+        final double sinAzAlt = sin(azAlt.alt());
+        final double cosAzAlt = cos(azAlt.alt());
+        final double cosLambdaD = cos(lambdaD);
+        final double d = 1d / (1 + sinAzAlt * sinPhi1
+                + cosAzAlt * cosPhi1 * cosLambdaD);
+        return CartesianCoordinates.of(d * cosAzAlt * sin(lambdaD),
+                d * (sinAzAlt * cosPhi1 - cosAzAlt * sinPhi1 * cosLambdaD));
     }
 
     /**
@@ -114,7 +116,7 @@ public final class StereographicProjection implements Function<HorizontalCoordin
      */
     @Override
     public int hashCode() {
-        throw new UnsupportedOperationException("unsupported operation");
+        throw new UnsupportedOperationException("tried to call hashCode on StereographicProjection");
     }
 
     /**
@@ -122,7 +124,7 @@ public final class StereographicProjection implements Function<HorizontalCoordin
      */
     @Override
     public boolean equals(Object o) {
-        throw new UnsupportedOperationException("unsupported operation");
+        throw new UnsupportedOperationException("tried to call equals on StereographicProjection");
     }
 
     @Override

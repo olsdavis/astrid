@@ -55,6 +55,6 @@ public final class Star extends CelestialObject {
      * @return the color temperature associated with the B-V color index of the star.
      */
     public int colorTemperature() {
-        return (int) Math.floor(4600 * (1 / (0.92d * colorIndex + 1.7d) + 1 / (0.92d * colorIndex + 0.62d)));
+        return (int) (4600 * (1 / (0.92d * colorIndex + 1.7d) + 1 / (0.92d * colorIndex + 0.62d)));
     }
 }

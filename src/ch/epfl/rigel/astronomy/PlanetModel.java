@@ -123,12 +123,14 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
         final double nu = M + 2 * e * sin(M);
         final double r = (a * (1 - eSquare)) / (1 + e * cos(nu));
         final double l = nu + omegaBar;
-        final double psi = asin(sin(l - omega) * sinI);
+        // the sin of the difference between l and omega
+        final double sinDiffLOmega = sin(l - omega);
+        final double psi = asin(sinDiffLOmega * sinI);
         final double cosPsi = cos(psi);
         // projected radius
         final double rPrime = r * cosPsi;
         // projected longitude
-        final double lPrime = atan2(sin(l - omega) * cosI,
+        final double lPrime = atan2(sinDiffLOmega * cosI,
                 cos(l - omega)) + omega;
 
         // Earth calculations

@@ -10,8 +10,8 @@ import ch.epfl.rigel.math.Angle;
  * Creation date: 20/02/2020
  */
 abstract class SphericalCoordinates {
-    private double lon;
-    private double lat;
+    private final double lon;
+    private final double lat;
 
     /**
      * @param lon the longitude (in radians)
@@ -55,7 +55,7 @@ abstract class SphericalCoordinates {
      */
     @Override
     public final int hashCode() {
-        throw new UnsupportedOperationException("unsupported operation");
+        throw new UnsupportedOperationException("tried to call hashCode on SphericalCoordinates");
     }
 
     /**
@@ -63,6 +63,6 @@ abstract class SphericalCoordinates {
      */
     @Override
     public final boolean equals(Object o) {
-        throw new UnsupportedOperationException("unsupported operation");
+        throw new UnsupportedOperationException("tried to call equals on SphericalCoordinates");
     }
 }

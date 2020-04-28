@@ -17,7 +17,7 @@ public enum Epoch {
      */
     J2000(ZonedDateTime.of(
             LocalDate.of(2000, Month.JANUARY, 1),
-            LocalTime.of(12, 0),
+            LocalTime.NOON,
             ZoneOffset.UTC)
     ),
     /**
@@ -25,9 +25,12 @@ public enum Epoch {
      */
     J2010(ZonedDateTime.of(
             LocalDate.of(2010, Month.JANUARY, 1).minusDays(1),
-            LocalTime.of(0, 0),
+            LocalTime.MIDNIGHT,
             ZoneOffset.UTC)
     );
+
+    private static final double DAYS_PER_MILLISECOND =  1 / 1000d / 3600d / 24d;
+    private static final double DAYS_PER_JULIAN_CENTURY = 36525d;
 
     private final ZonedDateTime epochStart;
 
@@ -43,7 +46,7 @@ public enum Epoch {
      * @return the number of days between the start of the epoch and the provided date {@code when}.
      */
     public double daysUntil(ZonedDateTime when) {
-        return epochStart.until(when, ChronoUnit.MILLIS) / 1000d / 3600d / 24d;
+        return epochStart.until(when, ChronoUnit.MILLIS) * DAYS_PER_MILLISECOND;
     }
 
     /**
@@ -52,7 +55,7 @@ public enum Epoch {
      * and the provided date {@code when}.
      */
     public double julianCenturiesUntil(ZonedDateTime when) {
-        return daysUntil(when) / 36525d;
+        return daysUntil(when) / DAYS_PER_JULIAN_CENTURY;
     }
 
 }

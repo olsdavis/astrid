@@ -78,7 +78,7 @@ public final class RightOpenInterval extends Interval {
 
     @Override
     public String toString() {
-        return String.format(Locale.ROOT, "[%s,%s[", low(), high());
+        return String.format(Locale.ROOT, "[%f,%f[", low(), high());
     }
 
 }

@@ -53,12 +53,12 @@ public abstract class Interval {
 
     @Override
     public final boolean equals(Object obj) {
-        throw new UnsupportedOperationException("unsupported operation");
+        throw new UnsupportedOperationException("tried to call equals on Interval");
     }
 
     @Override
     public final int hashCode() {
-        throw new UnsupportedOperationException("unsupported operation");
+        throw new UnsupportedOperationException("tried to call hashCode on Interval");
     }
 
 }

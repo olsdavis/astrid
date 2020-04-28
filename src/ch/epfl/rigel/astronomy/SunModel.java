@@ -24,6 +24,10 @@ public enum SunModel implements CelestialObjectModel<Sun> {
     SUN;
 
     /**
+     * Tau (2 * PI) divided by a tropical year.
+     */
+    private static final double TAU_BY_TROPICAL_YEAR = (Angle.TAU / 365.242191d);
+    /**
      * Sun's longitude at {@link Epoch#J2010}.
      */
     private static final double EPSILON = Angle.ofDeg(279.557208d);
@@ -46,7 +50,7 @@ public enum SunModel implements CelestialObjectModel<Sun> {
 
     @Override
     public Sun at(double D, EclipticToEquatorialConversion conversion) {
-        final double M = (Angle.TAU / 365.242191d) * D + EPSILON - OMEGA_BAR;
+        final double M = TAU_BY_TROPICAL_YEAR * D + EPSILON - OMEGA_BAR;
         final double nu = M + 2 * E * sin(M);
         final EclipticCoordinates coordinates = EclipticCoordinates.of(Angle.normalizePositive(nu + OMEGA_BAR), 0);
         final double theta = THETA_0 * (1 + E * cos(nu)) / (1 - E_2);

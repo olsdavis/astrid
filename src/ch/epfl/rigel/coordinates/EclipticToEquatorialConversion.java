@@ -48,11 +48,12 @@ public final class EclipticToEquatorialConversion implements Function<EclipticCo
      */
     @Override
     public EquatorialCoordinates apply(EclipticCoordinates e) {
+        final double lonSin = Math.sin(e.lon());
         return EquatorialCoordinates.of(
-                Angle.normalizePositive(Math.atan2((Math.sin(e.lon()) * cosObliqueness)
+                Angle.normalizePositive(Math.atan2((lonSin * cosObliqueness)
                         - (Math.tan(e.lat()) * sinObliqueness), Math.cos(e.lon()))),
                 Math.asin((Math.sin(e.lat()) * cosObliqueness)
-                        + (Math.cos(e.lat()) * sinObliqueness * Math.sin(e.lon())))
+                        + (Math.cos(e.lat()) * sinObliqueness * lonSin))
         );
     }
 
@@ -61,7 +62,7 @@ public final class EclipticToEquatorialConversion implements Function<EclipticCo
      */
     @Override
     public int hashCode() {
-        throw new UnsupportedOperationException("unsupported operation");
+        throw new UnsupportedOperationException("tried to call hashCode on EclipticToEquatorialConversion");
     }
 
     /**
@@ -69,7 +70,7 @@ public final class EclipticToEquatorialConversion implements Function<EclipticCo
      */
     @Override
     public boolean equals(Object obj) {
-        throw new UnsupportedOperationException("unsupported operation");
+        throw new UnsupportedOperationException("tried to call equals on EclipticToEquatorialConversion");
     }
 
 }
