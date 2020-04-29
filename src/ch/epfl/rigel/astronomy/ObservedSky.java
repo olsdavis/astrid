@@ -181,6 +181,11 @@ public class ObservedSky {
     private final Map<ChunkPair, SkyChunk> chunks = new HashMap<>();
 
     /**
+     * Initializes the ObservedSky, projects all CelestialObjects, namely the Moon, the Sun,
+     * planets and stars, and also distributes them across chunks that make the method
+     * {@link #objectClosestTo(CartesianCoordinates, double)} more efficient than standard linear
+     * search.
+     *
      * @param moment     the moment at which the sky is observed
      * @param observer   the position from which the sky is observed
      * @param projection the projection to use
@@ -188,21 +193,20 @@ public class ObservedSky {
      */
     public ObservedSky(ZonedDateTime moment, GeographicCoordinates observer, StereographicProjection projection, StarCatalogue catalogue) {
         this.catalogue = catalogue;
-
-        // days since J2010
-        final double d = Epoch.J2010.daysUntil(moment);
         // the conversion used for the current situation
         final EclipticToEquatorialConversion eclipticToEq = new EclipticToEquatorialConversion(moment);
         final EquatorialToHorizontalConversion eqToHorizontal = new EquatorialToHorizontalConversion(moment, observer);
-
+        // days since J2010
+        final double d = Epoch.J2010.daysUntil(moment);
+        // set up the Sun
         sun = SunModel.SUN.at(d, eclipticToEq);
         sunProjection = projection.apply(eqToHorizontal.apply(sun.equatorialPos()));
         putInChunk(sun, sunProjection);
-
+        // set up the Moon
         moon = MoonModel.MOON.at(d, eclipticToEq);
         moonProjection = projection.apply(eqToHorizontal.apply(moon.equatorialPos()));
         putInChunk(moon, moonProjection);
-
+        // set up the planets
         planets = PlanetModel.ALL.stream()
                 .filter(p -> p != PlanetModel.EARTH) // filtering the Earth
                 .map(p -> p.at(d, eclipticToEq))
