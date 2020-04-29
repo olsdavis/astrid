@@ -345,7 +345,8 @@ public class ObservedSky {
         // and it is way faster for small distances, since less chunks are loaded.
 
         // This value represents the radius in which we are going
-        // to look for chunks. We let it be at least 1.
+        // to look for chunks. We let it be at least 1, except if the
+        // maxDistance is 0 - which is a special case.
         final int limit = (int) Math.ceil(maxDistance / CHUNK_SIZE);
         // LinkedLists allow O(1) time for adding elements.
         // It has shown better results while benchmarking.
