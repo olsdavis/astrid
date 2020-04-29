@@ -21,7 +21,8 @@ public final class EclipticToEquatorialConversion implements Function<EclipticCo
      * This polynomial allows the calculation of the obliqueness, used in calculations for
      * {@link #apply(EclipticCoordinates)}.
      */
-    private static final Polynomial OBLIQUENESS_POLYNOMIAL = Polynomial.of(Angle.ofArcsec(0.00181d),
+    private static final Polynomial OBLIQUENESS_POLYNOMIAL = Polynomial.of(
+            Angle.ofArcsec(0.00181d),
             Angle.ofArcsec(-0.0006d),
             Angle.ofArcsec(-46.815d),
             Angle.ofDMS(23, 26, 21.45d)
