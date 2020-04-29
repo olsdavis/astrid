@@ -115,8 +115,8 @@ public class ObservedSkyTest {
         final List<Pair> all = all(sky);
         for (int i = 0; i < 10 * TestRandomizer.RANDOM_ITERATIONS; i++) {
             final double dist = random.nextDouble(0, 10d);
-            final CartesianCoordinates coordinates = CartesianCoordinates.of(random.nextDouble(-1, 1),
-                    random.nextDouble(-1, 1));
+            final CartesianCoordinates coordinates = CartesianCoordinates.of(random.nextDouble(-10, 10),
+                    random.nextDouble(-10, 10));
             final CelestialObject obj = linearSearch(all, sky, coordinates, dist);
             final CelestialObject found = sky.objectClosestTo(coordinates, dist).orElse(null);
             assertEquals(obj, found);
