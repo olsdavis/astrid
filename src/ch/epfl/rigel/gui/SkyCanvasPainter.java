@@ -10,6 +10,7 @@ import javafx.geometry.Point2D;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.paint.Color;
+import javafx.scene.text.TextAlignment;
 import javafx.scene.transform.Transform;
 
 import java.util.List;
@@ -225,6 +226,7 @@ public class SkyCanvasPainter {
 
         // draw the cardinal points
         canvas.getGraphicsContext2D().setFill(Color.RED);
+        canvas.getGraphicsContext2D().setTextAlign(TextAlignment.CENTER);
         canvas.getGraphicsContext2D().setTextBaseline(VPos.TOP);
         for (int i = 0; i < 360; i += 45) {
             final HorizontalCoordinates coordinates = HorizontalCoordinates.ofDeg(i, -0.5d);

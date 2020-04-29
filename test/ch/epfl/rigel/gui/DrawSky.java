@@ -10,10 +10,8 @@ import ch.epfl.rigel.coordinates.StereographicProjection;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
-import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.image.WritableImage;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.transform.Transform;
 import javafx.stage.Stage;
 
@@ -65,6 +63,9 @@ public final class DrawSky extends Application {
             painter.drawSun(sky, projection, t);
             painter.drawMoon(sky, projection, t);
             painter.drawHorizon(sky, projection, t);
+            canvas.getGraphicsContext2D().moveTo(400, 0);
+            canvas.getGraphicsContext2D().lineTo(400, 600);
+            canvas.getGraphicsContext2D().stroke();
 
             WritableImage fxImage =
                     canvas.snapshot(null, null);
