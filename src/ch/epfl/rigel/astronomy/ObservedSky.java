@@ -343,6 +343,8 @@ public class ObservedSky {
 
         // Overall, this method is much more efficient than a simple linear search,
         // and it is way faster for small distances, since less chunks are loaded.
+        // Particularly, this algorithm is very efficient when there is actually no
+        // chunk, because there it applies not a single linear search.
 
         // This value represents the radius in which we are going
         // to look for chunks. We let it be at least 1, except if the

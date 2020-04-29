@@ -144,7 +144,7 @@ public class ObservedSkyTest {
         final List<CartesianCoordinates> coordinates = new ArrayList<>(TestRandomizer.RANDOM_ITERATIONS);
         final SplittableRandom random = TestRandomizer.newRandom();
         for (int i = 0; i < 1000 * TestRandomizer.RANDOM_ITERATIONS; i++) {
-            coordinates.add(CartesianCoordinates.of(random.nextDouble(-1, 1), random.nextDouble(-1, 1)));
+            coordinates.add(CartesianCoordinates.of(random.nextDouble(-10, 10), random.nextDouble(-10, 10)));
         }
         final ObservedSky sky = new ObservedSky(ZonedDateTime.now(), GeographicCoordinates.ofDeg(0, 0),
                 new StereographicProjection(HorizontalCoordinates.of(0, 0)),
@@ -163,11 +163,11 @@ public class ObservedSkyTest {
             }
         }, coordinates.size());
         // just to prove it's crap
-        Bench.printBench(() -> {
+        /*Bench.printBench(() -> {
             for (CartesianCoordinates coordinate : coordinates) {
                 parallelSearch(all, sky, coordinate, 0.5d);
             }
-        }, coordinates.size());
+        }, coordinates.size());*/
     }
 
     // DISABLED: outputs a value
