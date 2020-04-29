@@ -66,7 +66,8 @@ public final class CartesianCoordinates {
     /**
      * @param dx the x translation
      * @param dy the y translation
-     * @return CartesianCoordinates of this point translated by {@code x} and {@code y}.
+     * @return CartesianCoordinates of a new point translated by {@code x} and {@code y} from
+     * this one.
      */
     public CartesianCoordinates translate(double dx, double dy) {
         return of(x + dx, y + dy);
