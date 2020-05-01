@@ -7,6 +7,7 @@ import ch.epfl.rigel.coordinates.CartesianCoordinates;
 import ch.epfl.rigel.coordinates.HorizontalCoordinates;
 import ch.epfl.rigel.coordinates.StereographicProjection;
 import ch.epfl.rigel.math.Angle;
+import ch.epfl.rigel.math.RightOpenInterval;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
@@ -16,14 +17,14 @@ import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.transform.Transform;
 
-import java.util.Optional;
-
 /**
  * @author Oscar Davis (SCIPER: 311193)
  * @author Alexandre Doukhan (SCIPER: 316706)
  * Creation date: 27/04/2020
  */
 public class SkyCanvasManager {
+
+    private static final RightOpenInterval ROT_LIM = RightOpenInterval.of(0, 360);
 
     private final StarCatalogue catalogue;
     private final DateTimeBean dateTime;
@@ -146,11 +147,13 @@ public class SkyCanvasManager {
             switch (event.getCode()) {
                 case LEFT:
                     final HorizontalCoordinates current = viewingParameters.getCenter();
-                    viewingParameters.setCenter(HorizontalCoordinates.ofDeg(current.azDeg() - 10, current.altDeg()));
+                    viewingParameters.setCenter(HorizontalCoordinates.ofDeg(ROT_LIM.reduce(current.azDeg() - 10d),
+                            current.altDeg()));
                     break;
                 case RIGHT:
                     final HorizontalCoordinates c = viewingParameters.getCenter();
-                    viewingParameters.setCenter(HorizontalCoordinates.ofDeg(c.azDeg() + 10, c.altDeg()));
+                    viewingParameters.setCenter(HorizontalCoordinates.ofDeg(ROT_LIM.reduce(c.azDeg() + 10d),
+                            c.altDeg()));
                     break;
             }
         });
