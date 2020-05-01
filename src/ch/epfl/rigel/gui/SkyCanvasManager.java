@@ -70,6 +70,11 @@ public class SkyCanvasManager {
         // TODO: why is the sky completely different from what the teacher has?
         // TODO: (related) Why does the mouse show another object? (probably because of the previous)
 
+        //TODO: When starting up the program, the calculation of the mouse coordinates
+        // in the original CartesianCoordinates system (by using inverseTransform and
+        // inverseApply) throws an exception, which says that the determinant is zero.
+        // How to fix that?
+
         projection = Bindings.createObjectBinding(
                 () -> new StereographicProjection(viewingParameters.getCenter()),
                 viewingParameters.getCenterProperty()
@@ -96,7 +101,7 @@ public class SkyCanvasManager {
 
         mouseHorizontalPosition = Bindings.createObjectBinding(
                 () -> {
-                    final Point2D inverse = transform.get().inverseDeltaTransform(mousePosition.get());
+                    final Point2D inverse = transform.get().inverseTransform(mousePosition.get());
                     return projection.get().inverseApply(CartesianCoordinates.of(inverse.getX(), inverse.getY()));
                 },
                 mousePosition,
@@ -126,7 +131,7 @@ public class SkyCanvasManager {
 
         objectUnderMouse = Bindings.createObjectBinding(
                 () -> {
-                    final Point2D mouse = transform.get().inverseDeltaTransform(mousePosition.get());
+                    final Point2D mouse = transform.get().inverseTransform(mousePosition.get());
                     return observedSky
                             .get()
                             .objectClosestTo(CartesianCoordinates.of(mouse.getX(), mouse.getY()), 1d)
