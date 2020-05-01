@@ -117,7 +117,7 @@ public class ObservedSky {
      * all the celestial objects in its area. It allows faster search for
      * {@link #objectClosestTo(CartesianCoordinates, double)}.
      */
-    private static class SkyChunk {
+    private static final class SkyChunk {
         private final List<CelestialPair> objects = new ArrayList<>();
 
         /**
