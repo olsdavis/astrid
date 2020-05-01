@@ -43,7 +43,8 @@ public class UseSkyCanvasManager extends Application {
             ObserverLocationBean observerLocationBean =
                     new ObserverLocationBean();
             observerLocationBean.setCoordinates(
-                    GeographicCoordinates.ofDeg(6.57, 46.52));
+                    GeographicCoordinates.ofDeg(6.57, 46.52)
+            );
 
             ViewingParametersBean viewingParametersBean =
                     new ViewingParametersBean();

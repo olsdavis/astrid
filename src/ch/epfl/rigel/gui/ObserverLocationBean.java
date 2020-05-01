@@ -26,7 +26,7 @@ public class ObserverLocationBean {
      */
     public ObserverLocationBean() {
         coordinatesBinding = Bindings.createObjectBinding(
-                () -> GeographicCoordinates.ofDeg(latitude.get(), longitude.get()),
+                () -> GeographicCoordinates.ofDeg(longitude.get(), latitude.get()),
                 longitude,
                 latitude
         );

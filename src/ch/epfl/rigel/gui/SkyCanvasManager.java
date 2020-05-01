@@ -16,6 +16,7 @@ import javafx.beans.value.ObservableDoubleValue;
 import javafx.beans.value.ObservableObjectValue;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.transform.NonInvertibleTransformException;
 import javafx.scene.transform.Transform;
 
 import java.util.Objects;
@@ -49,8 +50,7 @@ public class SkyCanvasManager {
     private final ObservableObjectValue<ObservedSky> observedSky;
     private final ObservableObjectValue<Transform> transform;
     private final ObservableObjectValue<HorizontalCoordinates> mouseHorizontalPosition;
-    // TODO: what is the purpose of these? Is the way the bindings were made correct?
-    private final ObservableDoubleValue mouseAzimut;
+    private final ObservableDoubleValue mouseAzimuth;
     private final ObservableDoubleValue mouseAltitude;
 
     /**
@@ -67,13 +67,6 @@ public class SkyCanvasManager {
         Objects.requireNonNull(dateTime);
         Objects.requireNonNull(observerLocation);
         Objects.requireNonNull(viewingParameters);
-
-        // TODO: why is the sky completely different from what the teacher has?
-
-        //TODO: When starting up the program, the calculation of the mouse coordinates
-        // in the original CartesianCoordinates system (by using inverseTransform and
-        // inverseApply) throws an exception, which says that the determinant is zero.
-        // How to fix that?
 
         projection = Bindings.createObjectBinding(
                 () -> new StereographicProjection(viewingParameters.getCenter()),
@@ -101,7 +94,14 @@ public class SkyCanvasManager {
 
         mouseHorizontalPosition = Bindings.createObjectBinding(
                 () -> {
-                    final Point2D inverse = transform.get().inverseTransform(mousePosition.get());
+                    final Point2D inverse;
+                    try {
+                        inverse = transform.get().inverseTransform(mousePosition.get());
+                    } catch (NonInvertibleTransformException e) {
+                        // when the program starts up, whe can tolerate the fact that the coordinates
+                        // are not invertible
+                        return null;
+                    }
                     return projection.get().inverseApply(CartesianCoordinates.of(inverse.getX(), inverse.getY()));
                 },
                 mousePosition,
@@ -109,7 +109,7 @@ public class SkyCanvasManager {
                 projection
         );
 
-        mouseAzimut = Bindings.createDoubleBinding(
+        mouseAzimuth = Bindings.createDoubleBinding(
                 () -> mouseHorizontalPosition.get().azDeg(),
                 mouseHorizontalPosition
         );
@@ -131,7 +131,14 @@ public class SkyCanvasManager {
 
         objectUnderMouse = Bindings.createObjectBinding(
                 () -> {
-                    final Point2D mouse = transform.get().inverseTransform(mousePosition.get());
+                    final Point2D mouse;
+                    try {
+                        mouse = transform.get().inverseTransform(mousePosition.get());
+                    } catch (NonInvertibleTransformException e) {
+                        // when the program starts up, whe can tolerate the fact that the coordinates
+                        // are not invertible
+                        return null;
+                    }
                     return observedSky
                             .get()
                             .objectClosestTo(CartesianCoordinates.of(mouse.getX(), mouse.getY()), 1d)
@@ -204,6 +211,34 @@ public class SkyCanvasManager {
      */
     public Canvas canvas() {
         return canvas;
+    }
+
+    /**
+     * @return the azimuth of the mouse, in HorizontalCoordinates.
+     */
+    public double mouseAzimuth() {
+        return mouseAzimuth.get();
+    }
+
+    /**
+     * @return the property that holds the azimuth of the mouse, in HorizontalCoordinates.
+     */
+    public ObservableDoubleValue mouseAzimuthProperty() {
+        return mouseAzimuth;
+    }
+
+    /**
+     * @return the altitude of the mouse, in HorizontalCoordinates.
+     */
+    public double mouseAltitude() {
+        return mouseAltitude.get();
+    }
+
+    /**
+     * @return the property that holds the altitude of the mouse, in HorizontalCoordinates.
+     */
+    public ObservableDoubleValue mouseAltitudeProperty() {
+        return mouseAltitude;
     }
 
 }
