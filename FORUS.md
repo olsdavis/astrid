@@ -13,3 +13,6 @@ Bonus
 ---
 - Add a Hyg/Asterisms database live loader
 ("Load database > Navigate to file...")
+- Add the possibility of choosing a location and then
+takes its longitude/latitude to render the sky at that
+point (Web API, *e.g.* Google Maps)
