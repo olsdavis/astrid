@@ -59,6 +59,11 @@ public class ObserverLocationBean {
         return coordinatesBinding;
     }
 
+    /**
+     * Updates the value of the observer's coordinates to {@code c}.
+     *
+     * @param c the new coordinates of the observer
+     */
     public void setCoordinates(GeographicCoordinates c) {
         latitude.set(c.latDeg());
         longitude.set(c.lonDeg());
