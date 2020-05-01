@@ -49,6 +49,7 @@ public class SkyCanvasManager {
     private final ObservableObjectValue<ObservedSky> observedSky;
     private final ObservableObjectValue<Transform> transform;
     private final ObservableObjectValue<HorizontalCoordinates> mouseHorizontalPosition;
+    // TODO: what is the purpose of these? Is the way the bindings were made correct?
     private final ObservableDoubleValue mouseAzimut;
     private final ObservableDoubleValue mouseAltitude;
 
