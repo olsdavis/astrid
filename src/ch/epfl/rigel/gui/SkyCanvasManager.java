@@ -29,10 +29,15 @@ import java.util.Objects;
 public class SkyCanvasManager {
 
     /**
-     * Represents the bounds of the rotation of the projection's center, when
+     * Represents the bounds of the azimuth of the projection's center, when
      * moving it with the left and right keys.
      */
-    private static final RightOpenInterval ROT_LIM = RightOpenInterval.of(0, 360);
+    private static final RightOpenInterval AZ_LIM = RightOpenInterval.of(0, 360);
+    /**
+     * Represents the bounds of the altitude of the projection's center, when
+     * moving it with the up and down keys.
+     */
+    private static final ClosedInterval ALT_LIM = ClosedInterval.of(5, 90);
     /**
      * Represents the bounds of the field of view value, when changing it with the
      * up and down keys or the mouse's scroll.
@@ -169,17 +174,26 @@ public class SkyCanvasManager {
             viewingParameters.setFieldOfViewDeg(FOV_LIM.clip(viewingParameters.getFieldOfView() + apply));
         });
         canvas.setOnKeyPressed(event -> {
+            // we could have put this declaration in each switch, only if a listened key
+            // is triggered. Yet, it is a minor (almost early) optimization, and it creates
+            // big code repetitions
+            final HorizontalCoordinates current = viewingParameters.getCenter();
             switch (event.getCode()) {
                 case LEFT:
-                    final HorizontalCoordinates current = viewingParameters.getCenter();
-                    viewingParameters.setCenter(HorizontalCoordinates.ofDeg(ROT_LIM.reduce(current.azDeg() - 10d),
+                    viewingParameters.setCenter(HorizontalCoordinates.ofDeg(AZ_LIM.reduce(current.azDeg() - 10d),
                             current.altDeg()));
                     break;
                 case RIGHT:
-                    final HorizontalCoordinates c = viewingParameters.getCenter();
-                    viewingParameters.setCenter(HorizontalCoordinates.ofDeg(ROT_LIM.reduce(c.azDeg() + 10d),
-                            c.altDeg()));
+                    viewingParameters.setCenter(HorizontalCoordinates.ofDeg(AZ_LIM.reduce(current.azDeg() + 10d),
+                            current.altDeg()));
                     break;
+                case DOWN:
+                    viewingParameters.setCenter(HorizontalCoordinates.ofDeg(current.azDeg(),
+                            ALT_LIM.clip(current.altDeg() - 5d)));
+                    break;
+                case UP:
+                    viewingParameters.setCenter(HorizontalCoordinates.ofDeg(current.azDeg(),
+                            ALT_LIM.clip(current.altDeg() + 5d)));
             }
         });
         // draw listeners
