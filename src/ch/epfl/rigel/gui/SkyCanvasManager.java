@@ -69,7 +69,6 @@ public class SkyCanvasManager {
         Objects.requireNonNull(viewingParameters);
 
         // TODO: why is the sky completely different from what the teacher has?
-        // TODO: (related) Why does the mouse show another object? (probably because of the previous)
 
         //TODO: When starting up the program, the calculation of the mouse coordinates
         // in the original CartesianCoordinates system (by using inverseTransform and
