@@ -17,6 +17,8 @@ import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.transform.Transform;
 
+import java.util.Objects;
+
 /**
  * @author Oscar Davis (SCIPER: 311193)
  * @author Alexandre Doukhan (SCIPER: 316706)
@@ -24,12 +26,14 @@ import javafx.scene.transform.Transform;
  */
 public class SkyCanvasManager {
 
+    /**
+     * Represents the bounds of the rotation of the projection's center, when
+     * moving it with the left and right keys.
+     *
+     * @see SkyCanvasManager#SkyCanvasManager(StarCatalogue, DateTimeBean, ObserverLocationBean, ViewingParametersBean)
+     */
     private static final RightOpenInterval ROT_LIM = RightOpenInterval.of(0, 360);
 
-    private final StarCatalogue catalogue;
-    private final DateTimeBean dateTime;
-    private final ObserverLocationBean observerLocation;
-    private final ViewingParametersBean viewingParameters;
     private final Canvas canvas = new Canvas();
     private final SkyCanvasPainter painter = new SkyCanvasPainter(canvas);
 
@@ -52,10 +56,12 @@ public class SkyCanvasManager {
      */
     public SkyCanvasManager(StarCatalogue catalogue, DateTimeBean dateTime,
                             ObserverLocationBean observerLocation, ViewingParametersBean viewingParameters) {
-        this.catalogue = catalogue;
-        this.dateTime = dateTime;
-        this.observerLocation = observerLocation;
-        this.viewingParameters = viewingParameters;
+        // first assert all prerequisites, in order to avoid heavy syntax
+        // and used in irregular ways
+        Objects.requireNonNull(catalogue);
+        Objects.requireNonNull(dateTime);
+        Objects.requireNonNull(observerLocation);
+        Objects.requireNonNull(viewingParameters);
 
         projection = Bindings.createObjectBinding(
                 () -> new StereographicProjection(viewingParameters.getCenter()),
@@ -159,10 +165,10 @@ public class SkyCanvasManager {
         });
         // draw listeners
         final ChangeListener<Object> listener = (observable, oldValue, newValue) -> {
-            painter.clear();
             final ObservedSky s = observedSky.get();
             final StereographicProjection p = projection.get();
             final Transform t = transform.get();
+            painter.clear();
             painter.drawStars(s, p, t);
             painter.drawPlanets(s, p, t);
             painter.drawSun(s, p, t);
