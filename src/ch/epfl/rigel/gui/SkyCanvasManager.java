@@ -7,6 +7,7 @@ import ch.epfl.rigel.coordinates.CartesianCoordinates;
 import ch.epfl.rigel.coordinates.HorizontalCoordinates;
 import ch.epfl.rigel.coordinates.StereographicProjection;
 import ch.epfl.rigel.math.Angle;
+import ch.epfl.rigel.math.ClosedInterval;
 import ch.epfl.rigel.math.RightOpenInterval;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleObjectProperty;
@@ -29,10 +30,13 @@ public class SkyCanvasManager {
     /**
      * Represents the bounds of the rotation of the projection's center, when
      * moving it with the left and right keys.
-     *
-     * @see SkyCanvasManager#SkyCanvasManager(StarCatalogue, DateTimeBean, ObserverLocationBean, ViewingParametersBean)
      */
     private static final RightOpenInterval ROT_LIM = RightOpenInterval.of(0, 360);
+    /**
+     * Represents the bounds of the field of view value, when changing it with the
+     * up and down keys or the mouse's scroll.
+     */
+    private static final ClosedInterval FOV_LIM = ClosedInterval.of(30, 150);
 
     private final Canvas canvas = new Canvas();
     private final SkyCanvasPainter painter = new SkyCanvasPainter(canvas);
@@ -62,6 +66,9 @@ public class SkyCanvasManager {
         Objects.requireNonNull(dateTime);
         Objects.requireNonNull(observerLocation);
         Objects.requireNonNull(viewingParameters);
+
+        // TODO: why is the sky completely different from what the teacher has?
+        // TODO: (related) Why does the mouse show another object? (probably because of the previous)
 
         projection = Bindings.createObjectBinding(
                 () -> new StereographicProjection(viewingParameters.getCenter()),
@@ -147,7 +154,7 @@ public class SkyCanvasManager {
             } else {
                 apply = event.getDeltaX();
             }
-            viewingParameters.setFieldOfViewDeg(viewingParameters.getFieldOfView() + apply);
+            viewingParameters.setFieldOfViewDeg(FOV_LIM.clip(viewingParameters.getFieldOfView() + apply));
         });
         canvas.setOnKeyPressed(event -> {
             switch (event.getCode()) {
