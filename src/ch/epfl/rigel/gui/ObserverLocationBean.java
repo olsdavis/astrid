@@ -3,7 +3,6 @@ package ch.epfl.rigel.gui;
 import ch.epfl.rigel.coordinates.GeographicCoordinates;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleFloatProperty;
 import javafx.beans.value.ObservableObjectValue;
 
 /**
