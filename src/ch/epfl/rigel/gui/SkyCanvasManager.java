@@ -44,6 +44,17 @@ public class SkyCanvasManager {
      */
     private static final ClosedInterval FOV_LIM = ClosedInterval.of(30, 150);
 
+    /**
+     * The step when moving the projection center's coordinates using the up and
+     * down keys.
+     */
+    private static final double UP_DOWN_STEP = 5d;
+    /**
+     * The step when moving the projection center's coordinates using the left and
+     * right keys.
+     */
+    private static final double LEFT_RIGHT_STEP = 10d;
+
     private final Canvas canvas = new Canvas();
     private final SkyCanvasPainter painter = new SkyCanvasPainter(canvas);
 
@@ -183,20 +194,20 @@ public class SkyCanvasManager {
             final HorizontalCoordinates current = viewingParameters.getCenter();
             switch (event.getCode()) {
                 case LEFT:
-                    viewingParameters.setCenter(HorizontalCoordinates.ofDeg(AZ_LIM.reduce(current.azDeg() - 10d),
+                    viewingParameters.setCenter(HorizontalCoordinates.ofDeg(AZ_LIM.reduce(current.azDeg() - LEFT_RIGHT_STEP),
                             current.altDeg()));
                     break;
                 case RIGHT:
-                    viewingParameters.setCenter(HorizontalCoordinates.ofDeg(AZ_LIM.reduce(current.azDeg() + 10d),
+                    viewingParameters.setCenter(HorizontalCoordinates.ofDeg(AZ_LIM.reduce(current.azDeg() + LEFT_RIGHT_STEP),
                             current.altDeg()));
                     break;
                 case DOWN:
                     viewingParameters.setCenter(HorizontalCoordinates.ofDeg(current.azDeg(),
-                            ALT_LIM.clip(current.altDeg() - 5d)));
+                            ALT_LIM.clip(current.altDeg() - UP_DOWN_STEP)));
                     break;
                 case UP:
                     viewingParameters.setCenter(HorizontalCoordinates.ofDeg(current.azDeg(),
-                            ALT_LIM.clip(current.altDeg() + 5d)));
+                            ALT_LIM.clip(current.altDeg() + UP_DOWN_STEP)));
             }
         });
         // draw listeners
