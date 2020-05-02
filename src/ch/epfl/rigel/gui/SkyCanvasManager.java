@@ -59,6 +59,9 @@ public class SkyCanvasManager {
     private final ObservableDoubleValue mouseAltitude;
 
     /**
+     * Initializes the bindings that allow updating the user's view, sets up
+     * the canvas drawer, and sets up its updates as well.
+     *
      * @param catalogue         the star and asterisms catalogue to use
      * @param dateTime          the date time of the observation
      * @param observerLocation  observer's location
