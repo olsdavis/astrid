@@ -81,7 +81,7 @@ public class SkyCanvasManager {
         transform = Bindings.createObjectBinding(
                 () -> {
                     final double dilatation =
-                            canvas.getWidth() / (2d * Math.tan(Angle.ofDeg(viewingParameters.getFieldOfView()) / 4d));
+                            canvas.getWidth() / projection.get().applyToAngle(Angle.ofDeg(viewingParameters.getFieldOfView()));
                     return Transform.affine(
                             dilatation,
                             0,
