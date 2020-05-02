@@ -19,7 +19,7 @@ import java.util.Locale;
 public final class HorizontalCoordinates extends SphericalCoordinates {
 
     /**
-     * This interval represents the possible values for an azimut (in radians).
+     * This interval represents the possible values for an azimuth (in radians).
      */
     private static final Interval AZ_INTERVAL = RightOpenInterval.of(0, 2 * Math.PI);
     /**
@@ -28,7 +28,7 @@ public final class HorizontalCoordinates extends SphericalCoordinates {
     private static final Interval ALT_INTERVAL = ClosedInterval.symmetric(Math.PI);
 
     /**
-     * @param az  azimut in radians. Must be in the interval [0, 2*PI[.
+     * @param az  azimuth in radians. Must be in the interval [0, 2*PI[.
      * @param alt altitude in radians. Must be in the interval [-PI/2, PI/2].
      * @return a new instance of HorizontalCoordinates based on provided parameters.
      * @throws IllegalArgumentException if {@code az} or {@code alt} is not
@@ -40,7 +40,7 @@ public final class HorizontalCoordinates extends SphericalCoordinates {
     }
 
     /**
-     * @param azDeg  the azimut in degrees. Must be in interval [0, 360[.
+     * @param azDeg  the azimuth in degrees. Must be in interval [0, 360[.
      * @param altDeg the altitude in degrees. Must be interval [-90, 90].
      * @return a new instance of HorizontalCoordinates based on provided parameters (converted to radians).
      */
@@ -49,7 +49,7 @@ public final class HorizontalCoordinates extends SphericalCoordinates {
     }
 
     /**
-     * @param az the azimut (in radians)
+     * @param az the azimuth (in radians)
      * @param alt the altitude (in radians)
      */
     private HorizontalCoordinates(double az, double alt) {
@@ -57,14 +57,14 @@ public final class HorizontalCoordinates extends SphericalCoordinates {
     }
 
     /**
-     * @return the azimut in radians.
+     * @return the azimuth in radians.
      */
     public double az() {
         return lon();
     }
 
     /**
-     * @return the azimut in degrees.
+     * @return the azimuth in degrees.
      */
     public double azDeg() {
         return lonDeg();
@@ -89,7 +89,7 @@ public final class HorizontalCoordinates extends SphericalCoordinates {
      * @param e a String representing the East cardinal point
      * @param s a String representing the South cardinal point
      * @param w a String representing the West cardinal point
-     * @return the String corresponding to the octant in which lies the current instance's azimut.
+     * @return the String corresponding to the octant in which lies the current instance's azimuth.
      * Note that border coordinates are in the "next" octant (<i>e.g.</i> {@code 22.5}° is {@code "NE"}).
      */
     public String azOctantName(String n, String e, String s, String w) {
