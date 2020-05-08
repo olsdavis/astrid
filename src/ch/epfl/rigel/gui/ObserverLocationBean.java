@@ -38,6 +38,20 @@ public class ObserverLocationBean {
         return latitude.get();
     }
 
+
+    /**
+     * @return the property of the observer's latitude.
+     */
+    public SimpleDoubleProperty latitudeProperty() {
+        return latitude;
+    }
+
+    /**
+     * @return the property of the observer's longitude.
+     */
+    public SimpleDoubleProperty longitudeProperty() {
+        return longitude;
+    }
     /**
      * @return the longitude of the observer.
      */
