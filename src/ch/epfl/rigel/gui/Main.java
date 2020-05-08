@@ -5,21 +5,30 @@ import ch.epfl.rigel.astronomy.HygDatabaseLoader;
 import ch.epfl.rigel.astronomy.StarCatalogue;
 import ch.epfl.rigel.coordinates.GeographicCoordinates;
 import ch.epfl.rigel.coordinates.HorizontalCoordinates;
+import com.sun.javafx.collections.ObservableListWrapper;
 import javafx.application.Application;
 import javafx.beans.binding.Bindings;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.geometry.Orientation;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TextFormatter;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.util.converter.LocalTimeStringConverter;
 import javafx.util.converter.NumberStringConverter;
 
 import java.io.InputStream;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.function.UnaryOperator;
 
 /**
@@ -29,7 +38,6 @@ import java.util.function.UnaryOperator;
  */
 public class Main extends Application {
 
-    private BorderPane root;
     private HBox controlBar;
     private HBox whereController;
     private HBox whenController = new HBox();
@@ -50,10 +58,13 @@ public class Main extends Application {
         primaryStage.setMinHeight(600);
         primaryStage.setMinWidth(800);
 
+        //Initialize beans
         position.setCoordinates(GeographicCoordinates.ofDeg(6.57, 46.52));
         date.setZonedDateTime(ZonedDateTime.parse("2020-02-17T20:15:00+01:00"));
+        date.setDate(LocalDate.of(2020, 6, 8));
         parameters.setCenter(HorizontalCoordinates.ofDeg(180.000000000001, 15));
         parameters.setFieldOfViewDeg(100);
+
         try (InputStream hs = getClass().getResourceAsStream("/hygdata_v3.csv")) {
             manager = new SkyCanvasManager(new StarCatalogue.Builder()
                     .loadFrom(hs, HygDatabaseLoader.INSTANCE)
@@ -111,7 +122,8 @@ public class Main extends Application {
 
     private void controlBar() {
         whereController = setupPositionBox();
-        controlBar = new HBox(whereController, whenController, timeController);
+        whenController = setupTimeBox();
+        controlBar = new HBox(whereController, new Separator(Orientation.VERTICAL), whenController, new Separator(Orientation.VERTICAL), timeController);
         controlBar.setStyle("-fx-spacing: 4; -fx-padding: 4;");
     }
 
@@ -170,6 +182,46 @@ public class Main extends Application {
         posControl.setStyle("-fx-spacing: inherit; -fx-alignment: baseline-left");
 
         return posControl;
+    }
+
+
+    private HBox setupTimeBox() {
+        //Date setup
+        Label dateLabel = new Label("Date :");
+        DatePicker dateText = new DatePicker();
+        //date.dateProperty().bind(dateText.valueProperty());
+        dateText.setStyle("-fx-pref-width: 120;");
+
+        //Hour setup
+        Label hourLabel = new Label("Heure :");
+        TextField hourText = new TextField();
+        hourText.setStyle("-fx-pref-width: 75; -fx-alignment: baseline-right;");
+
+        //text formatters for date and hour
+        DateTimeFormatter hmsFormatter =
+                DateTimeFormatter.ofPattern("HH:mm:ss");
+        LocalTimeStringConverter stringConverter =
+                new LocalTimeStringConverter(hmsFormatter, hmsFormatter);
+        TextFormatter<LocalTime> timeFormatter =
+                new TextFormatter<>(stringConverter);
+
+        //date.timeProperty().bind(timeFormatter.valueProperty());
+
+        ArrayList<String> zonesAvailable = new ArrayList<>(ZoneId.getAvailableZoneIds());
+        Collections.sort(zonesAvailable);
+
+        ObservableList<String> zoneList = FXCollections.observableList(zonesAvailable);
+        ComboBox<String> zones = new ComboBox<>(zoneList);
+        zones.setStyle("-fx-pref-width: 180;");
+        //date.zoneProperty().bind(Bindings.createObjectBinding(() -> ZoneId.of(zones.getValue())));
+
+        //TODO disable date and time selections when simulation is running.
+
+
+        final HBox timeBox= new HBox(dateLabel, dateText, hourLabel, hourText, zones);
+        timeBox.setStyle("-fx-spacing: inherit; -fx-alignment: baseline-left");
+
+        return timeBox;
     }
 
 }
