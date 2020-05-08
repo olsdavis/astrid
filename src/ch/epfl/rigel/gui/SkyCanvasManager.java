@@ -16,6 +16,7 @@ import javafx.beans.value.ObservableDoubleValue;
 import javafx.beans.value.ObservableObjectValue;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.input.MouseButton;
 import javafx.scene.transform.NonInvertibleTransformException;
 import javafx.scene.transform.Transform;
 
@@ -172,7 +173,9 @@ public class SkyCanvasManager {
             mousePosition.set(new Point2D(event.getX(), event.getY()));
         });
         canvas.setOnMouseClicked(event -> {
-            if (event.isPrimaryButtonDown()) {
+            // TODO: Note: event#isPrimaryButton indicates something else than
+            // the button that is responsible for the event (which is given by event#getButton)
+            if (event.getButton() == MouseButton.PRIMARY) {
                 canvas.requestFocus();
                 event.consume();
             }
@@ -209,6 +212,7 @@ public class SkyCanvasManager {
                     viewingParameters.setCenter(HorizontalCoordinates.ofDeg(current.azDeg(),
                             ALT_LIM.clip(current.altDeg() + UP_DOWN_STEP)));
             }
+            event.consume();
         });
         // draw listeners
         final ChangeListener<Object> listener = (observable, oldValue, newValue) -> {
