@@ -120,7 +120,7 @@ public class SkyCanvasManager {
                     } catch (NonInvertibleTransformException e) {
                         // when the program starts up, whe can tolerate the fact that the coordinates
                         // are not invertible
-                        return null;
+                        return HorizontalCoordinates.ofDeg(0, 0);
                     }
                     return projection.get().inverseApply(CartesianCoordinates.of(inverse.getX(), inverse.getY()));
                 },
@@ -149,6 +149,9 @@ public class SkyCanvasManager {
                 dateTime.zoneProperty()
         );
 
+        //TODO: inverse = transform.get().inverseTransform(mousePosition.get());
+        // appears twice. Avoid this.
+
         objectUnderMouse = Bindings.createObjectBinding(
                 () -> {
                     final Point2D mouse;
@@ -161,8 +164,9 @@ public class SkyCanvasManager {
                     }
                     return observedSky
                             .get()
-                            .objectClosestTo(CartesianCoordinates.of(mouse.getX(), mouse.getY()), 1d)
+                            .objectClosestTo(CartesianCoordinates.of(mouse.getX(), mouse.getY()), 0.1d)
                             .orElse(null);
+                    //TODO: which distance use for objectClosestTo
                 },
                 mousePosition,
                 observedSky,

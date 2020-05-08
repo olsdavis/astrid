@@ -1,20 +1,20 @@
 package ch.epfl.rigel.gui;
 
+import ch.epfl.rigel.astronomy.CelestialObject;
 import ch.epfl.rigel.astronomy.HygDatabaseLoader;
 import ch.epfl.rigel.astronomy.StarCatalogue;
 import ch.epfl.rigel.coordinates.GeographicCoordinates;
 import ch.epfl.rigel.coordinates.HorizontalCoordinates;
 import javafx.application.Application;
 import javafx.beans.binding.Bindings;
-import javafx.beans.value.ObservableDoubleValue;
 import javafx.scene.Scene;
-import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.converter.NumberStringConverter;
 
@@ -59,10 +59,8 @@ public class Main extends Application {
                     .loadFrom(hs, HygDatabaseLoader.INSTANCE)
                     .build(), date, position, parameters);
         } catch (Exception e) {
-            e.printStackTrace();
             return;
         }
-
 
         BorderPane root = new BorderPane();
         controlBar();
@@ -71,10 +69,44 @@ public class Main extends Application {
         root.setTop(controlBar);
         Pane p = new Pane(manager.canvas());
         root.setCenter(p);
+        root.setBottom(bottomPane());
+
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);
         primaryStage.show();
         manager.canvas().requestFocus();
+    }
+
+    private BorderPane bottomPane() {
+        // set up the celestial object under mouse
+        final Text underMouse = new Text("");
+        underMouse.textProperty().bind(Bindings.createStringBinding(() -> {
+            final CelestialObject object = manager.objectUnderMouseProperty().get();
+            if (object == null) {
+                return "";
+            } else {
+                return object.toString();
+            }
+        }, manager.objectUnderMouseProperty()));
+        final BorderPane bottom = new BorderPane(underMouse);
+        bottom.setStyle("-fx-padding: 4; -fx-background-color: #ffffff;");
+        bottom.setCenter(underMouse);
+        // set up the field of view text
+        final Text fov = new Text("");
+        fov.textProperty().bind(Bindings.createStringBinding(
+                () -> String.format("Champ de vue : %.1f°", parameters.getFieldOfView()),
+                parameters.getFieldOfViewProperty())
+        );
+        bottom.setLeft(fov);
+        // set up the mouse position in horizontal coordinates text
+        final Text mouseHorizontal = new Text("");
+        mouseHorizontal.textProperty().bind(Bindings.createStringBinding(
+                () -> String.format("Azimut : %.1f°, hauteur : %.1f°",
+                manager.mouseAzimuth(), manager.mouseAltitude()),
+                manager.mouseAzimuthProperty(), manager.mouseAltitudeProperty()
+        ));
+        bottom.setRight(mouseHorizontal);
+        return bottom;
     }
 
     private void controlBar() {
