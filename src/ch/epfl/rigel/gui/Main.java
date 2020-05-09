@@ -8,6 +8,9 @@ import ch.epfl.rigel.coordinates.HorizontalCoordinates;
 import com.sun.javafx.collections.ObservableListWrapper;
 import javafx.application.Application;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Orientation;
@@ -28,6 +31,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.function.UnaryOperator;
 
@@ -42,6 +46,7 @@ public class Main extends Application {
     private HBox whereController;
     private HBox whenController = new HBox();
     private HBox timeController = new HBox();
+    private SimpleStringProperty zoneProperty = new SimpleStringProperty();
 
     private final ObserverLocationBean position = new ObserverLocationBean();
     private final DateTimeBean date = new DateTimeBean();
@@ -61,7 +66,7 @@ public class Main extends Application {
         //Initialize beans
         position.setCoordinates(GeographicCoordinates.ofDeg(6.57, 46.52));
         date.setZonedDateTime(ZonedDateTime.parse("2020-02-17T20:15:00+01:00"));
-        date.setDate(LocalDate.of(2020, 6, 8));
+        zoneProperty.setValue(date.getZone().toString());
         parameters.setCenter(HorizontalCoordinates.ofDeg(180.000000000001, 15));
         parameters.setFieldOfViewDeg(100);
 
@@ -123,6 +128,7 @@ public class Main extends Application {
     private void controlBar() {
         whereController = setupPositionBox();
         whenController = setupTimeBox();
+        timeController = setupAnimatorBox();
         controlBar = new HBox(whereController, new Separator(Orientation.VERTICAL), whenController, new Separator(Orientation.VERTICAL), timeController);
         controlBar.setStyle("-fx-spacing: 4; -fx-padding: 4;");
     }
@@ -175,8 +181,8 @@ public class Main extends Application {
 
         lonVal.setTextFormatter(lonTextFormatter);
         latVal.setTextFormatter(latTextFormatter);
-        position.longitudeProperty().bindBidirectional(lonTextFormatter.valueProperty());
-        position.latitudeProperty().bindBidirectional(latTextFormatter.valueProperty());
+        position.longitudeProperty().bind(lonTextFormatter.valueProperty());
+        position.latitudeProperty().bind(latTextFormatter.valueProperty());
 
         final HBox posControl = new HBox(lon, lonVal, lat, latVal);
         posControl.setStyle("-fx-spacing: inherit; -fx-alignment: baseline-left");
@@ -189,7 +195,7 @@ public class Main extends Application {
         //Date setup
         Label dateLabel = new Label("Date :");
         DatePicker dateText = new DatePicker();
-        //date.dateProperty().bind(dateText.valueProperty());
+        dateText.valueProperty().bindBidirectional(date.dateProperty());
         dateText.setStyle("-fx-pref-width: 120;");
 
         //Hour setup
@@ -205,7 +211,8 @@ public class Main extends Application {
         TextFormatter<LocalTime> timeFormatter =
                 new TextFormatter<>(stringConverter);
 
-        //date.timeProperty().bind(timeFormatter.valueProperty());
+        hourText.setTextFormatter(timeFormatter);
+        timeFormatter.valueProperty().bindBidirectional(date.timeProperty());
 
         ArrayList<String> zonesAvailable = new ArrayList<>(ZoneId.getAvailableZoneIds());
         Collections.sort(zonesAvailable);
@@ -213,7 +220,12 @@ public class Main extends Application {
         ObservableList<String> zoneList = FXCollections.observableList(zonesAvailable);
         ComboBox<String> zones = new ComboBox<>(zoneList);
         zones.setStyle("-fx-pref-width: 180;");
-        //date.zoneProperty().bind(Bindings.createObjectBinding(() -> ZoneId.of(zones.getValue())));
+        zones.valueProperty().bindBidirectional(zoneProperty);
+
+        //The addition of a listener is useful as we're working with strings and need to change the value of a ZoneId
+        zoneProperty.addListener((p, o, n) -> {
+            date.setZone(ZoneId.of(n));
+        });
 
         //TODO disable date and time selections when simulation is running.
 
@@ -222,6 +234,29 @@ public class Main extends Application {
         timeBox.setStyle("-fx-spacing: inherit; -fx-alignment: baseline-left");
 
         return timeBox;
+    }
+
+    public HBox setupAnimatorBox() {
+        ChoiceBox<NamedTimeAccelerator> animatorChoice = new ChoiceBox<>();
+        animatorChoice.setItems(FXCollections.observableList(Arrays.asList(NamedTimeAccelerator.values())));
+        ObjectProperty<NamedTimeAccelerator> p1 =
+                new SimpleObjectProperty<>(NamedTimeAccelerator.TIMES_1);
+        ObjectProperty<String> p2 =
+                new SimpleObjectProperty<>();
+
+        p2.addListener((p, o, n) -> {
+            System.out.printf("old: %s  new: %s%n", o, n);
+        });
+
+        p2.bind(Bindings.select(p1, "name"));
+        p1.set(NamedTimeAccelerator.TIMES_30);
+
+        Button play = new Button();
+
+
+        HBox animator = new HBox(animatorChoice);
+        animator.setStyle("-fx-spacing: inherit;");
+        return animator;
     }
 
 }
