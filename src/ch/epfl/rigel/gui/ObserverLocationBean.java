@@ -38,7 +38,6 @@ public class ObserverLocationBean {
         return latitude.get();
     }
 
-
     /**
      * @return the property of the observer's latitude.
      */
