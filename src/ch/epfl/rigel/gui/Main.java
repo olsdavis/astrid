@@ -109,7 +109,6 @@ public class Main extends Application {
         };
     }
 
-    private final SimpleStringProperty zoneProperty = new SimpleStringProperty();
     private final ObserverLocationBean position = new ObserverLocationBean();
     private final DateTimeBean date = new DateTimeBean();
     private final ViewingParametersBean viewingParameters = new ViewingParametersBean();
@@ -129,7 +128,6 @@ public class Main extends Application {
         // Initialize beans
         position.setCoordinates(INIT_COORDINATES);
         date.setZonedDateTime(INIT_TIME);
-        zoneProperty.setValue(date.getZone().toString());
         viewingParameters.setCenter(INIT_PROJ_CENTER);
         viewingParameters.setFieldOfViewDeg(INIT_FOV);
 
@@ -285,7 +283,8 @@ public class Main extends Application {
 
         // update zone changes without binding it, because otherwise the animator
         // will not be able to change the value
-        zoneProperty.addListener((observable, oldValue, newValue) -> date.zoneProperty().set(ZoneId.of(newValue)));
+        zonesChoice.valueProperty().addListener((observable, oldValue, newValue) -> date.zoneProperty().set(ZoneId.of(newValue)));
+        zonesChoice.valueProperty().set(date.getZone().getId()); // set up initial value to avoid the blank box
 
         // TODO disable date and time selections when simulation is running.
 
