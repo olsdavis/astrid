@@ -52,15 +52,6 @@ public class ViewingParametersBean {
     }
 
     /**
-     * Updates the value of the user's field of view.
-     *
-     * @param value the new value of the field of view (in degrees)
-     */
-    public void setFieldOfView(float value) {
-        fieldOfView.set(value);
-    }
-
-    /**
      * @return the property holding the field of view property of the projection,
      * in a read-only property.
      */

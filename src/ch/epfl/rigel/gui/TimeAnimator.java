@@ -1,7 +1,7 @@
 package ch.epfl.rigel.gui;
 
 import javafx.animation.AnimationTimer;
-import javafx.beans.property.ReadOnlyBooleanProperty;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 
 /**
@@ -52,13 +52,14 @@ public final class TimeAnimator extends AnimationTimer {
     public void stop() {
         super.stop();
         running.set(false);
+        start = -1L; // reset this value, to avoid "time bump" in the simulation
     }
 
     /**
      * @return a property holding {@code true} if and only if the TimeAnimator
      * is running.
      */
-    public ReadOnlyBooleanProperty running() {
+    public BooleanProperty runningProperty() {
         return running;
     }
 

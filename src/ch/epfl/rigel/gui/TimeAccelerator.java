@@ -29,8 +29,7 @@ public interface TimeAccelerator {
      * of time simulation.
      */
     static TimeAccelerator discrete(long freq, Duration step) {
-        return (initial, elapsed) ->
-                initial.plus(step.multipliedBy((long) Math.floor(freq * elapsed)));
+        return (initial, elapsed) -> initial.plus(step.multipliedBy((long) Math.floor(freq * elapsed)));
     }
 
     /**

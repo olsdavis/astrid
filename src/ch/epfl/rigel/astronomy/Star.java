@@ -21,7 +21,7 @@ public final class Star extends CelestialObject {
     private static final Interval COLOR_INTERVAL = ClosedInterval.of(-0.5d, 5.5d);
 
     private final int hipparcosId;
-    private final float colorIndex;
+    private final int colorTemperature;
 
     /**
      * @param hipparcosId   the Hipparcos identification code
@@ -38,8 +38,8 @@ public final class Star extends CelestialObject {
         // Here, we do not write: this.colorIndex = checkInInterval(...)
         // to avoid casting the value of colorIndex twice (first to a double and then back to a float)
         checkInInterval(COLOR_INTERVAL, colorIndex);
-        this.colorIndex = colorIndex;
         this.hipparcosId = hipparcosId;
+        colorTemperature = (int) (4600 * (1 / (0.92d * colorIndex + 1.7d) + 1 / (0.92d * colorIndex + 0.62d)));
     }
 
     /**
@@ -55,6 +55,6 @@ public final class Star extends CelestialObject {
      * @return the color temperature associated with the B-V color index of the star.
      */
     public int colorTemperature() {
-        return (int) (4600 * (1 / (0.92d * colorIndex + 1.7d) + 1 / (0.92d * colorIndex + 0.62d)));
+        return colorTemperature;
     }
 }

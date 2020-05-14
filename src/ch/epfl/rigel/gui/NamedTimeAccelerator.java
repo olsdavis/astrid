@@ -89,4 +89,9 @@ public enum NamedTimeAccelerator {
         return accelerator;
     }
 
+    @Override
+    public String toString() {
+        return getName();
+    }
+
 }
