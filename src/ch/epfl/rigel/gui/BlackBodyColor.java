@@ -28,8 +28,6 @@ public class BlackBodyColor {
     private static final Interval TEMPERATURE_INTERVAL = ClosedInterval.of(1000, 40_000);
     /**
      * This constant allows us to skip lines of the file that are not in "2deg".
-     *
-     * @see #loadFile()
      */
     private static final String DEG_10 = "10deg";
     /**
@@ -40,7 +38,20 @@ public class BlackBodyColor {
     private static final Map<Integer, Color> COLOR_MAP = new HashMap<>();
 
     static {
-        loadFile();
+        try (final BufferedReader reader = new BufferedReader(new InputStreamReader(BlackBodyColor.class.getResourceAsStream("/bbr_color.txt")))) {
+            String line;
+            while ((line = reader.readLine()) != null && !line.isBlank()) {
+                // if it is a comment or not in 10deg mode
+                if (line.charAt(0) == '#' || !DEG_10.equals(line.substring(10, 15))) {
+                    continue;
+                }
+                final int temperature = Integer.parseInt(line.substring(1, 6).trim()); // remove trailing white spaces
+                final String hex = line.substring(80, 87);
+                COLOR_MAP.put(temperature, Color.web(hex));
+            }
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
     }
 
     /**
@@ -56,28 +67,6 @@ public class BlackBodyColor {
             return COLOR_MAP.get(temperature);
         } else {
             return COLOR_MAP.get(100 * Math.round(temperature / 100f));
-        }
-    }
-
-    /**
-     * Loads the file containing the color mapping.
-     *
-     * @throws UncheckedIOException if the file could not have been read
-     */
-    private static void loadFile() {
-        try (final BufferedReader reader = new BufferedReader(new InputStreamReader(BlackBodyColor.class.getResourceAsStream("/bbr_color.txt")))) {
-            String line;
-            while ((line = reader.readLine()) != null && !line.isBlank()) {
-                // if it is a comment or not in 10deg mode
-                if (line.charAt(0) == '#' || !DEG_10.equals(line.substring(10, 15))) {
-                    continue;
-                }
-                final int temperature = Integer.parseInt(line.substring(1, 6).trim()); // remove trailing white spaces
-                final String hex = line.substring(80, 87);
-                COLOR_MAP.put(temperature, Color.web(hex));
-            }
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
         }
     }
 
