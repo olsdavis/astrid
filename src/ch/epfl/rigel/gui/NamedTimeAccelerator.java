@@ -1,7 +1,6 @@
 package ch.epfl.rigel.gui;
 
 import java.time.Duration;
-import java.util.concurrent.TimeUnit;
 
 /**
  * This enum holds the time accelerators that will be in use
