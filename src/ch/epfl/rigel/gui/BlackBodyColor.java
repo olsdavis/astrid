@@ -13,8 +13,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * This class represents the sky at a certain moment in time, containing
- * celestial objects projected on a plan with stereographic projection.
+ * This class is useful for its {@link #fromTemperature(int)} which retrieves
+ * the closest color to use for canvas painting from its color temperature.
  *
  * @author Oscar Davis (SCIPER: 311193)
  * @author Alexandre Doukhan (SCIPER: 316706)
