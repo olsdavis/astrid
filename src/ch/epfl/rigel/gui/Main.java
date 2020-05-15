@@ -1,5 +1,6 @@
 package ch.epfl.rigel.gui;
 
+import ch.epfl.rigel.astronomy.AsterismLoader;
 import ch.epfl.rigel.astronomy.CelestialObject;
 import ch.epfl.rigel.astronomy.HygDatabaseLoader;
 import ch.epfl.rigel.astronomy.StarCatalogue;
@@ -139,10 +140,12 @@ public class Main extends Application {
         viewingParameters.setCenter(INIT_PROJ_CENTER);
         viewingParameters.setFieldOfViewDeg(INIT_FOV);
 
-        try (InputStream hs = getClass().getResourceAsStream("/hygdata_v3.csv")) {
+        try (final InputStream hs = getClass().getResourceAsStream("/hygdata_v3.csv");
+             final InputStream as = getClass().getResourceAsStream("/asterisms.txt")) {
             manager = new SkyCanvasManager(
                     new StarCatalogue.Builder()
                             .loadFrom(hs, HygDatabaseLoader.INSTANCE)
+                            .loadFrom(as, AsterismLoader.INSTANCE)
                             .build(),
                     date,
                     position,
@@ -318,7 +321,10 @@ public class Main extends Application {
                 () -> animator.runningProperty().get() ? PAUSE_CHARACTER : PLAY_CHARACTER,
                 animator.runningProperty())
         );
-        return new HBox(chooseAnimator, play);
+        final Button reset = new Button(RESET_CHARACTER);
+        reset.setOnMouseClicked(event -> date.setZonedDateTime(ZonedDateTime.now()));
+        reset.setFont(BUTTONS_FONT);
+        return new HBox(chooseAnimator, play, reset);
     }
 
 }
