@@ -24,6 +24,7 @@ import javafx.util.converter.NumberStringConverter;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -134,7 +135,7 @@ public class Main extends Application {
 
         // Initialize beans
         position.setCoordinates(INIT_COORDINATES);
-        date.setZonedDateTime(INIT_TIME);
+        date.setZonedDateTime(ZonedDateTime.now());
         viewingParameters.setCenter(INIT_PROJ_CENTER);
         viewingParameters.setFieldOfViewDeg(INIT_FOV);
 
@@ -284,8 +285,6 @@ public class Main extends Application {
         final List<String> zonesAvailable = new ArrayList<>(ZoneId.getAvailableZoneIds());
         // alphabetical (default) order
         Collections.sort(zonesAvailable);
-
-        // TODO: check for the default zone
         final ComboBox<String> zonesChoice = new ComboBox<>(FXCollections.observableList(zonesAvailable));
         zonesChoice.setStyle("-fx-pref-width: 180;");
 
