@@ -167,8 +167,7 @@ public class Main extends Application {
         root.setCenter(new Pane(manager.canvas()));
         root.setBottom(bottomPane());
 
-        final Scene scene = new Scene(root);
-        primaryStage.setScene(scene);
+        primaryStage.setScene(new Scene(root));
         primaryStage.show();
         manager.canvas().requestFocus();
     }
