@@ -64,10 +64,6 @@ public class Main extends Application {
      */
     private static final double INIT_FOV = 100d;
     /**
-     * Initial time and date.
-     */
-    private static final ZonedDateTime INIT_TIME = ZonedDateTime.parse("2020-02-17T20:15:00+01:00");
-    /**
      * Initial coordinates of the user.
      */
     private static final GeographicCoordinates INIT_COORDINATES = GeographicCoordinates.ofDeg(6.57, 46.52);
