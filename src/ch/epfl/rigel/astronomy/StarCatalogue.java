@@ -142,6 +142,7 @@ public final class StarCatalogue {
      * One-method interface created for data-loading purposes.
      */
     public interface Loader {
+
         /**
          * Loads data from an input stream into a builder.
          *
@@ -153,6 +154,7 @@ public final class StarCatalogue {
          * @see HygDatabaseLoader
          */
         void load(InputStream inputStream, Builder builder) throws IOException;
+
     }
 
 }
