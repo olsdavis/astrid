@@ -321,7 +321,9 @@ public class Main extends Application {
         reset.disableProperty().bind(animator.runningProperty());
         chooseAnimator.disableProperty().bind(animator.runningProperty());
         reset.setFont(BUTTONS_FONT);
-        return new HBox(chooseAnimator, reset, play);
+        final HBox animatorBox = new HBox(chooseAnimator, reset, play);
+        animatorBox.setStyle("-fx-spacing: inherit;");
+        return animatorBox;
     }
 
 }
