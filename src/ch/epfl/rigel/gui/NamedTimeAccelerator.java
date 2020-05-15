@@ -45,7 +45,7 @@ public enum NamedTimeAccelerator {
      * Day per day discrete accelerator.
      */
     DAY(
-            "jour",
+            "Jour",
             TimeAccelerator.discrete(
                     TimeUnit.SECONDS.toNanos(60),
                     Duration.ofNanos(TimeUnit.DAYS.toNanos(1))
@@ -55,7 +55,7 @@ public enum NamedTimeAccelerator {
      * Sidereal day per sidereal day discrete accelerator.
      */
     SIDEREAL_DAY(
-            "jour sidéral",
+            "Jour sidéral",
             TimeAccelerator.discrete(
                     TimeUnit.SECONDS.toNanos(60),
                     // 23h56m04s in seconds
