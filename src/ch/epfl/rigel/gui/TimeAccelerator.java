@@ -2,8 +2,6 @@ package ch.epfl.rigel.gui;
 
 import java.time.Duration;
 import java.time.ZonedDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Represents time accelerators for time simulations.
@@ -25,13 +23,13 @@ public interface TimeAccelerator {
     }
 
     /**
-     * @param freq the frequency of acceleration
-     * @param step the step of the acceleration
-     * @return a discrete TimeAccelerator with the provided {@code freq} frequency
-     * of time simulation.
+     * @param freq the frequency per second
+     * @param step the step of the discrete accelerator
+     * @return a discrete accelerator of frequency {@code freq} and step {@code step}.
      */
     static TimeAccelerator discrete(long freq, Duration step) {
-        return (initial, elapsed) -> initial.plus(step.multipliedBy(freq * TimeUnit.NANOSECONDS.toSeconds(elapsed)));
+        // TODO: verify this shit
+        return (initial, elapsed) -> initial.plus(step.multipliedBy((long) Math.ceil(freq * elapsed / 1_000_000_000f)));
     }
 
     /**

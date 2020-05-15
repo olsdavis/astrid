@@ -47,8 +47,8 @@ public enum NamedTimeAccelerator {
     DAY(
             "jour",
             TimeAccelerator.discrete(
-                    TimeUnit.SECONDS.toNanos(60),
-                    Duration.ofNanos(TimeUnit.DAYS.toNanos(1))
+                    60,
+                    Duration.ofDays(1)
             )
     ),
     /**
@@ -57,9 +57,9 @@ public enum NamedTimeAccelerator {
     SIDEREAL_DAY(
             "jour sidéral",
             TimeAccelerator.discrete(
-                    TimeUnit.SECONDS.toNanos(60),
+                    60,
                     // 23h56m04s in seconds
-                    Duration.ofNanos(TimeUnit.SECONDS.toNanos(23 * 3600 + 56 * 60 + 4))
+                    Duration.ofSeconds(23 * 3600 + 56 * 60 + 4)
             )
     );
 
