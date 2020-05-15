@@ -76,8 +76,8 @@ public final class StarCatalogue {
      */
     public final static class Builder {
 
-        private List<Star> starCatalogue = new ArrayList<>();
-        private List<Asterism> asterismCatalogue = new ArrayList<>();
+        private final List<Star> starCatalogue = new ArrayList<>();
+        private final List<Asterism> asterismCatalogue = new ArrayList<>();
 
         /**
          * Adds the given Star {@code star} to the list that holds the stars of the catalogue to build.
