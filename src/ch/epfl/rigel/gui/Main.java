@@ -85,6 +85,14 @@ public class Main extends Application {
      * The initial projection center.
      */
     private static final HorizontalCoordinates INIT_PROJ_CENTER = HorizontalCoordinates.ofDeg(180.000000000001, 15);
+    /**
+     * Holds the default longitude for the observer's position.
+     */
+    private static final Number DEFAULT_LON = 6.57;
+    /**
+     * Holds the default latitude for the observer's position.
+     */
+    private static final Number DEFAULT_LAT = 46.52d;
 
     /**
      * @param checker   a function that returns {@code true} if the passed argument (a double)
@@ -228,13 +236,13 @@ public class Main extends Application {
         final UnaryOperator<TextFormatter.Change> lonFilter = coordinatesFilter(GeographicCoordinates::isValidLatDeg,
                 stringConverter);
         final TextFormatter<Number> lonTextFormatter =
-                new TextFormatter<>(stringConverter, 6.57d, lonFilter);
+                new TextFormatter<>(stringConverter, DEFAULT_LON, lonFilter);
 
         // latitude
         final UnaryOperator<TextFormatter.Change> latFilter = coordinatesFilter(GeographicCoordinates::isValidLatDeg,
                 stringConverter);
         final TextFormatter<Number> latTextFormatter =
-                new TextFormatter<>(stringConverter, 46.52d, latFilter);
+                new TextFormatter<>(stringConverter, DEFAULT_LAT, latFilter);
 
         lonVal.setTextFormatter(lonTextFormatter);
         latVal.setTextFormatter(latTextFormatter);
