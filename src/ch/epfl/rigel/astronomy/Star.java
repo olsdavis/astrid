@@ -1,8 +1,10 @@
 package ch.epfl.rigel.astronomy;
 
 import ch.epfl.rigel.coordinates.EquatorialCoordinates;
+import ch.epfl.rigel.gui.BlackBodyColor;
 import ch.epfl.rigel.math.ClosedInterval;
 import ch.epfl.rigel.math.Interval;
+import javafx.scene.paint.Color;
 
 import static ch.epfl.rigel.Preconditions.checkArgument;
 import static ch.epfl.rigel.Preconditions.checkInInterval;
@@ -22,6 +24,13 @@ public final class Star extends CelestialObject {
 
     private final int hipparcosId;
     private final int colorTemperature;
+    // ADDED: We added this field to avoid too frequent calls on the HashMap of
+    // BlackBodyColor which took 10% of the process, according to the profiler
+    // --- especially the methods #containsKey(V). Although, it is true that
+    // it might not be a good decision from a design point of view, since we
+    // restrain the use of Rigel to JavaFX, it can be easily changed backwards
+    // or removed and the performance saving it gives is, in our opinion, worth it.
+    private final Color blackBodyColor;
 
     /**
      * @param hipparcosId   the Hipparcos identification code
@@ -40,6 +49,7 @@ public final class Star extends CelestialObject {
         checkInInterval(COLOR_INTERVAL, colorIndex);
         this.hipparcosId = hipparcosId;
         colorTemperature = (int) (4600 * (1 / (0.92d * colorIndex + 1.7d) + 1 / (0.92d * colorIndex + 0.62d)));
+        blackBodyColor = BlackBodyColor.fromTemperature(colorTemperature);
     }
 
     /**
@@ -56,5 +66,12 @@ public final class Star extends CelestialObject {
      */
     public int colorTemperature() {
         return colorTemperature;
+    }
+
+    /**
+     * @return the color with which the star should be painted on the Canvas.
+     */
+    public Color paintColor() {
+        return blackBodyColor;
     }
 }

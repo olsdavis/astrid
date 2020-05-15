@@ -1,6 +1,9 @@
 package ch.epfl.rigel.gui;
 
-import ch.epfl.rigel.astronomy.*;
+import ch.epfl.rigel.astronomy.Asterism;
+import ch.epfl.rigel.astronomy.ObservedSky;
+import ch.epfl.rigel.astronomy.Planet;
+import ch.epfl.rigel.astronomy.Star;
 import ch.epfl.rigel.coordinates.CartesianCoordinates;
 import ch.epfl.rigel.coordinates.HorizontalCoordinates;
 import ch.epfl.rigel.coordinates.StereographicProjection;
@@ -9,6 +12,7 @@ import ch.epfl.rigel.math.ClosedInterval;
 import javafx.geometry.Point2D;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.transform.Transform;
@@ -66,12 +70,13 @@ public class SkyCanvasPainter {
     }
 
     /**
-     * Clears the canvas.
+     * Clears the canvas and paints the black background.
      */
     public void clear() {
-        canvas.getGraphicsContext2D().clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-        canvas.getGraphicsContext2D().setFill(Color.BLACK);
-        canvas.getGraphicsContext2D().fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+        final GraphicsContext gfx = canvas.getGraphicsContext2D();
+        gfx.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+        gfx.setFill(Color.BLACK);
+        gfx.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
     }
 
     /**
@@ -86,17 +91,18 @@ public class SkyCanvasPainter {
         Objects.requireNonNull(projection);
         Objects.requireNonNull(transform);
 
+        final GraphicsContext gfx = canvas.getGraphicsContext2D();
         final double[] starPositions = sky.starPositions();
         // apply the transform
         transform.transform2DPoints(starPositions, 0, starPositions, 0, starPositions.length / 2);
 
         // draw asterisms first, then stars
         // set the stroke for all lines
-        canvas.getGraphicsContext2D().setStroke(Color.BLUE);
-        canvas.getGraphicsContext2D().setLineWidth(1d);
+        gfx.setStroke(Color.BLUE);
+        gfx.setLineWidth(1d);
         for (Asterism asterism : sky.asterisms()) {
             final List<Integer> indices = sky.asterismIndices(asterism);
-            canvas.getGraphicsContext2D().beginPath();
+            gfx.beginPath();
             for (int i = 0; i < indices.size() - 1; i++) {
                 final int current = indices.get(i);
                 final int next = indices.get(i + 1);
@@ -104,15 +110,15 @@ public class SkyCanvasPainter {
                 final Point2D pointB = new Point2D(starPositions[2 * next], starPositions[2 * next + 1]);
                 if (canvas.contains(pointA) || canvas.contains(pointB)) {
                     if (i == 0) {
-                        canvas.getGraphicsContext2D().moveTo(pointA.getX(), pointA.getY());
+                        gfx.moveTo(pointA.getX(), pointA.getY());
                     } else {
-                        canvas.getGraphicsContext2D().lineTo(pointA.getX(), pointA.getY());
+                        gfx.lineTo(pointA.getX(), pointA.getY());
                     }
-                    canvas.getGraphicsContext2D().lineTo(pointB.getX(), pointB.getY());
-                    canvas.getGraphicsContext2D().stroke();
+                    gfx.lineTo(pointB.getX(), pointB.getY());
+                    gfx.stroke();
                 }
             }
-            canvas.getGraphicsContext2D().closePath();
+            gfx.closePath();
         }
 
         // draw stars
@@ -122,8 +128,8 @@ public class SkyCanvasPainter {
             final double diameter = Math.abs(
                     transform.deltaTransform(objectRadius(star.magnitude(), projection), 0).getX()
             );
-            canvas.getGraphicsContext2D().setFill(BlackBodyColor.fromTemperature(star.colorTemperature()));
-            canvas.getGraphicsContext2D().fillOval(point.getX() - diameter / 2d, point.getY() - diameter / 2d, diameter, diameter);
+            gfx.setFill(star.paintColor());
+            gfx.fillOval(point.getX() - diameter / 2d, point.getY() - diameter / 2d, diameter, diameter);
         }
     }
 
@@ -139,20 +145,21 @@ public class SkyCanvasPainter {
         Objects.requireNonNull(projection);
         Objects.requireNonNull(transform);
 
+        final GraphicsContext gfx = canvas.getGraphicsContext2D();
         final double[] planetPositions = sky.planetPositions();
         // apply the transform
         transform.transform2DPoints(planetPositions, 0, planetPositions, 0, planetPositions.length / 2);
 
         // BONUS: modify the fill depending on the planet to get more adequate colors
         // set fill for all planets
-        canvas.getGraphicsContext2D().setFill(Color.LIGHTGRAY);
+        gfx.setFill(Color.LIGHTGRAY);
         for (int i = 0; i < sky.planets().size(); i++) {
             final Planet planet = sky.planets().get(i);
             final Point2D point = new Point2D(planetPositions[2 * i], planetPositions[2 * i + 1]);
             final double diameter = Math.abs(
                     transform.deltaTransform(objectRadius(planet.magnitude(), projection), 0).getX()
             );
-            canvas.getGraphicsContext2D().fillOval(point.getX() - diameter / 2d, point.getY() - diameter / 2d, diameter, diameter);
+            gfx.fillOval(point.getX() - diameter / 2d, point.getY() - diameter / 2d, diameter, diameter);
         }
     }
 
@@ -168,12 +175,13 @@ public class SkyCanvasPainter {
         Objects.requireNonNull(projection);
         Objects.requireNonNull(transform);
 
-        canvas.getGraphicsContext2D().setFill(Color.WHITE);
+        final GraphicsContext gfx = canvas.getGraphicsContext2D();
+        gfx.setFill(Color.WHITE);
         final Point2D point = transform.transform(sky.moonPosition().x(), sky.moonPosition().y());
         final double radius = Math.abs(
                 transform.deltaTransform(projection.applyToAngle(sky.moon().angularSize()), 0).getX()
         ) / 2d;
-        canvas.getGraphicsContext2D().fillOval(point.getX() - radius, point.getY() - radius, 2 * radius, 2 * radius);
+        gfx.fillOval(point.getX() - radius, point.getY() - radius, 2 * radius, 2 * radius);
     }
 
     /**
@@ -188,17 +196,18 @@ public class SkyCanvasPainter {
         Objects.requireNonNull(projection);
         Objects.requireNonNull(transform);
 
+        final GraphicsContext gfx = canvas.getGraphicsContext2D();
         final Point2D point = transform.transform(sky.sunPosition().x(), sky.sunPosition().y());
         if (canvas.contains(point)) {
             final double diameter = Math.abs(
                     transform.deltaTransform(projection.applyToAngle(sky.sun().angularSize()), 0).getX()
             );
-            canvas.getGraphicsContext2D().setFill(Color.YELLOW.deriveColor(0, 1d, 1d, 0.25d));
-            canvas.getGraphicsContext2D().fillOval(point.getX() - ((diameter / 2d) * 2.2d), point.getY() - ((diameter / 2d) * 2.2d), diameter * 2.2d, diameter * 2.2d);
-            canvas.getGraphicsContext2D().setFill(Color.YELLOW);
-            canvas.getGraphicsContext2D().fillOval(point.getX() - (diameter + 2d) / 2d, point.getY() - (diameter + 2d) / 2d, diameter + 2d, diameter + 2d);
-            canvas.getGraphicsContext2D().setFill(Color.WHITE);
-            canvas.getGraphicsContext2D().fillOval(point.getX() - diameter / 2d, point.getY() - diameter / 2d, diameter, diameter);
+            gfx.setFill(Color.YELLOW.deriveColor(0, 1d, 1d, 0.25d));
+            gfx.fillOval(point.getX() - ((diameter / 2d) * 2.2d), point.getY() - ((diameter / 2d) * 2.2d), diameter * 2.2d, diameter * 2.2d);
+            gfx.setFill(Color.YELLOW);
+            gfx.fillOval(point.getX() - (diameter + 2d) / 2d, point.getY() - (diameter + 2d) / 2d, diameter + 2d, diameter + 2d);
+            gfx.setFill(Color.WHITE);
+            gfx.fillOval(point.getX() - diameter / 2d, point.getY() - diameter / 2d, diameter, diameter);
         }
     }
 
@@ -214,26 +223,27 @@ public class SkyCanvasPainter {
         Objects.requireNonNull(projection);
         Objects.requireNonNull(transform);
 
+        final GraphicsContext gfx = canvas.getGraphicsContext2D();
         // draw the horizon line
-        canvas.getGraphicsContext2D().setStroke(Color.RED);
-        canvas.getGraphicsContext2D().setLineWidth(2d);
+        gfx.setStroke(Color.RED);
+        gfx.setLineWidth(2d);
         final CartesianCoordinates center = projection.circleCenterForParallel(HorizontalCoordinates.ofDeg(0, 0));
         final double radius = Math.abs(
                 transform.deltaTransform(projection.circleRadiusForParallel(HorizontalCoordinates.ofDeg(0, 0)), 0).getX()
         );
         final Point2D point = transform.transform(center.x(), center.y());
-        canvas.getGraphicsContext2D().strokeOval(point.getX() - radius, point.getY() - radius, radius * 2d, radius * 2d);
+        gfx.strokeOval(point.getX() - radius, point.getY() - radius, radius * 2d, radius * 2d);
 
         // draw the cardinal points
-        canvas.getGraphicsContext2D().setFill(Color.RED);
-        canvas.getGraphicsContext2D().setTextAlign(TextAlignment.CENTER);
-        canvas.getGraphicsContext2D().setTextBaseline(VPos.TOP);
+        gfx.setFill(Color.RED);
+        gfx.setTextAlign(TextAlignment.CENTER);
+        gfx.setTextBaseline(VPos.TOP);
         for (int i = 0; i < 360; i += 45) {
             final HorizontalCoordinates coordinates = HorizontalCoordinates.ofDeg(i, -0.5d);
             final CartesianCoordinates raw = projection.apply(coordinates);
             final Point2D projected = transform.transform(raw.x(), raw.y());
             if (canvas.contains(projected)) {
-                canvas.getGraphicsContext2D().fillText(
+                gfx.fillText(
                         coordinates.azOctantName(NORTH, EAST, SOUTH, WEST),
                         projected.getX(), projected.getY()
                 );
