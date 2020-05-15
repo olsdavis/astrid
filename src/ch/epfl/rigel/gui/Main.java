@@ -66,15 +66,15 @@ public class Main extends Application {
     /**
      * Initial coordinates of the user.
      */
-    private static final GeographicCoordinates INIT_COORDINATES = GeographicCoordinates.ofDeg(6.57, 46.52);
+    private static final GeographicCoordinates INIT_COORDINATES = GeographicCoordinates.ofDeg(6.57d, 46.52d);
     /**
      * The initial projection center.
      */
-    private static final HorizontalCoordinates INIT_PROJ_CENTER = HorizontalCoordinates.ofDeg(180.000000000001, 15);
+    private static final HorizontalCoordinates INIT_PROJ_CENTER = HorizontalCoordinates.ofDeg(180.000000000001d, 15d);
     /**
      * Holds the default longitude for the observer's position.
      */
-    private static final Number DEFAULT_LON = 6.57;
+    private static final Number DEFAULT_LON = 6.57d;
     /**
      * Holds the default latitude for the observer's position.
      */
