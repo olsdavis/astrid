@@ -24,6 +24,7 @@ import javafx.util.converter.NumberStringConverter;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -46,17 +47,6 @@ public class Main extends Application {
      * Holds the font used for buttons, such as the resume/pause button.
      */
     private static final Font BUTTONS_FONT;
-
-    static {
-        final InputStream stream = Main.class.getResourceAsStream("/Font Awesome 5 Free-Solid-900.otf");
-        BUTTONS_FONT = Font.loadFont(stream, 15);
-        try {
-            stream.close();
-        } catch (IOException e) {
-            // ignore the exception, should not happen
-        }
-    }
-
     /**
      * Holds the character used in the BUTTONS_FONT font for the play button of the animator.
      */
@@ -69,7 +59,6 @@ public class Main extends Application {
      * Holds the character used in the BUTTONS_FONT font for the reset button of the animator.
      */
     private static final String RESET_CHARACTER = "\uf0e2";
-
     /**
      * Initial field of view.
      */
@@ -95,6 +84,22 @@ public class Main extends Application {
      */
     private static final Number DEFAULT_LAT = 46.52d;
 
+    static {
+        final InputStream stream = Main.class.getResourceAsStream("/Font Awesome 5 Free-Solid-900.otf");
+        BUTTONS_FONT = Font.loadFont(stream, 15);
+        try {
+            stream.close();
+        } catch (IOException e) {
+            // ignore the exception, should not happen
+        }
+    }
+
+    private final ObserverLocationBean position = new ObserverLocationBean();
+    private final DateTimeBean date = new DateTimeBean();
+    private final ViewingParametersBean viewingParameters = new ViewingParametersBean();
+    private final TimeAnimator animator = new TimeAnimator(date);
+    private SkyCanvasManager manager;
+
     /**
      * @param checker   a function that returns {@code true} if the passed argument (a double)
      *                  is a valid coordinate.
@@ -118,12 +123,6 @@ public class Main extends Application {
         };
     }
 
-    private final ObserverLocationBean position = new ObserverLocationBean();
-    private final DateTimeBean date = new DateTimeBean();
-    private final ViewingParametersBean viewingParameters = new ViewingParametersBean();
-    private final TimeAnimator animator = new TimeAnimator(date);
-    private SkyCanvasManager manager;
-
     public static void main(String[] args) {
         launch(args);
     }
@@ -136,7 +135,7 @@ public class Main extends Application {
 
         // Initialize beans
         position.setCoordinates(INIT_COORDINATES);
-        date.setZonedDateTime(INIT_TIME);
+        date.setZonedDateTime(ZonedDateTime.now());
         viewingParameters.setCenter(INIT_PROJ_CENTER);
         viewingParameters.setFieldOfViewDeg(INIT_FOV);
 
@@ -286,8 +285,6 @@ public class Main extends Application {
         final List<String> zonesAvailable = new ArrayList<>(ZoneId.getAvailableZoneIds());
         // alphabetical (default) order
         Collections.sort(zonesAvailable);
-
-        // TODO: check for the default zone
         final ComboBox<String> zonesChoice = new ComboBox<>(FXCollections.observableList(zonesAvailable));
         zonesChoice.setStyle("-fx-pref-width: 180;");
 
@@ -296,7 +293,9 @@ public class Main extends Application {
         zonesChoice.valueProperty().addListener((observable, oldValue, newValue) -> date.zoneProperty().set(ZoneId.of(newValue)));
         zonesChoice.valueProperty().set(date.getZone().getId()); // set up initial value to avoid the blank box
 
-        // TODO disable date and time selections when simulation is running.
+        dateText.disableProperty().bind(animator.runningProperty());
+        hourText.disableProperty().bind(animator.runningProperty());
+        zonesChoice.disableProperty().bind(animator.runningProperty());
 
         final HBox timeBox = new HBox(dateLabel, dateText, hourLabel, hourText, zonesChoice);
         timeBox.setStyle("-fx-spacing: inherit; -fx-alignment: baseline-left");
@@ -311,7 +310,7 @@ public class Main extends Application {
         animatorChoice.setItems(FXCollections.observableList(Arrays.asList(NamedTimeAccelerator.values())));
         animatorChoice.valueProperty().addListener((observable, oldValue, newValue) ->
                 animator.setAccelerator(newValue.getAccelerator()));
-        animatorChoice.setValue(NamedTimeAccelerator.TIMES_1);
+        animatorChoice.setValue(NamedTimeAccelerator.TIMES_300);
         final HBox chooseAnimator = new HBox(animatorChoice);
         chooseAnimator.setStyle("-fx-spacing: inherit;");
         final Button play = new Button(PLAY_CHARACTER);
@@ -323,8 +322,10 @@ public class Main extends Application {
         );
         final Button reset = new Button(RESET_CHARACTER);
         reset.setOnMouseClicked(event -> date.setZonedDateTime(ZonedDateTime.now()));
+        reset.disableProperty().bind(animator.runningProperty());
+        chooseAnimator.disableProperty().bind(animator.runningProperty());
         reset.setFont(BUTTONS_FONT);
-        return new HBox(chooseAnimator, play, reset);
+        return new HBox(chooseAnimator, reset, play);
     }
 
 }
