@@ -28,7 +28,7 @@ public interface TimeAccelerator {
      * @return a discrete accelerator of frequency {@code freq} and step {@code step}.
      */
     static TimeAccelerator discrete(long freq, Duration step) {
-        // TODO: verify this shit
+        // TODO: verify
         return (initial, elapsed) -> initial.plus(step.multipliedBy((long) Math.ceil(freq * elapsed / 1_000_000_000f)));
     }
 

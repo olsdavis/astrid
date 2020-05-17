@@ -12,6 +12,7 @@ import javafx.collections.FXCollections;
 import javafx.geometry.Orientation;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -33,6 +34,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author Alexandre Doukhan (SCIPER: 316706)
@@ -127,12 +130,13 @@ public class Main extends Application {
         primaryStage.setMinWidth(800);
         primaryStage.setMinHeight(600);
 
-        // Initialize beans
+        // initialize beans
         position.setCoordinates(INIT_COORDINATES);
         date.setZonedDateTime(ZonedDateTime.now());
         viewingParameters.setCenter(INIT_PROJ_CENTER);
         viewingParameters.setFieldOfViewDeg(INIT_FOV);
 
+        // initialize catalogue
         try (final InputStream hs = getClass().getResourceAsStream("/hygdata_v3.csv");
              final InputStream as = getClass().getResourceAsStream("/asterisms.txt")) {
             manager = new SkyCanvasManager(
@@ -145,7 +149,20 @@ public class Main extends Application {
                     viewingParameters
             );
         } catch (Exception e) {
-            // ignore, should not occur
+            Logger.getLogger("Rigel").log(Level.SEVERE,
+                    "Could not load the hyg database and/or the asterisms file, stack trace:", e);
+            System.exit(1); // exit with error
+        }
+
+        // We do not consider this small enhancement as part of the additional step;
+        // hence, we allow ourselves to just leave this little bit of code.
+        // TODO: ask if we can
+        // load up icon (displayed in the task bar)
+        try (final InputStream icon = getClass().getResourceAsStream("/icon_clipart.png")) {
+            primaryStage.getIcons().add(new Image(icon));
+        } catch (Exception e) {
+            Logger.getLogger("Rigel").log(Level.WARNING, "Could not load icon, stack trace:", e);
+            // do not exit, ignore
         }
 
         animator.runningProperty().addListener((observable, oldValue, newValue) -> {
@@ -169,7 +186,8 @@ public class Main extends Application {
     }
 
     /**
-     * @return the bottom pane of the window.
+     * @return the bottom pane of the window containing the object under the mouse,
+     * the field of view and the corresponding horizontal coordinates of the mouse.
      */
     private BorderPane bottomPane() {
         // set up the celestial object under mouse
@@ -204,7 +222,7 @@ public class Main extends Application {
     }
 
     /**
-     * @return the upper control bar.
+     * @return the upper control bar containing the time box and the animator box.
      */
     private HBox controlBar() {
         final HBox controlBar = new HBox(createPositionBox(), new Separator(Orientation.VERTICAL),
@@ -214,40 +232,36 @@ public class Main extends Application {
     }
 
     /**
-     * @return the position box, allowing to change user's position on Earth.
+     * @return the animator box containing the animator selection (speed of simulation),
+     * the resume/pause button and the reset button.
      */
-    private HBox createPositionBox() {
-        final Label lon = new Label("Longitude (°) :");
-        final Label lat = new Label("Latitude (°) :");
-        final TextField lonVal = new TextField();
-        final TextField latVal = new TextField();
-        lonVal.setStyle("-fx-pref-width: 60; -fx-alignment: baseline-right");
-        latVal.setStyle("-fx-pref-width: 60; -fx-alignment: baseline-right");
-
-        // text formatters for longitude and latitude
-        final NumberStringConverter stringConverter = new NumberStringConverter("#0.00");
-
-        // longitude
-        final UnaryOperator<TextFormatter.Change> lonFilter = coordinatesFilter(GeographicCoordinates::isValidLatDeg,
-                stringConverter);
-        final TextFormatter<Number> lonTextFormatter =
-                new TextFormatter<>(stringConverter, DEFAULT_LON, lonFilter);
-
-        // latitude
-        final UnaryOperator<TextFormatter.Change> latFilter = coordinatesFilter(GeographicCoordinates::isValidLatDeg,
-                stringConverter);
-        final TextFormatter<Number> latTextFormatter =
-                new TextFormatter<>(stringConverter, DEFAULT_LAT, latFilter);
-
-        lonVal.setTextFormatter(lonTextFormatter);
-        latVal.setTextFormatter(latTextFormatter);
-        position.longitudeProperty().bind(lonTextFormatter.valueProperty());
-        position.latitudeProperty().bind(latTextFormatter.valueProperty());
-
-        final HBox posControl = new HBox(lon, lonVal, lat, latVal);
-        posControl.setStyle("-fx-spacing: inherit; -fx-alignment: baseline-left");
-
-        return posControl;
+    private HBox createAnimatorBox() {
+        // set up the animator choice button
+        final ChoiceBox<NamedTimeAccelerator> animatorChoice = new ChoiceBox<>();
+        animatorChoice.setItems(FXCollections.observableList(Arrays.asList(NamedTimeAccelerator.values())));
+        animatorChoice.valueProperty().addListener((observable, oldValue, newValue) ->
+                animator.setAccelerator(newValue.getAccelerator()));
+        animatorChoice.setValue(NamedTimeAccelerator.TIMES_300);
+        final HBox chooseAnimator = new HBox(animatorChoice);
+        chooseAnimator.setStyle("-fx-spacing: inherit;");
+        // set up the play button
+        final Button play = new Button(PLAY_CHARACTER);
+        play.setOnMouseClicked(event -> animator.runningProperty().set(!animator.runningProperty().get()));
+        play.setFont(BUTTONS_FONT);
+        play.textProperty().bind(Bindings.createStringBinding(
+                () -> animator.runningProperty().get() ? PAUSE_CHARACTER : PLAY_CHARACTER,
+                animator.runningProperty())
+        );
+        // set up the reset button
+        final Button reset = new Button(RESET_CHARACTER);
+        reset.setOnMouseClicked(event -> date.setZonedDateTime(ZonedDateTime.now()));
+        reset.disableProperty().bind(animator.runningProperty());
+        chooseAnimator.disableProperty().bind(animator.runningProperty());
+        reset.setFont(BUTTONS_FONT);
+        // finally, assemble all the elements
+        final HBox animatorBox = new HBox(chooseAnimator, reset, play);
+        animatorBox.setStyle("-fx-spacing: inherit;");
+        return animatorBox;
     }
 
     /**
@@ -297,35 +311,40 @@ public class Main extends Application {
     }
 
     /**
-     * @return the animator box, which allows time simulation in different speeds.
+     * @return the position box, allowing to change user's position on Earth.
      */
-    private HBox createAnimatorBox() {
-        // set up the animator choice button
-        final ChoiceBox<NamedTimeAccelerator> animatorChoice = new ChoiceBox<>();
-        animatorChoice.setItems(FXCollections.observableList(Arrays.asList(NamedTimeAccelerator.values())));
-        animatorChoice.valueProperty().addListener((observable, oldValue, newValue) ->
-                animator.setAccelerator(newValue.getAccelerator()));
-        animatorChoice.setValue(NamedTimeAccelerator.TIMES_300);
-        final HBox chooseAnimator = new HBox(animatorChoice);
-        chooseAnimator.setStyle("-fx-spacing: inherit;");
-        // set up the play button
-        final Button play = new Button(PLAY_CHARACTER);
-        play.setOnMouseClicked(event -> animator.runningProperty().set(!animator.runningProperty().get()));
-        play.setFont(BUTTONS_FONT);
-        play.textProperty().bind(Bindings.createStringBinding(
-                () -> animator.runningProperty().get() ? PAUSE_CHARACTER : PLAY_CHARACTER,
-                animator.runningProperty())
-        );
-        // set up the reset button
-        final Button reset = new Button(RESET_CHARACTER);
-        reset.setOnMouseClicked(event -> date.setZonedDateTime(ZonedDateTime.now()));
-        reset.disableProperty().bind(animator.runningProperty());
-        chooseAnimator.disableProperty().bind(animator.runningProperty());
-        reset.setFont(BUTTONS_FONT);
-        // finally, assemble all the elements
-        final HBox animatorBox = new HBox(chooseAnimator, reset, play);
-        animatorBox.setStyle("-fx-spacing: inherit;");
-        return animatorBox;
+    private HBox createPositionBox() {
+        final Label lon = new Label("Longitude (°) :");
+        final Label lat = new Label("Latitude (°) :");
+        final TextField lonVal = new TextField();
+        final TextField latVal = new TextField();
+        lonVal.setStyle("-fx-pref-width: 60; -fx-alignment: baseline-right");
+        latVal.setStyle("-fx-pref-width: 60; -fx-alignment: baseline-right");
+
+        // text formatters for longitude and latitude
+        final NumberStringConverter stringConverter = new NumberStringConverter("#0.00");
+
+        // longitude
+        final UnaryOperator<TextFormatter.Change> lonFilter = coordinatesFilter(GeographicCoordinates::isValidLatDeg,
+                stringConverter);
+        final TextFormatter<Number> lonTextFormatter =
+                new TextFormatter<>(stringConverter, DEFAULT_LON, lonFilter);
+
+        // latitude
+        final UnaryOperator<TextFormatter.Change> latFilter = coordinatesFilter(GeographicCoordinates::isValidLatDeg,
+                stringConverter);
+        final TextFormatter<Number> latTextFormatter =
+                new TextFormatter<>(stringConverter, DEFAULT_LAT, latFilter);
+
+        lonVal.setTextFormatter(lonTextFormatter);
+        latVal.setTextFormatter(latTextFormatter);
+        position.longitudeProperty().bind(lonTextFormatter.valueProperty());
+        position.latitudeProperty().bind(latTextFormatter.valueProperty());
+
+        final HBox posControl = new HBox(lon, lonVal, lat, latVal);
+        posControl.setStyle("-fx-spacing: inherit; -fx-alignment: baseline-left");
+
+        return posControl;
     }
 
 }
