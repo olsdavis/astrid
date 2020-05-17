@@ -300,6 +300,7 @@ public class Main extends Application {
      * @return the animator box, which allows time simulation in different speeds.
      */
     private HBox createAnimatorBox() {
+        // set up the animator choice button
         final ChoiceBox<NamedTimeAccelerator> animatorChoice = new ChoiceBox<>();
         animatorChoice.setItems(FXCollections.observableList(Arrays.asList(NamedTimeAccelerator.values())));
         animatorChoice.valueProperty().addListener((observable, oldValue, newValue) ->
@@ -307,6 +308,7 @@ public class Main extends Application {
         animatorChoice.setValue(NamedTimeAccelerator.TIMES_300);
         final HBox chooseAnimator = new HBox(animatorChoice);
         chooseAnimator.setStyle("-fx-spacing: inherit;");
+        // set up the play button
         final Button play = new Button(PLAY_CHARACTER);
         play.setOnMouseClicked(event -> animator.runningProperty().set(!animator.runningProperty().get()));
         play.setFont(BUTTONS_FONT);
@@ -314,11 +316,13 @@ public class Main extends Application {
                 () -> animator.runningProperty().get() ? PAUSE_CHARACTER : PLAY_CHARACTER,
                 animator.runningProperty())
         );
+        // set up the reset button
         final Button reset = new Button(RESET_CHARACTER);
         reset.setOnMouseClicked(event -> date.setZonedDateTime(ZonedDateTime.now()));
         reset.disableProperty().bind(animator.runningProperty());
         chooseAnimator.disableProperty().bind(animator.runningProperty());
         reset.setFont(BUTTONS_FONT);
+        // finally, assemble all the elements
         final HBox animatorBox = new HBox(chooseAnimator, reset, play);
         animatorBox.setStyle("-fx-spacing: inherit;");
         return animatorBox;
