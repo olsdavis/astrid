@@ -21,7 +21,6 @@ import javafx.scene.transform.NonInvertibleTransformException;
 import javafx.scene.transform.Transform;
 
 import java.util.Objects;
-import java.util.Optional;
 
 /**
  * @author Oscar Davis (SCIPER: 311193)
@@ -56,6 +55,11 @@ public class SkyCanvasManager {
      * right keys.
      */
     private static final double LEFT_RIGHT_STEP = 10d;
+
+    /**
+     * The maximal distance for the object under mouse search.
+     */
+    private static final double MAX_DISTANCE = 10d;
 
     private final Canvas canvas = new Canvas();
     private final SkyCanvasPainter painter = new SkyCanvasPainter(canvas);
@@ -163,9 +167,8 @@ public class SkyCanvasManager {
                     }
                     return observedSky
                             .get()
-                            .objectClosestTo(CartesianCoordinates.of(mouse.getX(), mouse.getY()), 0.1d)
+                            .objectClosestTo(CartesianCoordinates.of(mouse.getX(), mouse.getY()), MAX_DISTANCE)
                             .orElse(null);
-                    //TODO: which distance use for objectClosestTo
                 },
                 mousePosition,
                 observedSky,
@@ -192,9 +195,12 @@ public class SkyCanvasManager {
             viewingParameters.setFieldOfViewDeg(FOV_LIM.clip(viewingParameters.getFieldOfView() + apply));
         });
         canvas.setOnKeyPressed(event -> {
-            // we could have put this declaration in each switch, only if a listened key
-            // is triggered. Yet, it is a minor (almost early) optimization, and it creates
-            // big code repetitions
+            // we could have put this declaration in each switch case, hence
+            // calling it only if a listened key is triggered. Yet, it is a minor
+            // early optimization, and it creates big code repetitions.
+            // Moreover, it is possible that the HotSpot JVM applies this optimization
+            // (cf. loop invariant hoisting).
+            // https://www.oracle.com/technetwork/java/whitepaper-135217.html#server
             final HorizontalCoordinates current = viewingParameters.getCenter();
             switch (event.getCode()) {
                 case LEFT:
