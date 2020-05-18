@@ -67,7 +67,9 @@ public class ObserverLocationBean {
      * @return the coordinates of the observer.
      */
     public GeographicCoordinates getCoordinates() {
-        return GeographicCoordinates.ofDeg(latitude.get(), longitude.get());
+        //TODO: we used a binding here, can we? (Avoids excessive instantiations)
+        // how can we name it?
+        return GeographicCoordinates.ofDeg(longitude.get(), latitude.get());
     }
 
     /**
