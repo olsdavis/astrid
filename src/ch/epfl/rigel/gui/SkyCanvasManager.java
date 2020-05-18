@@ -171,9 +171,7 @@ public class SkyCanvasManager {
                 transform
         );
         // JFX events
-        canvas.setOnMouseMoved(event -> {
-            mousePosition.set(new Point2D(event.getX(), event.getY()));
-        });
+        canvas.setOnMouseMoved(event -> mousePosition.set(new Point2D(event.getX(), event.getY())));
         canvas.setOnMouseClicked(event -> {
             // TODO: Note: event#isPrimaryButton indicates something else than
             // the button that is responsible for the event (which is given by event#getButton)
