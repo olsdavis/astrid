@@ -12,7 +12,6 @@ import javafx.collections.FXCollections;
 import javafx.geometry.Orientation;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -149,17 +148,6 @@ public class Main extends Application {
             Logger.getLogger("Rigel").log(Level.SEVERE,
                     "Could not load the hyg database and/or the asterisms file, stack trace:", e);
             System.exit(1); // exit with error
-        }
-
-        // We do not consider this small enhancement as part of the additional step;
-        // hence, we allow ourselves to just leave this little bit of code.
-        // TODO: ask if we can
-        // load up icon (displayed in the task bar)
-        try (final InputStream icon = getClass().getResourceAsStream("/icon_clipart.png")) {
-            primaryStage.getIcons().add(new Image(icon));
-        } catch (Exception e) {
-            Logger.getLogger("Rigel").log(Level.WARNING, "Could not load icon, stack trace:", e);
-            // do not exit, ignore
         }
 
         animator.runningProperty().addListener((observable, oldValue, newValue) -> {

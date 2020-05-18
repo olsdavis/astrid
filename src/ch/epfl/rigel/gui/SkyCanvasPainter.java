@@ -106,11 +106,7 @@ public class SkyCanvasPainter {
                 final Point2D pointA = new Point2D(starPositions[2 * current], starPositions[2 * current + 1]);
                 final Point2D pointB = new Point2D(starPositions[2 * next], starPositions[2 * next + 1]);
                 if (canvas.contains(pointA) || canvas.contains(pointB)) {
-                    if (i == 0) {
-                        gfx.moveTo(pointA.getX(), pointA.getY());
-                    } else {
-                        gfx.lineTo(pointA.getX(), pointA.getY());
-                    }
+                    gfx.moveTo(pointA.getX(), pointA.getY());
                     gfx.lineTo(pointB.getX(), pointB.getY());
                     gfx.stroke();
                 }
