@@ -190,12 +190,8 @@ public class Main extends Application {
         // set up the celestial object under mouse
         final Text underMouse = new Text("");
         underMouse.textProperty().bind(Bindings.createStringBinding(() -> {
-            final Optional<CelestialObject> object = manager.objectUnderMouseProperty().get();
-            if (object.isEmpty()) {
-                return "";
-            } else {
-                return object.get().toString();
-            }
+            final CelestialObject object = manager.objectUnderMouseProperty().get();
+            return object == null ? "" : object.info();
         }, manager.objectUnderMouseProperty()));
         final BorderPane bottom = new BorderPane(underMouse);
         bottom.setStyle("-fx-padding: 4; -fx-background-color: #ffffff;");

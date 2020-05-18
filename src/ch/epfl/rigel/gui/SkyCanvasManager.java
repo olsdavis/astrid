@@ -63,7 +63,7 @@ public class SkyCanvasManager {
     // the following values are stored into floats
     private final SimpleObjectProperty<Point2D> mousePosition = new SimpleObjectProperty<>(new Point2D(0, 0));
 
-    private final ObservableObjectValue<Optional<CelestialObject>> objectUnderMouse;
+    private final ObservableObjectValue<CelestialObject> objectUnderMouse;
     private final ObservableObjectValue<StereographicProjection> projection;
     private final ObservableObjectValue<ObservedSky> observedSky;
     private final ObservableObjectValue<Transform> transform;
@@ -159,11 +159,12 @@ public class SkyCanvasManager {
                     } catch (NonInvertibleTransformException e) {
                         // when the program starts up, whe can tolerate the fact that the coordinates
                         // are not invertible
-                        return Optional.empty();
+                        return null;
                     }
                     return observedSky
                             .get()
-                            .objectClosestTo(CartesianCoordinates.of(mouse.getX(), mouse.getY()), 0.1d);
+                            .objectClosestTo(CartesianCoordinates.of(mouse.getX(), mouse.getY()), 0.1d)
+                            .orElse(null);
                     //TODO: which distance use for objectClosestTo
                 },
                 mousePosition,
@@ -231,7 +232,7 @@ public class SkyCanvasManager {
     /**
      * @return the property that holds the object under the mouse.
      */
-    public ObservableObjectValue<Optional<CelestialObject>> objectUnderMouseProperty() {
+    public ObservableObjectValue<CelestialObject> objectUnderMouseProperty() {
         return objectUnderMouse;
     }
 
