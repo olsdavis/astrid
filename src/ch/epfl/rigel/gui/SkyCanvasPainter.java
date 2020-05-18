@@ -1,9 +1,6 @@
 package ch.epfl.rigel.gui;
 
-import ch.epfl.rigel.astronomy.Asterism;
-import ch.epfl.rigel.astronomy.ObservedSky;
-import ch.epfl.rigel.astronomy.Planet;
-import ch.epfl.rigel.astronomy.Star;
+import ch.epfl.rigel.astronomy.*;
 import ch.epfl.rigel.coordinates.CartesianCoordinates;
 import ch.epfl.rigel.coordinates.HorizontalCoordinates;
 import ch.epfl.rigel.coordinates.StereographicProjection;

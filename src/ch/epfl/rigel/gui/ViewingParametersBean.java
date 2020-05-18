@@ -37,7 +37,6 @@ public class ViewingParametersBean {
      */
     public void setAzimuth(double az) {
         setCenter(HorizontalCoordinates.of(Angle.ofDeg(az), center.get().alt()));
-        System.out.println("az=" + center.get().azDeg() + ",alt=" + center.get().altDeg());
     }
 
     /**
