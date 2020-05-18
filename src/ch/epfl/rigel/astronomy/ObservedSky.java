@@ -212,26 +212,10 @@ public class ObservedSky {
                 .map(p -> p.at(d, eclipticToEq))
                 .collect(Collectors.toUnmodifiableList());
         planetPositions = new double[2 * planets.size()];
-        for (int i = 0; i < planets.size(); i++) {
-            final Planet current = planets.get(i);
-            final CartesianCoordinates coordinates = projection.apply(eqToHorizontal.apply(current.equatorialPos()));
-            // store coordinates
-            planetPositions[2 * i] = coordinates.x();
-            planetPositions[2 * i + 1] = coordinates.y();
-            // put it in its chunk
-            putInChunk(current, coordinates);
-        }
+        setupCoordinates(planets, planetPositions, projection, eqToHorizontal);
 
         starPositions = new double[2 * catalogue.stars().size()];
-        for (int i = 0; i < catalogue.stars().size(); i++) {
-            final Star current = catalogue.stars().get(i);
-            final CartesianCoordinates coordinates = projection.apply(eqToHorizontal.apply(current.equatorialPos()));
-            // store coordinates
-            starPositions[2 * i] = coordinates.x();
-            starPositions[2 * i + 1] = coordinates.y();
-            // put it in its chunk
-            putInChunk(current, coordinates);
-        }
+        setupCoordinates(catalogue.stars(), starPositions, projection, eqToHorizontal);
     }
 
     /**
@@ -249,6 +233,27 @@ public class ObservedSky {
             chunks.put(pair, chunk = new SkyChunk());
         }
         chunk.objects.add(new CelestialPair(coordinates, object));
+    }
+
+    /**
+     * Sets up the coordinates of the provided objects in the provided array.
+     *
+     * @param objects    the objects
+     * @param positions  the positions to fill in
+     * @param projection the projection to use
+     * @param conversion the conversion to use
+     */
+    private void setupCoordinates(List<? extends CelestialObject> objects, double[] positions,
+                                  StereographicProjection projection, EquatorialToHorizontalConversion conversion) {
+        for (int i = 0; i < objects.size(); i++) {
+            final CelestialObject current = objects.get(i);
+            final CartesianCoordinates coordinates = projection.apply(conversion.apply(current.equatorialPos()));
+            // store coordinates
+            positions[2 * i] = coordinates.x();
+            positions[2 * i + 1] = coordinates.y();
+            // put it in its chunk
+            putInChunk(current, coordinates);
+        }
     }
 
     /**
