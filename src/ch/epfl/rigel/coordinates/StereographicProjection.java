@@ -2,6 +2,7 @@ package ch.epfl.rigel.coordinates;
 
 import ch.epfl.rigel.math.Angle;
 
+import java.util.Locale;
 import java.util.function.Function;
 
 import static java.lang.Math.*;
@@ -129,7 +130,7 @@ public final class StereographicProjection implements Function<HorizontalCoordin
 
     @Override
     public String toString() {
-        return String.format("StereographicProjection(x=%.4f, y=%.4f)",
+        return String.format(Locale.ROOT, "StereographicProjection(x=%.4f, y=%.4f)",
                 lambda0, phi1);
     }
 }

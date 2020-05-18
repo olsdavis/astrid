@@ -198,18 +198,19 @@ public class Main extends Application {
         bottom.setCenter(underMouse);
         // set up the field of view text
         final Text fov = new Text("");
-        fov.textProperty().bind(Bindings.createStringBinding(
-                () -> String.format("Champ de vue : %.1f°", viewingParameters.getFieldOfView()),
-                viewingParameters.fieldOfViewProperty())
+        fov.textProperty().bind(
+                Bindings.format(Locale.ROOT, "Champ de vue : %.1f°", viewingParameters.fieldOfViewProperty())
         );
         bottom.setLeft(fov);
         // set up the mouse position in horizontal coordinates text
         final Text mouseHorizontal = new Text("");
-        mouseHorizontal.textProperty().bind(Bindings.createStringBinding(
-                () -> String.format("Azimut : %.1f°, hauteur : %.1f°",
-                        manager.mouseAzimuth(), manager.mouseAltitude()),
-                manager.mouseAzimuthProperty(), manager.mouseAltitudeProperty()
-        ));
+        mouseHorizontal.textProperty().bind(
+                Bindings.format(
+                        Locale.ROOT, "Azimut : %.2f°, hauteur : %.2f°",
+                        manager.mouseAzimuthProperty(),
+                        manager.mouseAltitudeProperty()
+                )
+        );
         bottom.setRight(mouseHorizontal);
         return bottom;
     }
