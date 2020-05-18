@@ -29,7 +29,7 @@ public interface TimeAccelerator {
      */
     static TimeAccelerator discrete(long freq, Duration step) {
         // TODO: verify
-        return (initial, elapsed) -> initial.plus(step.multipliedBy((long) Math.ceil(freq * elapsed / 1_000_000_000f)));
+        return (initial, elapsed) -> initial.plus(step.multipliedBy((long) Math.floor(freq * elapsed / 1_000_000_000f)));
     }
 
     /**

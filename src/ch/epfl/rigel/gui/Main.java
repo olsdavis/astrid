@@ -228,7 +228,13 @@ public class Main extends Application {
         chooseAnimator.setStyle("-fx-spacing: inherit;");
         // set up the play button
         final Button play = new Button(PLAY_CHARACTER);
-        play.setOnMouseClicked(event -> animator.runningProperty().set(!animator.runningProperty().get()));
+        play.setOnMouseClicked(event -> {
+            if (animator.runningProperty().get()) {
+                animator.stop();
+            } else {
+                animator.start();
+            }
+        });
         play.setFont(BUTTONS_FONT);
         play.textProperty().bind(Bindings.createStringBinding(
                 () -> animator.runningProperty().get() ? PAUSE_CHARACTER : PLAY_CHARACTER,

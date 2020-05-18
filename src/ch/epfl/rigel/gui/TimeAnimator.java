@@ -1,7 +1,7 @@
 package ch.epfl.rigel.gui;
 
 import javafx.animation.AnimationTimer;
-import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 
 /**
@@ -42,7 +42,7 @@ public final class TimeAnimator extends AnimationTimer {
     public void handle(long now) {
         if (start == -1L) {
             start = now;
-        } else if (start != now) {
+        } else {
             date.setZonedDateTime(accelerator.adjust(date.getZonedDateTime(), now - previous));
         }
         previous = now;
@@ -59,7 +59,7 @@ public final class TimeAnimator extends AnimationTimer {
      * @return a property holding {@code true} if and only if the TimeAnimator
      * is running.
      */
-    public BooleanProperty runningProperty() {
+    public ReadOnlyBooleanProperty runningProperty() {
         return running;
     }
 
