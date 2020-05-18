@@ -52,7 +52,7 @@ public final class TimeAnimator extends AnimationTimer {
     public void stop() {
         super.stop();
         running.set(false);
-        start = -1L; // reset this value, to avoid "time bump" in the simulation
+        start = -1L; // reset this value, to avoid a "time bump" in the simulation
     }
 
     /**
