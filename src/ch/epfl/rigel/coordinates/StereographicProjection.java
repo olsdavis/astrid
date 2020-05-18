@@ -111,12 +111,9 @@ public final class StereographicProjection implements Function<HorizontalCoordin
         return HorizontalCoordinates.of(lambda, phi);
     }
 
-    /*
-    Previous implementation limiting the use of JFX properties
-    TODO: follow up with what the teacher says
-     */
     /**
      * @throws UnsupportedOperationException this operation is forbidden.
+     */
     @Override
     public int hashCode() {
         throw new UnsupportedOperationException("tried to call hashCode on StereographicProjection");
@@ -124,10 +121,11 @@ public final class StereographicProjection implements Function<HorizontalCoordin
 
     /**
      * @throws UnsupportedOperationException this operation is forbidden.
+     */
     @Override
     public boolean equals(Object o) {
         throw new UnsupportedOperationException("tried to call equals on StereographicProjection");
-    }*/
+    }
 
     @Override
     public String toString() {

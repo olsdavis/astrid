@@ -21,6 +21,7 @@ import javafx.scene.transform.NonInvertibleTransformException;
 import javafx.scene.transform.Transform;
 
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * @author Oscar Davis (SCIPER: 311193)
@@ -62,7 +63,7 @@ public class SkyCanvasManager {
     // the following values are stored into floats
     private final SimpleObjectProperty<Point2D> mousePosition = new SimpleObjectProperty<>(new Point2D(0, 0));
 
-    private final ObservableObjectValue<CelestialObject> objectUnderMouse;
+    private final ObservableObjectValue<Optional<CelestialObject>> objectUnderMouse;
     private final ObservableObjectValue<StereographicProjection> projection;
     private final ObservableObjectValue<ObservedSky> observedSky;
     private final ObservableObjectValue<Transform> transform;
@@ -90,7 +91,7 @@ public class SkyCanvasManager {
 
         projection = Bindings.createObjectBinding(
                 () -> new StereographicProjection(viewingParameters.getCenter()),
-                viewingParameters.getCenterProperty()
+                viewingParameters.centerProperty()
         );
 
         transform = Bindings.createObjectBinding(
@@ -109,7 +110,7 @@ public class SkyCanvasManager {
                 canvas.widthProperty(),
                 canvas.heightProperty(),
                 projection,
-                viewingParameters.getFieldOfViewProperty()
+                viewingParameters.fieldOfViewProperty()
         );
 
         mouseHorizontalPosition = Bindings.createObjectBinding(
@@ -142,15 +143,13 @@ public class SkyCanvasManager {
         observedSky = Bindings.createObjectBinding(
                 () -> new ObservedSky(dateTime.getZonedDateTime(),
                         observerLocation.getCoordinates(), projection.get(), catalogue),
-                observerLocation.getCoordinatesBinding(),
+                observerLocation.longitudeProperty(),
+                observerLocation.latitudeProperty(),
                 projection,
                 dateTime.dateProperty(),
                 dateTime.timeProperty(),
                 dateTime.zoneProperty()
         );
-
-        //TODO: inverse = transform.get().inverseTransform(mousePosition.get());
-        // appears twice. Avoid this.
 
         objectUnderMouse = Bindings.createObjectBinding(
                 () -> {
@@ -160,12 +159,11 @@ public class SkyCanvasManager {
                     } catch (NonInvertibleTransformException e) {
                         // when the program starts up, whe can tolerate the fact that the coordinates
                         // are not invertible
-                        return null;
+                        return Optional.empty();
                     }
                     return observedSky
                             .get()
-                            .objectClosestTo(CartesianCoordinates.of(mouse.getX(), mouse.getY()), 0.1d)
-                            .orElse(null);
+                            .objectClosestTo(CartesianCoordinates.of(mouse.getX(), mouse.getY()), 0.1d);
                     //TODO: which distance use for objectClosestTo
                 },
                 mousePosition,
@@ -201,20 +199,16 @@ public class SkyCanvasManager {
             final HorizontalCoordinates current = viewingParameters.getCenter();
             switch (event.getCode()) {
                 case LEFT:
-                    viewingParameters.setCenter(HorizontalCoordinates.ofDeg(AZ_LIM.reduce(current.azDeg() - LEFT_RIGHT_STEP),
-                            current.altDeg()));
+                    viewingParameters.setAzimuth(AZ_LIM.reduce(current.azDeg() - LEFT_RIGHT_STEP));
                     break;
                 case RIGHT:
-                    viewingParameters.setCenter(HorizontalCoordinates.ofDeg(AZ_LIM.reduce(current.azDeg() + LEFT_RIGHT_STEP),
-                            current.altDeg()));
+                    viewingParameters.setAzimuth(AZ_LIM.reduce(current.azDeg() + LEFT_RIGHT_STEP));
                     break;
                 case DOWN:
-                    viewingParameters.setCenter(HorizontalCoordinates.ofDeg(current.azDeg(),
-                            ALT_LIM.clip(current.altDeg() - UP_DOWN_STEP)));
+                    viewingParameters.setAltitude(ALT_LIM.clip(current.altDeg() - UP_DOWN_STEP));
                     break;
                 case UP:
-                    viewingParameters.setCenter(HorizontalCoordinates.ofDeg(current.azDeg(),
-                            ALT_LIM.clip(current.altDeg() + UP_DOWN_STEP)));
+                    viewingParameters.setAltitude(ALT_LIM.clip(current.altDeg() + UP_DOWN_STEP));
             }
             event.consume();
         });
@@ -232,13 +226,14 @@ public class SkyCanvasManager {
         };
         observedSky.addListener(listener);
         transform.addListener(listener);
-        projection.addListener(listener);
+        // we do not add a listener to projection, because its value change
+        // updates transform
     }
 
     /**
      * @return the property that holds the object under the mouse.
      */
-    public ObservableObjectValue<CelestialObject> objectUnderMouseProperty() {
+    public ObservableObjectValue<Optional<CelestialObject>> objectUnderMouseProperty() {
         return objectUnderMouse;
     }
 

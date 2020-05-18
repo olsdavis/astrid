@@ -1,6 +1,7 @@
 package ch.epfl.rigel.gui;
 
 import ch.epfl.rigel.coordinates.HorizontalCoordinates;
+import ch.epfl.rigel.math.Angle;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -30,6 +31,25 @@ public class ViewingParametersBean {
     }
 
     /**
+     * Updates the azimuth of the bean (in degrees).
+     *
+     * @param az the new azimuth (in degrees)
+     */
+    public void setAzimuth(double az) {
+        setCenter(HorizontalCoordinates.of(Angle.ofDeg(az), center.get().alt()));
+        System.out.println("az=" + center.get().azDeg() + ",alt=" + center.get().altDeg());
+    }
+
+    /**
+     * Updates the altitude of the bean (in degrees).
+     *
+     * @param alt the new altitude (in degrees)
+     */
+    public void setAltitude(double alt) {
+        setCenter(HorizontalCoordinates.of(center.get().az(), Angle.ofDeg(alt)));
+    }
+
+    /**
      * @return the center of the projection.
      */
     public HorizontalCoordinates getCenter() {
@@ -40,7 +60,7 @@ public class ViewingParametersBean {
      * @return the property holding the HorizontalCoordinates of the center, in
      * a read-only property.
      */
-    public ReadOnlyObjectProperty<HorizontalCoordinates> getCenterProperty() {
+    public ReadOnlyObjectProperty<HorizontalCoordinates> centerProperty() {
         return center;
     }
 
@@ -55,7 +75,7 @@ public class ViewingParametersBean {
      * @return the property holding the field of view property of the projection,
      * in a read-only property.
      */
-    public ReadOnlyDoubleProperty getFieldOfViewProperty() {
+    public ReadOnlyDoubleProperty fieldOfViewProperty() {
         return fieldOfView;
     }
 

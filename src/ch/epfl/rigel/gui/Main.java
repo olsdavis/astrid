@@ -28,10 +28,7 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 import java.util.logging.Level;
@@ -193,11 +190,11 @@ public class Main extends Application {
         // set up the celestial object under mouse
         final Text underMouse = new Text("");
         underMouse.textProperty().bind(Bindings.createStringBinding(() -> {
-            final CelestialObject object = manager.objectUnderMouseProperty().get();
-            if (object == null) {
+            final Optional<CelestialObject> object = manager.objectUnderMouseProperty().get();
+            if (object.isEmpty()) {
                 return "";
             } else {
-                return object.toString();
+                return object.get().toString();
             }
         }, manager.objectUnderMouseProperty()));
         final BorderPane bottom = new BorderPane(underMouse);
@@ -207,7 +204,7 @@ public class Main extends Application {
         final Text fov = new Text("");
         fov.textProperty().bind(Bindings.createStringBinding(
                 () -> String.format("Champ de vue : %.1f°", viewingParameters.getFieldOfView()),
-                viewingParameters.getFieldOfViewProperty())
+                viewingParameters.fieldOfViewProperty())
         );
         bottom.setLeft(fov);
         // set up the mouse position in horizontal coordinates text

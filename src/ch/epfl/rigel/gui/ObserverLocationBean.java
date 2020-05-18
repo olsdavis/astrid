@@ -1,9 +1,7 @@
 package ch.epfl.rigel.gui;
 
 import ch.epfl.rigel.coordinates.GeographicCoordinates;
-import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.value.ObservableObjectValue;
 
 /**
  * Holds the parameters of the observer's location: his GeographicCoordinates
@@ -15,21 +13,9 @@ import javafx.beans.value.ObservableObjectValue;
  */
 public class ObserverLocationBean {
 
-    // both values are in degrees
+    // both values are stored in degrees
     private final SimpleDoubleProperty latitude = new SimpleDoubleProperty();
     private final SimpleDoubleProperty longitude = new SimpleDoubleProperty();
-    private final ObservableObjectValue<GeographicCoordinates> coordinatesBinding;
-
-    /**
-     * Default constructor. Initializes the binding.
-     */
-    public ObserverLocationBean() {
-        coordinatesBinding = Bindings.createObjectBinding(
-                () -> GeographicCoordinates.ofDeg(longitude.get(), latitude.get()),
-                longitude,
-                latitude
-        );
-    }
 
     /**
      * @return the property of the observer's latitude.
@@ -46,17 +32,42 @@ public class ObserverLocationBean {
     }
 
     /**
-     * @return the coordinates of the observer.
+     * @return the latitude of the current bean (in degrees).
      */
-    public GeographicCoordinates getCoordinates() {
-        return coordinatesBinding.get();
+    public double getLatitude() {
+        return latitude.get();
     }
 
     /**
-     * @return the binding that creates the GeographicCoordinates.
+     * @return the longitude of the current bean (in degrees).
      */
-    public ObservableObjectValue<GeographicCoordinates> getCoordinatesBinding() {
-        return coordinatesBinding;
+    public double getLongitude() {
+        return longitude.get();
+    }
+
+    /**
+     * Updates the latitude of the current bean.
+     *
+     * @param latitude the new latitude in degrees
+     */
+    public void setLatitude(double latitude) {
+        this.latitude.set(latitude);
+    }
+
+    /**
+     * Updates the longitude of the current bean.
+     *
+     * @param longitude the new longitude in degrees
+     */
+    public void setLongitude(double longitude) {
+        this.longitude.set(longitude);
+    }
+
+    /**
+     * @return the coordinates of the observer.
+     */
+    public GeographicCoordinates getCoordinates() {
+        return GeographicCoordinates.ofDeg(latitude.get(), longitude.get());
     }
 
     /**
@@ -65,8 +76,8 @@ public class ObserverLocationBean {
      * @param c the new coordinates of the observer
      */
     public void setCoordinates(GeographicCoordinates c) {
-        latitude.set(c.latDeg());
-        longitude.set(c.lonDeg());
+        setLongitude(c.lonDeg());
+        setLatitude(c.latDeg());
     }
 
 }
