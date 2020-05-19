@@ -4,6 +4,8 @@ import javafx.animation.AnimationTimer;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 
+import java.time.ZonedDateTime;
+
 /**
  * Represents an animator for animations, that uses the created
  * TimeAccelerator simulator.
@@ -22,8 +24,8 @@ public final class TimeAnimator extends AnimationTimer {
     private final DateTimeBean date;
     // the initial handle(long) argument value
     private long start = -1L;
-    // the previous handle(long) argument value
-    private long previous;
+    // the date at which the animation starts
+    private ZonedDateTime initialDate;
 
     /**
      * @param date the beginning date of the time animator (will be updated)
@@ -35,6 +37,7 @@ public final class TimeAnimator extends AnimationTimer {
     @Override
     public void start() {
         super.start();
+        initialDate = date.getZonedDateTime(); // update the value for starts/stops
         running.set(true);
     }
 
@@ -43,9 +46,8 @@ public final class TimeAnimator extends AnimationTimer {
         if (start == -1L) {
             start = now;
         } else {
-            date.setZonedDateTime(accelerator.adjust(date.getZonedDateTime(), now - previous));
+            date.setZonedDateTime(accelerator.adjust(initialDate, now - start));
         }
-        previous = now;
     }
 
     @Override
