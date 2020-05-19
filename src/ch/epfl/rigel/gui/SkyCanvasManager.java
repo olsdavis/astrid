@@ -177,8 +177,9 @@ public class SkyCanvasManager {
         // JFX events
         canvas.setOnMouseMoved(event -> mousePosition.set(new Point2D(event.getX(), event.getY())));
         canvas.setOnMouseClicked(event -> {
-            // TODO: Note: event#isPrimaryButton indicates something else than
+            // event#isPrimaryButton indicates something else than
             // the button that is responsible for the event (which is given by event#getButton)
+            // It didn't work on Windows 10.
             if (event.getButton() == MouseButton.PRIMARY) {
                 canvas.requestFocus();
                 event.consume();
@@ -250,24 +251,10 @@ public class SkyCanvasManager {
     }
 
     /**
-     * @return the azimuth of the mouse, in HorizontalCoordinates.
-     */
-    public double mouseAzimuth() {
-        return mouseAzimuth.get();
-    }
-
-    /**
      * @return the property that holds the azimuth of the mouse, in HorizontalCoordinates.
      */
     public ObservableDoubleValue mouseAzimuthProperty() {
         return mouseAzimuth;
-    }
-
-    /**
-     * @return the altitude of the mouse, in HorizontalCoordinates.
-     */
-    public double mouseAltitude() {
-        return mouseAltitude.get();
     }
 
     /**
