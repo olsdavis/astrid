@@ -87,7 +87,6 @@ public class SkyCanvasManager {
     public SkyCanvasManager(StarCatalogue catalogue, DateTimeBean dateTime,
                             ObserverLocationBean observerLocation, ViewingParametersBean viewingParameters) {
         // first assert all prerequisites, in order to avoid heavy syntax
-        // and used in irregular ways
         Objects.requireNonNull(catalogue);
         Objects.requireNonNull(dateTime);
         Objects.requireNonNull(observerLocation);
