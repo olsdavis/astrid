@@ -236,9 +236,8 @@ public class Main extends Application {
             }
         });
         play.setFont(BUTTONS_FONT);
-        play.textProperty().bind(Bindings.createStringBinding(
-                () -> animator.runningProperty().get() ? PAUSE_CHARACTER : PLAY_CHARACTER,
-                animator.runningProperty())
+        play.textProperty().bind(
+                Bindings.when(animator.runningProperty()).then(PAUSE_CHARACTER).otherwise(PLAY_CHARACTER)
         );
         // set up the reset button
         final Button reset = new Button(RESET_CHARACTER);
