@@ -143,8 +143,6 @@ public class SkyCanvasPainter {
         // apply the transform
         transform.transform2DPoints(planetPositions, 0, planetPositions, 0, planetPositions.length / 2);
 
-        // BONUS: modify the fill depending on the planet to get more adequate colors
-        // set fill for all planets
         gfx.setFill(Color.LIGHTGRAY);
         for (int i = 0; i < sky.planets().size(); i++) {
             final Planet planet = sky.planets().get(i);

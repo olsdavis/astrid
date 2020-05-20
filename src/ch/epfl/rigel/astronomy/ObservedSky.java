@@ -161,10 +161,6 @@ public class ObservedSky {
         }
     }
 
-    // IMPROVEMENT: possibly use immutable lists for star & planet positions
-    // instead of using array and copying them. Maybe this will not be feasible
-    // because of the future code base; but we may consider this solution.
-
     private final StarCatalogue catalogue;
 
     private final Sun sun;
