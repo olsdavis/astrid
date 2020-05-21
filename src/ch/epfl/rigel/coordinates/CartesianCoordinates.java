@@ -50,8 +50,17 @@ public final class CartesianCoordinates {
      * @return the square of the distance between this point and the other provided point.
      */
     public double distSquared(CartesianCoordinates other) {
-        final double diffX = other.x - x;
-        final double diffY = other.y - y;
+        return distSquared(other.x, other.y);
+    }
+
+    /**
+     * @param x the x-coordinate of the point
+     * @param y the y-coordinate of the point
+     * @return the square of the distance between this point and the point of coordinates {@code (x,y)}.
+     */
+    public double distSquared(double x, double y) {
+        final double diffX = this.x - x;
+        final double diffY = this.y - y;
         return diffX * diffX + diffY * diffY;
     }
 
@@ -61,16 +70,6 @@ public final class CartesianCoordinates {
      */
     public double dist(CartesianCoordinates other) {
         return Math.sqrt(distSquared(other));
-    }
-
-    /**
-     * @param dx the x translation
-     * @param dy the y translation
-     * @return CartesianCoordinates of a new point translated by {@code x} and {@code y} from
-     * this one.
-     */
-    public CartesianCoordinates translate(double dx, double dy) {
-        return of(x + dx, y + dy);
     }
 
     @Override

@@ -16,6 +16,7 @@ import java.math.MathContext;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.SplittableRandom;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -113,8 +114,8 @@ public class ObservedSkyTest {
                 catalogue
         );
         final List<Pair> all = all(sky);
-        for (int i = 0; i < 10 * TestRandomizer.RANDOM_ITERATIONS; i++) {
-            final double dist = random.nextDouble(0, 10d);
+        for (int i = 0; i < 100 * TestRandomizer.RANDOM_ITERATIONS; i++) {
+            final double dist = 10d;
             final CartesianCoordinates coordinates = CartesianCoordinates.of(random.nextDouble(-10, 10),
                     random.nextDouble(-10, 10));
             final CelestialObject obj = linearSearch(all, sky, coordinates, dist);
@@ -153,13 +154,13 @@ public class ObservedSkyTest {
 
         Bench.printBench(() -> {
             for (CartesianCoordinates coordinate : coordinates) {
-                sky.objectClosestTo(coordinate, 0.5d);
+                sky.objectClosestTo(coordinate, 10d);
             }
         }, coordinates.size());
         final List<Pair> all = all(sky);
         Bench.printBench(() -> {
             for (CartesianCoordinates coordinate : coordinates) {
-                linearSearch(all, sky, coordinate, 0.5d);
+                linearSearch(all, sky, coordinate, 10d);
             }
         }, coordinates.size());
         // just to prove it's crap

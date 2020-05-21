@@ -7,11 +7,11 @@ package ch.epfl.test;
 public class Bench {
 
     public static void printBench(Runnable runnable, int iterations) {
-        final long start = System.currentTimeMillis();
+        final long start = System.nanoTime();
         runnable.run();
-        final long diff = System.currentTimeMillis() - start;
-        System.out.println("Time: " + diff + "ms, ns/op: "
-                + ((double) diff / iterations) * 1_000_000d);
+        final long diff = System.nanoTime() - start;
+        System.out.println("Time: " + diff / 1000000L + "ms, ns/op: "
+                + ((double) diff / iterations));
     }
 
 }

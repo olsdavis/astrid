@@ -19,7 +19,7 @@ public class ObservedSky {
     /**
      * Represents the size of a chunk.
      */
-    private static final double CHUNK_SIZE = 0.5d;
+    private static final double CHUNK_SIZE = 1d;
 
     /**
      * @param a a coordinate
@@ -27,7 +27,7 @@ public class ObservedSky {
      * exclusive on the right.
      */
     private static int pairOf(double a) {
-        return (int) Math.floor(a / CHUNK_SIZE);
+        return a < 0 ? (int) (a / CHUNK_SIZE) - 1 : (int) (a / CHUNK_SIZE);
     }
 
     /**
@@ -82,7 +82,7 @@ public class ObservedSky {
 
         @Override
         public int hashCode() {
-            return Objects.hash(x, y);
+            return (31 * x) * 31 + 31 * y;
         }
 
         @Override
@@ -143,21 +143,18 @@ public class ObservedSky {
          * @return the closest object in this chunk to the provided {@code point}
          * if it is closer to the point {@code point} than {@code maxDistance}.
          */
-        Optional<SearchResult> closestTo(CartesianCoordinates point, double maxDistance) {
+        SearchResult closestTo(CartesianCoordinates point, double maxDistance) {
             CelestialPair closest = null;
             double best = Double.POSITIVE_INFINITY;
-            for (CelestialPair object : objects) {
+            for (int i = 0; i < objects.size(); i++) {
+                final CelestialPair object = objects.get(i);
                 final double d = point.distSquared(object.coordinates);
-                if (best > d && d < maxDistance * maxDistance) {
+                if (best > d && d <= maxDistance * maxDistance) {
                     closest = object;
                     best = d;
                 }
             }
-            if (closest == null) {
-                return Optional.empty();
-            } else {
-                return Optional.of(new SearchResult(best, closest.object));
-            }
+            return closest == null ? null : new SearchResult(best, closest.object);
         }
     }
 
@@ -351,39 +348,24 @@ public class ObservedSky {
         // to look for chunks. We let it be at least 1, except if the
         // maxDistance is 0 - which is a special case.
         final int limit = (int) Math.ceil(maxDistance / CHUNK_SIZE);
-        // LinkedLists allow O(1) time for adding elements.
-        // It has shown better results while benchmarking.
-        // Moreover, if we find a stronger criteria (as suggested below,
-        // in the "IMPROVEMENT" comment), we will not know the size of the list.
-        // Thus, we can save some space.
-        final List<ChunkPair> pairs = new LinkedList<>();
-        // add all the chunks that are in range
+        // apply a linear search over the closest chunks
+        CelestialObject closest = null;
+        double best = Double.POSITIVE_INFINITY;
         for (int i = -limit; i <= limit; i++) {
             for (int j = -limit; j <= limit; j++) {
-                final CartesianCoordinates trans = where.translate(i * CHUNK_SIZE, j * CHUNK_SIZE);
-                // IMPROVEMENT: here, we should make the criteria stronger
-                // so we can reduce the number of linear searches
-                // need to work on the distance between the point and the farthest
-                // point accessible
-                pairs.add(new ChunkPair(trans));
+                final SkyChunk chunk = chunks.get(new ChunkPair(where.x() + i * CHUNK_SIZE, where.y() + j * CHUNK_SIZE));
+                if (chunk == null) { // no such chunk => no objects at this location, anyway
+                    continue;
+                }
+                final SkyChunk.SearchResult result = chunk.closestTo(where, maxDistance);
+                // no need to check for the < maxDistance criteria, since the chunks already took care of it
+                if (result != null && best > result.distance) {
+                    closest = result.object;
+                    best = result.distance;
+                }
             }
         }
 
-        // apply a linear search over the best results
-        CelestialObject closest = null;
-        double best = Double.POSITIVE_INFINITY;
-        for (ChunkPair pair : pairs) {
-            final SkyChunk chunk = chunks.get(pair);
-            if (chunk == null) { // no such chunk => no objects at this location, anyway
-                continue;
-            }
-            final Optional<SkyChunk.SearchResult> result = chunk.closestTo(where, maxDistance);
-            // no need to check for the < maxDistance criteria, since the chunks already took care of it
-            if (result.isPresent() && best > result.get().distance) {
-                closest = result.get().object;
-                best = result.get().distance;
-            }
-        }
         return Optional.ofNullable(closest);
     }
 
