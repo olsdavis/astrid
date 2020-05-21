@@ -16,7 +16,6 @@ import java.math.MathContext;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.SplittableRandom;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -43,7 +42,7 @@ public class ObservedSkyTest {
     /**
      * The classic method for finding the closest object, pretty efficient.
      */
-    static CelestialObject linearSearch(List<Pair> all, ObservedSky sky, CartesianCoordinates coordinates, double d) {
+    static CelestialObject linearSearch(List<Pair> all, CartesianCoordinates coordinates, double d) {
         double best = Double.POSITIVE_INFINITY;
         CelestialObject closest = null;
         for (Pair pair : all) {
@@ -118,7 +117,7 @@ public class ObservedSkyTest {
             final double dist = 10d;
             final CartesianCoordinates coordinates = CartesianCoordinates.of(random.nextDouble(-10, 10),
                     random.nextDouble(-10, 10));
-            final CelestialObject obj = linearSearch(all, sky, coordinates, dist);
+            final CelestialObject obj = linearSearch(all, coordinates, dist);
             final CelestialObject found = sky.objectClosestTo(coordinates, dist).orElse(null);
             assertEquals(obj, found);
         }
@@ -133,7 +132,7 @@ public class ObservedSkyTest {
                 catalogue
         );
         final List<Pair> all = all(sky);
-        final CelestialObject obj = linearSearch(all, sky, coordinates, dist);
+        final CelestialObject obj = linearSearch(all, coordinates, dist);
         final CelestialObject found = sky.objectClosestTo(coordinates, dist).orElse(null);
         assertEquals(obj, found);
     }
@@ -160,7 +159,7 @@ public class ObservedSkyTest {
         final List<Pair> all = all(sky);
         Bench.printBench(() -> {
             for (CartesianCoordinates coordinate : coordinates) {
-                linearSearch(all, sky, coordinate, 10d);
+                linearSearch(all, coordinate, 10d);
             }
         }, coordinates.size());
         // just to prove it's crap

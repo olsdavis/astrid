@@ -4,6 +4,7 @@ import ch.epfl.rigel.coordinates.*;
 
 import java.time.ZonedDateTime;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -16,147 +17,17 @@ import java.util.stream.Collectors;
  */
 public class ObservedSky {
 
-    /**
-     * Represents the size of a chunk.
-     */
-    private static final double CHUNK_SIZE = 1d;
-
-    /**
-     * @param a a coordinate
-     * @return the chunk pair coordinate of {@code x}, inclusive on the left,
-     * exclusive on the right.
-     */
-    private static int pairOf(double a) {
-        return a < 0 ? (int) (a / CHUNK_SIZE) - 1 : (int) (a / CHUNK_SIZE);
-    }
-
-    /**
-     * Represents a pair of {@link SkyChunk} coordinates. Its coordinates
-     * on the plan correspond are {@code (x * CHUNK_SIZE, y * CHUNK_SIZE}).
-     * It covers an area of {@code CHUNK_SIZE * CHUNK_SIZE}.
-     *
-     * @see SkyChunk
-     */
-    private static final class ChunkPair {
-        private final int x;
-        private final int y;
-
-        /**
-         * Converts the passed parameters to their chunk subdivision.
-         *
-         * @param x the x-coordinate of a point
-         * @param y the y-coordinate of a point
-         */
-        ChunkPair(double x, double y) {
-            this(pairOf(x), pairOf(y));
-        }
-
-        /**
-         * Creates the chunk pair of the given subdivision.
-         *
-         * @param x the x subdivision of the plan
-         * @param y the y subdivision of the plan
-         */
-        ChunkPair(int x, int y) {
-            this.x = x;
-            this.y = y;
-        }
-
-        /**
-         * Creates the chunk pair associated to the provided coordinates {@code coordinates}.
-         *
-         * @param coordinates the coordinates of a point on the plan
-         */
-        ChunkPair(CartesianCoordinates coordinates) {
-            this(coordinates.x(), coordinates.y());
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (!(obj instanceof ChunkPair)) {
-                return false;
-            }
-            final ChunkPair other = (ChunkPair) obj;
-            return other.x == x && other.y == y;
-        }
-
-        @Override
-        public int hashCode() {
-            return (31 * x) * 31 + 31 * y;
-        }
-
-        @Override
-        public String toString() {
-            return "ChunkPair{" +
-                    "x=" + x +
-                    ", y=" + y +
-                    '}';
-        }
-    }
-
-    /**
-     * Represents a pair of a CelestialObject and its cartesian coordinates
-     * on the plan. Used for {@link SkyChunk}s.
-     */
     private static final class CelestialPair {
-        private final CartesianCoordinates coordinates;
-        private final CelestialObject object;
+        final CartesianCoordinates position;
+        final CelestialObject object;
 
-        /**
-         * @param coordinates the object's coordinates on the plan
-         * @param object      the object itself
-         */
-        CelestialPair(CartesianCoordinates coordinates, CelestialObject object) {
-            this.coordinates = coordinates;
+        CelestialPair(CartesianCoordinates position, CelestialObject object) {
+            this.position = position;
             this.object = object;
         }
     }
 
-    /**
-     * A SkyChunk is a chunk of {@code CHUNK_SIZE * CHUNK_SIZE} of the ObservedSky which contains
-     * all the celestial objects in its area. It allows faster search for
-     * {@link #objectClosestTo(CartesianCoordinates, double)}.
-     */
-    private static final class SkyChunk {
-        private final List<CelestialPair> objects = new ArrayList<>();
-
-        /**
-         * Represents a result of {@link #closestTo(CartesianCoordinates, double)}.
-         */
-        static final class SearchResult {
-            final double distance;
-            final CelestialObject object;
-
-            /**
-             * @param distance the distance of the closest object
-             * @param object   the object itself
-             */
-            SearchResult(double distance, CelestialObject object) {
-                this.distance = distance;
-                this.object = object;
-            }
-        }
-
-        /**
-         * @param point       the original point of the {@link #objectClosestTo(CartesianCoordinates, double)} search
-         * @param maxDistance the maximal distance to the point {@code point}
-         * @return the closest object in this chunk to the provided {@code point}
-         * if it is closer to the point {@code point} than {@code maxDistance}.
-         */
-        SearchResult closestTo(CartesianCoordinates point, double maxDistance) {
-            CelestialPair closest = null;
-            double best = Double.POSITIVE_INFINITY;
-            for (int i = 0; i < objects.size(); i++) {
-                final CelestialPair object = objects.get(i);
-                final double d = point.distSquared(object.coordinates);
-                if (best > d && d <= maxDistance * maxDistance) {
-                    closest = object;
-                    best = d;
-                }
-            }
-            return closest == null ? null : new SearchResult(best, closest.object);
-        }
-    }
+    private final List<CelestialPair> allObjects;
 
     private final StarCatalogue catalogue;
 
@@ -171,8 +42,6 @@ public class ObservedSky {
 
     private final double[] starPositions;
 
-    private final Map<ChunkPair, SkyChunk> chunks = new HashMap<>();
-
     /**
      * Initializes the ObservedSky, projects all CelestialObjects, namely the Moon, the Sun,
      * planets and stars, and also distributes them across chunks that make the method
@@ -186,46 +55,32 @@ public class ObservedSky {
      */
     public ObservedSky(ZonedDateTime moment, GeographicCoordinates observer, StereographicProjection projection, StarCatalogue catalogue) {
         this.catalogue = catalogue;
+        // -1 to exclude Earth, and +2 for the sun and the moon
+        allObjects = new ArrayList<>(catalogue.stars().size() + (PlanetModel.ALL.size() - 1) + 2);
         // the conversion used for the current situation
         final EclipticToEquatorialConversion eclipticToEq = new EclipticToEquatorialConversion(moment);
         final EquatorialToHorizontalConversion eqToHorizontal = new EquatorialToHorizontalConversion(moment, observer);
         // days since J2010
         final double d = Epoch.J2010.daysUntil(moment);
+        final Function<EquatorialCoordinates, CartesianCoordinates> fullProj = projection.compose(eqToHorizontal);
         // set up the Sun
         sun = SunModel.SUN.at(d, eclipticToEq);
-        sunProjection = projection.apply(eqToHorizontal.apply(sun.equatorialPos()));
-        putInChunk(sun, sunProjection);
+        sunProjection = fullProj.apply(sun.equatorialPos());
+        allObjects.add(new CelestialPair(sunProjection, sun));
         // set up the Moon
         moon = MoonModel.MOON.at(d, eclipticToEq);
-        moonProjection = projection.apply(eqToHorizontal.apply(moon.equatorialPos()));
-        putInChunk(moon, moonProjection);
+        moonProjection = fullProj.apply(moon.equatorialPos());
+        allObjects.add(new CelestialPair(moonProjection, moon));
         // set up the planets
         planets = PlanetModel.ALL.stream()
                 .filter(p -> p != PlanetModel.EARTH) // filtering the Earth
                 .map(p -> p.at(d, eclipticToEq))
                 .collect(Collectors.toUnmodifiableList());
         planetPositions = new double[2 * planets.size()];
-        setupCoordinates(planets, planetPositions, projection, eqToHorizontal);
+        setupCoordinates(planets, planetPositions, fullProj);
 
         starPositions = new double[2 * catalogue.stars().size()];
-        setupCoordinates(catalogue.stars(), starPositions, projection, eqToHorizontal);
-    }
-
-    /**
-     * Adds the provided object to the {@link SkyChunk} it must be in.
-     *
-     * @param object      the object to add
-     * @param coordinates its cartesian coordinates on the plan
-     */
-    private void putInChunk(CelestialObject object, CartesianCoordinates coordinates) {
-        final ChunkPair pair = new ChunkPair(coordinates);
-        final SkyChunk chunk;
-        if (chunks.containsKey(pair)) {
-            chunk = chunks.get(pair);
-        } else {
-            chunks.put(pair, chunk = new SkyChunk());
-        }
-        chunk.objects.add(new CelestialPair(coordinates, object));
+        setupCoordinates(catalogue.stars(), starPositions, fullProj);
     }
 
     /**
@@ -233,19 +88,17 @@ public class ObservedSky {
      *
      * @param objects    the objects
      * @param positions  the positions to fill in
-     * @param projection the projection to use
-     * @param conversion the conversion to use
+     * @param proj the projection to use
      */
     private void setupCoordinates(List<? extends CelestialObject> objects, double[] positions,
-                                  StereographicProjection projection, EquatorialToHorizontalConversion conversion) {
+                                  Function<EquatorialCoordinates, CartesianCoordinates> proj) {
         for (int i = 0; i < objects.size(); i++) {
             final CelestialObject current = objects.get(i);
-            final CartesianCoordinates coordinates = projection.apply(conversion.apply(current.equatorialPos()));
+            final CartesianCoordinates coordinates = proj.apply(current.equatorialPos());
             // store coordinates
             positions[2 * i] = coordinates.x();
             positions[2 * i + 1] = coordinates.y();
-            // put it in its chunk
-            putInChunk(current, coordinates);
+            allObjects.add(new CelestialPair(coordinates, current));
         }
     }
 
@@ -333,39 +186,15 @@ public class ObservedSky {
      * closer to it than {@code maxDistance}, or {@link Optional#empty()} if there is no such object.
      */
     public Optional<CelestialObject> objectClosestTo(CartesianCoordinates where, double maxDistance) {
-        // The algorithm behind this method is pretty simple:
-        // we split the sky into chunks (called SkyChunks), and,
-        // to lookup for the closest object to the provided point,
-        // we simply look in all candidate chunks, i.e. the ones
-        // that are in range of maxDistance.
-
-        // Overall, this method is much more efficient than a simple linear search,
-        // and it is way faster for small distances, since less chunks are loaded.
-        // Particularly, this algorithm is very efficient when there is actually no
-        // chunk, because there it applies not a single linear search.
-
-        // This value represents the radius in which we are going
-        // to look for chunks. We let it be at least 1, except if the
-        // maxDistance is 0 - which is a special case.
-        final int limit = (int) Math.ceil(maxDistance / CHUNK_SIZE);
-        // apply a linear search over the closest chunks
         CelestialObject closest = null;
-        double best = Double.POSITIVE_INFINITY;
-        for (int i = -limit; i <= limit; i++) {
-            for (int j = -limit; j <= limit; j++) {
-                final SkyChunk chunk = chunks.get(new ChunkPair(where.x() + i * CHUNK_SIZE, where.y() + j * CHUNK_SIZE));
-                if (chunk == null) { // no such chunk => no objects at this location, anyway
-                    continue;
-                }
-                final SkyChunk.SearchResult result = chunk.closestTo(where, maxDistance);
-                // no need to check for the < maxDistance criteria, since the chunks already took care of it
-                if (result != null && best > result.distance) {
-                    closest = result.object;
-                    best = result.distance;
-                }
+        double best = Double.MAX_VALUE;
+        for (CelestialPair pair : allObjects) {
+            final double d = pair.position.distSquared(where);
+            if (best > d && d <= maxDistance * maxDistance) {
+                closest = pair.object;
+                best = d;
             }
         }
-
         return Optional.ofNullable(closest);
     }
 
