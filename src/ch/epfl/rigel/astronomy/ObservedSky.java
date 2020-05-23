@@ -17,10 +17,22 @@ import java.util.stream.Collectors;
  */
 public class ObservedSky {
 
+    /**
+     * This small class allows to holds all the objects of the sky
+     * with their coordinates and their CelestialObject representation.
+     * It allows us performing searches in {@link #objectClosestTo(CartesianCoordinates, double)}.
+     * <p>
+     * We allow ourselves, here, to not set the fields and the constructor in private,
+     * since it is a data class and it is only visible here, in ObservedSky.
+     */
     private static final class CelestialPair {
         final CartesianCoordinates position;
         final CelestialObject object;
 
+        /**
+         * @param position the position of the object
+         * @param object the CelestialObject data
+         */
         CelestialPair(CartesianCoordinates position, CelestialObject object) {
             this.position = position;
             this.object = object;

@@ -122,7 +122,7 @@ public class SkyCanvasManager {
                     try {
                         inverse = transform.get().inverseTransform(mousePosition.get());
                     } catch (NonInvertibleTransformException e) {
-                        // when the program starts up, whe can tolerate the fact that the coordinates
+                        // when the program starts up, we can tolerate the fact that the coordinates
                         // are not invertible
                         return HorizontalCoordinates.ofDeg(0, 0);
                     }
@@ -195,7 +195,7 @@ public class SkyCanvasManager {
             viewingParameters.setFieldOfViewDeg(FOV_LIM.clip(viewingParameters.getFieldOfView() + apply));
         });
         canvas.setOnKeyPressed(event -> {
-            // we could have put this declaration in each switch case, hence
+            // we could have put this declaration (current = ...) in each switch case, hence
             // calling it only if a listened key is triggered. Yet, it is a minor
             // early optimization, and it creates big code repetitions.
             // Moreover, it is possible that the HotSpot JVM applies this optimization
@@ -232,7 +232,7 @@ public class SkyCanvasManager {
         observedSky.addListener(listener);
         transform.addListener(listener);
         // we do not add a listener to projection, because its value change
-        // updates transform
+        // updates transform anyway
     }
 
     /**

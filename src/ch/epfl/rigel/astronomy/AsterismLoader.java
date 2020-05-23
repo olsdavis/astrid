@@ -24,7 +24,7 @@ public enum AsterismLoader implements StarCatalogue.Loader {
 
     @Override
     public void load(InputStream inputStream, StarCatalogue.Builder builder) throws IOException {
-        final Map<Integer, Integer> indicesMap = new HashMap<>();
+        final Map<Integer, Integer> indicesMap = new HashMap<>(builder.stars().size());
         for (int i = 0; i < builder.stars().size(); i++) {
             indicesMap.put(builder.stars().get(i).hipparcosId(), i);
         }
