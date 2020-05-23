@@ -1,6 +1,7 @@
 package ch.epfl.rigel.astronomy;
 
 import java.util.List;
+import java.util.Objects;
 
 import static ch.epfl.rigel.Preconditions.checkArgument;
 
@@ -14,6 +15,7 @@ import static ch.epfl.rigel.Preconditions.checkArgument;
 public final class Asterism {
 
     private final List<Star> stars;
+    private List<Integer> indices;
 
     /**
      * @param stars the stars constituting the Asterism
@@ -29,6 +31,18 @@ public final class Asterism {
      */
     public List<Star> stars() {
         return stars;
+    }
+
+    /**
+     * If the value has never been accessed before, this method obtains it
+     * and caches it, in order to avoid too much calls on the {@link ObservedSky#asterismIndices(Asterism)}
+     * method, which uses a Map.
+     *
+     * @param sky the observed sky from which we want to obtain the indices
+     * @return the indices of the stars composing this asterism.
+     */
+    public List<Integer> indices(ObservedSky sky) {
+        return indices == null ? indices = Objects.requireNonNull(sky).asterismIndices(this) : indices;
     }
 
 }

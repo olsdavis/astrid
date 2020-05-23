@@ -98,7 +98,7 @@ public class SkyCanvasPainter {
         gfx.setStroke(Color.BLUE);
         gfx.setLineWidth(1d);
         for (Asterism asterism : sky.asterisms()) {
-            final List<Integer> indices = sky.asterismIndices(asterism);
+            final List<Integer> indices = asterism.indices(sky);
             gfx.beginPath();
             for (int i = 0; i < indices.size() - 1; i++) {
                 final int current = indices.get(i);
