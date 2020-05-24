@@ -3,8 +3,6 @@ package ch.epfl.rigel.astronomy;
 import ch.epfl.rigel.coordinates.EclipticCoordinates;
 import ch.epfl.rigel.coordinates.EquatorialCoordinates;
 
-import java.util.Objects;
-
 import static java.util.Objects.requireNonNull;
 
 /**

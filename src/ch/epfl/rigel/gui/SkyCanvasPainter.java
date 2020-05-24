@@ -117,12 +117,8 @@ public class SkyCanvasPainter {
         // draw stars
         for (int i = 0; i < sky.stars().size(); i++) {
             final Star star = sky.stars().get(i);
-            final Point2D point = new Point2D(starPositions[2 * i], starPositions[2 * i + 1]);
-            final double diameter = Math.abs(
-                    transform.deltaTransform(objectRadius(star.magnitude(), projection), 0).getX()
-            );
             gfx.setFill(star.paintColor());
-            gfx.fillOval(point.getX() - diameter / 2d, point.getY() - diameter / 2d, diameter, diameter);
+            drawUsual(star, starPositions[2 * i], starPositions[2 * i + 1], transform, projection);
         }
     }
 
@@ -145,13 +141,26 @@ public class SkyCanvasPainter {
 
         gfx.setFill(Color.LIGHTGRAY);
         for (int i = 0; i < sky.planets().size(); i++) {
-            final Planet planet = sky.planets().get(i);
-            final Point2D point = new Point2D(planetPositions[2 * i], planetPositions[2 * i + 1]);
-            final double diameter = Math.abs(
-                    transform.deltaTransform(objectRadius(planet.magnitude(), projection), 0).getX()
-            );
-            gfx.fillOval(point.getX() - diameter / 2d, point.getY() - diameter / 2d, diameter, diameter);
+            drawUsual(sky.planets().get(i), planetPositions[2 * i], planetPositions[2 * i + 1], transform, projection);
         }
+    }
+
+    /**
+     * Draws the provided object as a circle of the provided information.
+     * The fill color must be set beforehand.
+     *
+     * @param object     the CelestialObject representation
+     * @param x          the x-coordinate on the plane
+     * @param y          the y-coordinate on the plane
+     * @param transform  the transform to apply
+     * @param projection the projection to apply
+     */
+    private void drawUsual(CelestialObject object, double x, double y, Transform transform, StereographicProjection projection) {
+        final Point2D point = new Point2D(x, y);
+        final double diameter = Math.abs(
+                transform.deltaTransform(objectRadius(object.magnitude(), projection), 0).getX()
+        );
+        canvas.getGraphicsContext2D().fillOval(point.getX() - diameter / 2d, point.getY() - diameter / 2d, diameter, diameter);
     }
 
     /**

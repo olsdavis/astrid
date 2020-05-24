@@ -53,7 +53,7 @@ public final class Polynomial {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
+        final StringBuilder builder = new StringBuilder();
         for (int i = 0; i < coefficients.length; ++i) {
             // do not write 0x^c
             if (coefficients[i] != 0) {

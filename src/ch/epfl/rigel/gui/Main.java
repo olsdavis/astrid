@@ -23,6 +23,7 @@ import javafx.util.converter.NumberStringConverter;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UncheckedIOException;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -34,6 +35,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * The main class, starting up the JavaFX application.
+ *
  * @author Alexandre Doukhan (SCIPER: 316706)
  * @author Oscar Davis (SCIPER: 311193)
  * Creation date: 06/05/2020
@@ -83,7 +86,7 @@ public class Main extends Application {
         try {
             stream.close();
         } catch (IOException e) {
-            // ignore the exception, should not happen
+            throw new UncheckedIOException(e);
         }
     }
 
