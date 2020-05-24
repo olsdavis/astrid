@@ -37,6 +37,10 @@ public final class Asterism {
      * If the value has never been accessed before, this method obtains it
      * and caches it, in order to avoid too much calls on the {@link ObservedSky#asterismIndices(Asterism)}
      * method, which uses a Map.
+     * <p>
+     * This method uses the assumption that all the {@link ObservedSky} instances
+     * contain the same single {@link StarCatalogue} instance used through the whole
+     * program.
      *
      * @param sky the observed sky from which we want to obtain the indices
      * @return the indices of the stars composing this asterism.
