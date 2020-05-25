@@ -93,13 +93,7 @@ public final class HorizontalCoordinates extends SphericalCoordinates {
      * Note that border coordinates are in the "next" octant (<i>e.g.</i> {@code 22.5}° is {@code "NE"}).
      */
     public String azOctantName(String n, String e, String s, String w) {
-        int marker = 0;
-        for (int i = 0; i < 8; i++) {
-            if (RightOpenInterval.of(-Math.PI / 8d + (Math.PI / 4d * i), Math.PI / 8d + (Math.PI / 4d * i)).contains(az())) {
-                marker = i;
-                break;
-            }
-        }
+        final int marker = (int) Math.round(az() / (Math.PI / 4d));
         switch (marker) {
             case 1:
                 return n + e;

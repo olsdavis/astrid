@@ -1,6 +1,9 @@
 package ch.epfl.rigel.gui;
 
-import ch.epfl.rigel.astronomy.*;
+import ch.epfl.rigel.astronomy.Asterism;
+import ch.epfl.rigel.astronomy.CelestialObject;
+import ch.epfl.rigel.astronomy.ObservedSky;
+import ch.epfl.rigel.astronomy.Star;
 import ch.epfl.rigel.coordinates.CartesianCoordinates;
 import ch.epfl.rigel.coordinates.HorizontalCoordinates;
 import ch.epfl.rigel.coordinates.StereographicProjection;
@@ -117,7 +120,7 @@ public class SkyCanvasPainter {
         // draw stars
         for (int i = 0; i < sky.stars().size(); i++) {
             final Star star = sky.stars().get(i);
-            gfx.setFill(star.paintColor());
+            gfx.setFill(BlackBodyColor.fromTemperature(star.colorTemperature()));
             drawUsual(star, starPositions[2 * i], starPositions[2 * i + 1], transform, projection);
         }
     }
