@@ -13,14 +13,14 @@ public class PlanetTest {
     void planetConstructorFailsWhenNameIsNull() {
         assertThrows(NullPointerException.class, () -> {
             var eqPos = EquatorialCoordinates.of(0, 0);
-            new Planet(null, eqPos, 0, 0, "Neptune : #5D719D");
+            new Planet(null, eqPos, 0, 0);
         });
     }
 
     @Test
     void planetConstructorFailsWhenEquatorialPositionIsNull() {
         assertThrows(NullPointerException.class, () -> {
-            new Planet("Planet B", null, 0, 0, "");
+            new Planet("Planet B", null, 0, 0);
         });
     }
 
@@ -28,7 +28,7 @@ public class PlanetTest {
     void planetConstructorFailsWhenAngularSizeIsNegative() {
         assertThrows(IllegalArgumentException.class, () -> {
             var eqPos = EquatorialCoordinates.of(0, 0);
-            new Planet("Planet B", eqPos, -0.1f, 0, "");
+            new Planet("Planet B", eqPos, -0.1f, 0);
         });
     }
 
@@ -52,7 +52,7 @@ public class PlanetTest {
         for (int i = 0; i < TestRandomizer.RANDOM_ITERATIONS; i++) {
             var equ = EquatorialCoordinates.of(0, 0);
             var planetName = randomPlanetName(rng);
-            var p = new Planet(planetName, equ, 0, 0, "");
+            var p = new Planet(planetName, equ, 0, 0);
             assertEquals(planetName, p.name());
         }
     }
@@ -63,7 +63,7 @@ public class PlanetTest {
         for (int i = 0; i < TestRandomizer.RANDOM_ITERATIONS; i++) {
             var equ = EquatorialCoordinates.of(0, 0);
             var angularSize = (float) rng.nextDouble(0, Math.PI);
-            var p = new Planet("Planet B", equ, angularSize, 0, "");
+            var p = new Planet("Planet B", equ, angularSize, 0);
             assertEquals(angularSize, p.angularSize());
         }
     }
@@ -74,7 +74,7 @@ public class PlanetTest {
         for (int i = 0; i < TestRandomizer.RANDOM_ITERATIONS; i++) {
             var equ = EquatorialCoordinates.of(0, 0);
             var magnitude = (float) rng.nextDouble(-30, 30);
-            var p = new Planet("Planet B", equ, 0, magnitude, "");
+            var p = new Planet("Planet B", equ, 0, magnitude);
             assertEquals(magnitude, p.magnitude());
         }
     }
@@ -86,7 +86,7 @@ public class PlanetTest {
             var ra = rng.nextDouble(0, 2d * Math.PI);
             var dec = rng.nextDouble(-Math.PI / 2d, Math.PI / 2d);
             var equ = EquatorialCoordinates.of(ra, dec);
-            var p = new Planet("Planet B", equ, 0, 0, "");
+            var p = new Planet("Planet B", equ, 0, 0);
             assertEquals(ra, p.equatorialPos().ra());
             assertEquals(dec, p.equatorialPos().dec());
         }
@@ -98,7 +98,7 @@ public class PlanetTest {
         for (int i = 0; i < TestRandomizer.RANDOM_ITERATIONS; i++) {
             var equ = EquatorialCoordinates.of(0, 0);
             var planetName = randomPlanetName(rng);
-            var p = new Planet(planetName, equ, 0, 0, "");
+            var p = new Planet(planetName, equ, 0, 0);
             assertEquals(planetName, p.info());
         }
     }
@@ -107,7 +107,7 @@ public class PlanetTest {
     void planetHashCodeIsInheritedFromObject() {
         for (int i = 0; i < TestRandomizer.RANDOM_ITERATIONS; i++) {
             var equ = EquatorialCoordinates.of(0, 0);
-            var p = new Planet("Planet B", equ, 0, 0, "");
+            var p = new Planet("Planet B", equ, 0, 0);
             assertEquals(System.identityHashCode(p), p.hashCode());
         }
     }
@@ -117,7 +117,7 @@ public class PlanetTest {
         var prevPlanet = (Planet)null;
         for (int i = 0; i < TestRandomizer.RANDOM_ITERATIONS; i++) {
             var equ = EquatorialCoordinates.of(0, 0);
-            var p = new Planet("Planet B", equ, 0, 0, "");
+            var p = new Planet("Planet B", equ, 0, 0);
             assertEquals(p, p);
             assertNotEquals(p, prevPlanet);
             prevPlanet = p;

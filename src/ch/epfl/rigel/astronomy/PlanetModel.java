@@ -25,42 +25,42 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
      * Planet Mercury.
      */
     MERCURY("Mercure", 0.24085, 75.5671, 77.612, 0.205627,
-            0.387098, 7.0051, 48.449, 6.74, -0.42, "#8c8c94"),
+            0.387098, 7.0051, 48.449, 6.74, -0.42),
     /**
      * Planet Venus.
      */
     VENUS("Vénus", 0.615207, 272.30044, 131.54, 0.006812,
-            0.723329, 3.3947, 76.769, 16.92, -4.40, "#eecb8b"),
+            0.723329, 3.3947, 76.769, 16.92, -4.40),
     /**
      * Planet Earth.
      */
     EARTH("Terre", 0.999996, 99.556772, 103.2055, 0.016671,
-            0.999985, 0, 0, 0, 0, "#4f4cb0"),
+            0.999985, 0, 0, 0, 0),
     /**
      * Planet Mars.
      */
     MARS("Mars", 1.880765, 109.09646, 336.217, 0.093348,
-            1.523689, 1.8497, 49.632, 9.36, -1.52, "#c1440e"),
+            1.523689, 1.8497, 49.632, 9.36, -1.52),
     /**
      * Planet Jupiter.
      */
     JUPITER("Jupiter", 11.857911, 337.917132, 14.6633, 0.048907,
-            5.20278, 1.3035, 100.595, 196.74, -9.40, "#d8ca9d"),
+            5.20278, 1.3035, 100.595, 196.74, -9.40),
     /**
      * Planet Saturn.
      */
     SATURN("Saturne", 29.310579, 172.398316, 89.567, 0.053853,
-            9.51134, 2.4873, 113.752, 165.60, -8.88, "#D3B590"),
+            9.51134, 2.4873, 113.752, 165.60, -8.88),
     /**
      * Planet Uranus.
      */
     URANUS("Uranus", 84.039492, 356.135400, 172.884833, 0.046321,
-            19.21814, 0.773059, 73.926961, 65.80, -7.19, "#94B3C1"),
+            19.21814, 0.773059, 73.926961, 65.80, -7.19),
     /**
      * Planet Neptune.
      */
     NEPTUNE("Neptune", 165.84539, 326.895127, 23.07, 0.010483,
-            30.1985, 1.7673, 131.879, 62.20, -6.87, "#5D719D");
+            30.1985, 1.7673, 131.879, 62.20, -6.87);
 
     /**
      * The list of all models (ordered increasingly by their distance to the Sun).
@@ -79,9 +79,6 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
     private final double omega;
     private final double angularSize;
     private final double V0;
-
-    //Web color code for each planet.
-    private final String webColor;
 
     // pre-calculated values
     private final double eSquare;
@@ -102,7 +99,7 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
      */
     PlanetModel(String name, double tropicalYear, double epsilon,
                 double omegaBar, double e, double a,
-                double i, double omega, double angularSize, double V0, String webColor) {
+                double i, double omega, double angularSize, double V0) {
         this.name = name;
         this.tropicalYear = tropicalYear;
         this.epsilon = Angle.ofDeg(epsilon);
@@ -113,9 +110,6 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
         this.omega = Angle.ofDeg(omega);
         this.angularSize = Angle.ofArcsec(angularSize);
         this.V0 = V0;
-
-        //WebColor
-        this.webColor = webColor;
 
         // pre-calculated values
         this.eSquare = e * e;
@@ -181,7 +175,7 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
         // magnitude calculations
         final double F = (1 + cos(lambda - l)) / 2d;
         final double m = V0 + 5 * log10(r * rho / sqrt(F));
-        return new Planet(name, conversion.apply(EclipticCoordinates.of(lambda, beta)), (float) as, (float) m, webColor);
+        return new Planet(name, conversion.apply(EclipticCoordinates.of(lambda, beta)), (float) as, (float) m);
     }
 
 }

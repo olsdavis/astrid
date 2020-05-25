@@ -142,8 +142,8 @@ public class SkyCanvasPainter {
         // apply the transform
         transform.transform2DPoints(planetPositions, 0, planetPositions, 0, planetPositions.length / 2);
 
+        gfx.setFill(Color.LIGHTGRAY);
         for (int i = 0; i < sky.planets().size(); i++) {
-            gfx.setFill(Color.web(sky.planets().get(i).getWebColor()));
             drawUsual(sky.planets().get(i), planetPositions[2 * i], planetPositions[2 * i + 1], transform, projection);
         }
     }

@@ -102,7 +102,7 @@ public class StarTest {
         for (int i = 0; i < TestRandomizer.RANDOM_ITERATIONS; i++) {
             var equ = EquatorialCoordinates.of(0, 0);
             var starName = randomStarName(rng);
-            var s = new Planet(starName, equ, 0, 0, "#5D719D");
+            var s = new Planet(starName, equ, 0, 0);
             assertEquals(starName, s.info());
         }
     }
