@@ -12,6 +12,7 @@ import ch.epfl.rigel.coordinates.EquatorialCoordinates;
  * @see CelestialObject
  */
 public final class Planet extends CelestialObject {
+    private final String webColor;
 
     /**
      * @param name          the name of the planet
@@ -19,8 +20,12 @@ public final class Planet extends CelestialObject {
      * @param angularSize   the angular size of the planet
      * @param magnitude     the magnitude of the planet
      */
-    public Planet(String name, EquatorialCoordinates equatorialPos, float angularSize, float magnitude) {
+    public Planet(String name, EquatorialCoordinates equatorialPos, float angularSize, float magnitude, String webColor) {
         super(name, equatorialPos, angularSize, magnitude);
+        this.webColor = webColor;
     }
 
+    public String getWebColor() {
+        return webColor;
+    }
 }
