@@ -28,6 +28,18 @@ public final class Angle {
      * The number of radians per hour.
      */
     public static final double RAD_PER_HR = TAU / 24d;
+    /**
+     * Represents the number of Arcseconds per degree.
+     */
+    private static final double SEC_PER_DEG = 3600d;
+    /**
+     * Represents the number of minutes per degree.
+     */
+    private static final double MIN_PER_DEG = 60d;
+    /**
+     * Represents the number of radians per degree.
+     */
+    private static final double RAD_PER_DEG = TAU / 360d;
 
     private Angle() {
     }
@@ -49,8 +61,8 @@ public final class Angle {
      * @return the angle in radians.
      */
     public static double ofArcsec(double sec) {
-        double res = sec / 3600d; // to convert to degrees
-        res *= TAU / 360d; // to convert from degrees to radians
+        double res = sec / SEC_PER_DEG; // to convert to degrees
+        res *= RAD_PER_DEG; // to convert from degrees to radians
         return res;
     }
 
@@ -69,8 +81,8 @@ public final class Angle {
     public static double ofDMS(int deg, int min, double sec) {
         Preconditions.checkArgument(deg >= 0);
         return ofDeg(
-                deg + (checkInInterval(MIN_SEC_INTERVAL, min) / 60d) +
-                        (checkInInterval(MIN_SEC_INTERVAL, sec) / 3600d)
+                deg + (checkInInterval(MIN_SEC_INTERVAL, min) / MIN_PER_DEG) +
+                        (checkInInterval(MIN_SEC_INTERVAL, sec) / SEC_PER_DEG)
         );
     }
 

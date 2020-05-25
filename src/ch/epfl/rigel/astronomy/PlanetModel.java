@@ -67,6 +67,8 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
      */
     public static final List<PlanetModel> ALL = List.of(PlanetModel.values());
 
+    private static final double TROPICAL_YEAR = 365.242191d;
+
     private final String name;
     private final double tropicalYear;
     private final double epsilon;
@@ -118,7 +120,7 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
     @Override
     public Planet at(double D, EclipticToEquatorialConversion conversion) {
         // position calculations
-        final double M = (Angle.TAU / 365.242191d) * (D / tropicalYear)
+        final double M = (Angle.TAU / TROPICAL_YEAR) * (D / tropicalYear)
                 + epsilon - omegaBar;
         final double nu = M + 2 * e * sin(M);
         final double r = (a * (1 - eSquare)) / (1 + e * cos(nu));
@@ -139,7 +141,7 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
         // shorten the scope of variables used for Earth calculations
         {
             // we assume that PlanetModel.EARTH#at is never called
-            final double MEarth = (Angle.TAU / 365.242191d) * (D / EARTH.tropicalYear)
+            final double MEarth = (Angle.TAU / TROPICAL_YEAR) * (D / EARTH.tropicalYear)
                     + EARTH.epsilon - EARTH.omegaBar;
             final double nuEarth = MEarth + 2 * EARTH.e * sin(MEarth);
             R = (EARTH.a * (1 - EARTH.eSquare))
