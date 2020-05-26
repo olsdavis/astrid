@@ -39,7 +39,7 @@ public class SkyCanvasPainter {
 
     private static final String NORTH = "N";
     private static final String SOUTH = "S";
-    private static final String WEST = "O"; // Ouest
+    private static final String WEST = "O";
     private static final String EAST = "E";
 
     /**
@@ -64,6 +64,8 @@ public class SkyCanvasPainter {
 
     /**
      * @param canvas the canvas to draw to
+     *
+     * @throws NullPointerException if {@code canvas} is {@code null}
      */
     public SkyCanvasPainter(Canvas canvas) {
         this.canvas = Objects.requireNonNull(canvas);
@@ -85,6 +87,8 @@ public class SkyCanvasPainter {
      * @param sky        the observed sky to draw
      * @param projection the projection used to calculate the coordinates
      * @param transform  the transform to apply to all coordinates
+     *
+     * @throws NullPointerException if one of the parameters is {@code null}
      */
     public void drawStars(ObservedSky sky, StereographicProjection projection, Transform transform) {
         Objects.requireNonNull(sky);
@@ -131,6 +135,8 @@ public class SkyCanvasPainter {
      * @param sky        the observed sky to draw
      * @param projection the projection used to calculate the coordinates
      * @param transform  the transform to apply to all coordinates
+     *
+     * @throws NullPointerException if one of the parameters is {@code null}
      */
     public void drawPlanets(ObservedSky sky, StereographicProjection projection, Transform transform) {
         Objects.requireNonNull(sky);
@@ -172,6 +178,8 @@ public class SkyCanvasPainter {
      * @param sky        the observed sky to draw
      * @param projection the projection used to calculate the coordinates
      * @param transform  the transform to apply to all coordinates
+     *
+     * @throws NullPointerException if one of the parameters is {@code null}
      */
     public void drawMoon(ObservedSky sky, StereographicProjection projection, Transform transform) {
         Objects.requireNonNull(sky);
@@ -193,6 +201,8 @@ public class SkyCanvasPainter {
      * @param sky        the observed sky to draw
      * @param projection the projection used to calculate the coordinates
      * @param transform  the transform to apply to all coordinates
+     *
+     * @throws NullPointerException if one of the parameters is {@code null}
      */
     public void drawSun(ObservedSky sky, StereographicProjection projection, Transform transform) {
         Objects.requireNonNull(sky);
@@ -220,6 +230,8 @@ public class SkyCanvasPainter {
      * @param sky        the observed sky to draw
      * @param projection the projection used to calculate the coordinates
      * @param transform  the transform to apply to all coordinates
+     *
+     * @throws NullPointerException if one of the parameters is {@code null}
      */
     public void drawHorizon(ObservedSky sky, StereographicProjection projection, Transform transform) {
         Objects.requireNonNull(sky);

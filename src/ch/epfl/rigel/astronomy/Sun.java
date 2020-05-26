@@ -24,6 +24,8 @@ public final class Sun extends CelestialObject {
      * @param equatorialPos the position of the Sun
      * @param angularSize   the angular size of the Sun
      * @param meanAnomaly   the mean anomaly of the Sun
+     *
+     * @throws NullPointerException if {@code eclipticPos} is {@code null}
      */
     public Sun(EclipticCoordinates eclipticPos, EquatorialCoordinates equatorialPos, float angularSize, float meanAnomaly) {
         super("Soleil", equatorialPos, angularSize, -26.7f);

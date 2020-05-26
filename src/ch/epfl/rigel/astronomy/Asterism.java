@@ -44,6 +44,8 @@ public final class Asterism {
      *
      * @param sky the observed sky from which we want to obtain the indices
      * @return the indices of the stars composing this asterism.
+     *
+     * @throws NullPointerException if {@code sky} is {@code null}
      */
     public List<Integer> indices(ObservedSky sky) {
         return indices == null ? indices = Objects.requireNonNull(sky).asterismIndices(this) : indices;

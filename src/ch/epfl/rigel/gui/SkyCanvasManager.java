@@ -83,6 +83,8 @@ public class SkyCanvasManager {
      * @param dateTime          the date time of the observation
      * @param observerLocation  observer's location
      * @param viewingParameters the viewing parameters of the user
+     *
+     * @throws NullPointerException if one of the parameters is {@code null}
      */
     public SkyCanvasManager(StarCatalogue catalogue, DateTimeBean dateTime,
                             ObserverLocationBean observerLocation, ViewingParametersBean viewingParameters) {

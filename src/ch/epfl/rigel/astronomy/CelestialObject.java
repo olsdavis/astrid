@@ -25,6 +25,7 @@ public abstract class CelestialObject {
      * @param angularSize   the angular size
      * @param magnitude     the magnitude
      * @throws IllegalArgumentException if {@code angularSize} is negative
+     * @throws NullPointerException if {@code name} or {@code equatorialPos} is {@code null}
      */
     CelestialObject(String name, EquatorialCoordinates equatorialPos, float angularSize, float magnitude) {
         checkArgument(angularSize >= 0);
