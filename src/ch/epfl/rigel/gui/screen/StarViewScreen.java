@@ -6,6 +6,7 @@ import ch.epfl.rigel.coordinates.GeographicCoordinates;
 import ch.epfl.rigel.coordinates.HorizontalCoordinates;
 import ch.epfl.rigel.gui.*;
 import ch.epfl.rigel.util.Fonts;
+import javafx.animation.TranslateTransition;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.geometry.Orientation;
@@ -13,8 +14,10 @@ import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
 import javafx.util.converter.LocalTimeStringConverter;
 import javafx.util.converter.NumberStringConverter;
 
@@ -52,6 +55,14 @@ public final class StarViewScreen implements Screen {
      * Holds the character used in the BUTTONS_FONT font for the reset button of the animator.
      */
     private static final String RESET_CHARACTER = "\uf0e2";
+    /**
+     * Holds the character used in BUTTONS_FONT font for the search tab of the sidebar.
+     */
+    private static final String SEARCH_CHARACTER = "\uF002";
+    /**
+     * Holds the character used in BUTTONS_FONT font for the favorites tab of the sidebar.
+     */
+    private static final String FAVORITES_CHARACTER = "\uF004";
     /**
      * Initial field of view.
      */
@@ -138,6 +149,7 @@ public final class StarViewScreen implements Screen {
         manager.canvas().heightProperty().bind(root.heightProperty());
         root.setTop(controlBar());
         root.setCenter(new Pane(manager.canvas()));
+        root.setRight(sideBar());
         root.setBottom(bottomPane());
     }
 
@@ -318,6 +330,51 @@ public final class StarViewScreen implements Screen {
         posControl.setStyle("-fx-spacing: inherit; -fx-alignment: baseline-left");
 
         return posControl;
+    }
+
+    /**
+     * @return the sidebar that allows searching and adding to favorites
+     * the available CelestialObjects.
+     */
+    private VBox sideBar() {
+        // setup the sidebar (slide in, slide out)
+        final VBox menu = new VBox();
+        menu.getStyleClass().add("sidebar");
+        menu.prefHeightProperty().bind(root.heightProperty());
+        menu.setPrefWidth(300d);
+        menu.setTranslateX(280d);
+        final TranslateTransition menuTranslation = new TranslateTransition(Duration.millis(500d), menu);
+        menuTranslation.setFromX(280d);
+        menuTranslation.setToX(0);
+        menu.setOnMouseEntered(event -> {
+            menuTranslation.setRate(1d);
+            menuTranslation.play();
+        });
+        menu.setOnMouseExited(event -> {
+            menuTranslation.setRate(-1d);
+            menuTranslation.play();
+        });
+
+        // search tab
+        final Tab searchTab = new Tab();
+        searchTab.setClosable(false);
+        searchTab.getStyleClass().add("sidebar-tab");
+        final Text searchTabTitle = new Text(SEARCH_CHARACTER);
+        searchTabTitle.setFont(BUTTONS_FONT);
+        searchTab.setGraphic(searchTabTitle);
+
+        final Tab favoritesTab = new Tab();
+        favoritesTab.getStyleClass().add("sidebar-tab");
+        favoritesTab.setClosable(false);
+        final Text favoritesTabTitle = new Text(FAVORITES_CHARACTER);
+        favoritesTabTitle.setFont(BUTTONS_FONT);
+        favoritesTab.setGraphic(favoritesTabTitle);
+
+        // finally, add everything
+        final TabPane tabPane = new TabPane(searchTab, favoritesTab);
+        menu.getChildren().add(tabPane);
+
+        return menu;
     }
 
 }
