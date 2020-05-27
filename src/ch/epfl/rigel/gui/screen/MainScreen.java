@@ -64,7 +64,7 @@ public final class MainScreen implements Screen {
         text.setFont(MAIN_FONT);
         text.setFill(Color.WHITESMOKE);
         text.getStyleClass().add("main-title");
-        // little fade animation
+        // little blink animation
         final FadeTransition transition = new FadeTransition(Duration.seconds(2d), text);
         transition.setFromValue(1.0d);
         transition.setToValue(0.1);
@@ -93,12 +93,12 @@ public final class MainScreen implements Screen {
         pane.setCenter(center);
         pane.setBackground(Background.EMPTY);
 
-        final BorderPane p = new BorderPane();
+        final BorderPane backgroundPane = new BorderPane();
         BackgroundAnimation animation = new BackgroundAnimation();
-        animation.canvas.widthProperty().bind(p.widthProperty());
-        animation.canvas.heightProperty().bind(p.heightProperty());
-        p.setCenter(animation.canvas);
-        root.getChildren().addAll(p, pane);
+        animation.canvas.widthProperty().bind(backgroundPane.widthProperty());
+        animation.canvas.heightProperty().bind(backgroundPane.heightProperty());
+        backgroundPane.setCenter(animation.canvas);
+        root.getChildren().addAll(backgroundPane, pane);
         animation.start();
     }
 

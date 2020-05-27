@@ -9,12 +9,9 @@ import ch.epfl.rigel.gui.screen.ScreenNames;
 import ch.epfl.rigel.gui.screen.StarViewScreen;
 import javafx.application.Application;
 import javafx.beans.binding.Bindings;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
 import java.io.InputStream;
 import java.util.logging.Level;
@@ -28,6 +25,14 @@ import java.util.logging.Logger;
  * Creation date: 06/05/2020
  */
 public class Main extends Application {
+
+    /*
+    The following buttons are used for the custom made window border.
+     */
+
+    private static final String FULL_SCREEN_BUTTON = "\uF055";
+    private static final String MINIMIZE_BUTTON = "\uF056";
+    private static final String CLOSE_BUTTON = "\uF057";
 
     public static void main(String[] args) {
         launch(args);
@@ -61,10 +66,6 @@ public class Main extends Application {
         controller.changeScreen(ScreenNames.MAIN_SCREEN);
 
         final BorderPane lastPane = new BorderPane();
-        final HBox top = new HBox();
-        top.setAlignment(Pos.CENTER_RIGHT);
-        // todo: setup top buttons
-        lastPane.setTop(top);
         lastPane.centerProperty().bind(Bindings.createObjectBinding(
                 () -> controller.getCurrentScreen().get().getPane(), controller.getCurrentScreen()
         ));
