@@ -1,6 +1,6 @@
-.root {
-    -fx-min-width: 800px;
-    -fx-min-height: 600px;
+/* for all buttons */
+.button:hover {
+    -fx-cursor: hand;
 }
 
 .title-box {
@@ -21,8 +21,4 @@
     -fx-padding: 20px 0 20px 0;
     -fx-background-color: linear-gradient(from 0% 93% to 0% 100%, whitesmoke 0%, #3d3d3d 100%);
     -fx-background-radius: 8px;
-}
-
-.main-button:hover {
-    -fx-cursor: hand;
 }
