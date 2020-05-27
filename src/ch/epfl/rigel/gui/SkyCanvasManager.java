@@ -74,6 +74,7 @@ public class SkyCanvasManager {
     private final ObservableObjectValue<HorizontalCoordinates> mouseHorizontalPosition;
     private final ObservableDoubleValue mouseAzimuth;
     private final ObservableDoubleValue mouseAltitude;
+    private final ObservableDoubleValue maxDistance; // used for objectClosesTo
 
     /**
      * Initializes the bindings that allow updating the user's view, sets up
@@ -154,6 +155,11 @@ public class SkyCanvasManager {
                 dateTime.zoneProperty()
         );
 
+        maxDistance = Bindings.createDoubleBinding(
+                () -> Math.abs(transform.get().inverseDeltaTransform(MAX_DISTANCE, 0).getX()),
+                transform
+        );
+
         objectUnderMouse = Bindings.createObjectBinding(
                 () -> {
                     final Point2D mouse;
@@ -166,7 +172,7 @@ public class SkyCanvasManager {
                     }
                     return observedSky
                             .get()
-                            .objectClosestTo(CartesianCoordinates.of(mouse.getX(), mouse.getY()), MAX_DISTANCE)
+                            .objectClosestTo(CartesianCoordinates.of(mouse.getX(), mouse.getY()), maxDistance.get())
                             .orElse(null);
                 },
                 mousePosition,
