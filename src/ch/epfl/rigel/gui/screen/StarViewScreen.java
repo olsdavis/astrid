@@ -142,6 +142,16 @@ public final class StarViewScreen implements Screen {
     }
 
     @Override
+    public String getName() {
+        return ScreenNames.STAR_VIEW_SCREEN;
+    }
+
+    @Override
+    public Pane getPane() {
+        return root;
+    }
+
+    @Override
     public void onChange() {
         manager.canvas().requestFocus();
     }
@@ -308,16 +318,6 @@ public final class StarViewScreen implements Screen {
         posControl.setStyle("-fx-spacing: inherit; -fx-alignment: baseline-left");
 
         return posControl;
-    }
-
-    @Override
-    public String getName() {
-        return ScreenNames.STAR_VIEW_SCREEN;
-    }
-
-    @Override
-    public Pane getPane() {
-        return root;
     }
 
 }
