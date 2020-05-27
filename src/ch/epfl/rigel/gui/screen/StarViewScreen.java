@@ -374,14 +374,11 @@ public final class StarViewScreen implements Screen {
         final List<Node> starComponents = new ArrayList<>(2 * stars.size() - 1);
         for (int i = 0; i < stars.size(); i++) {
             final Star s = stars.get(i);
-            final HBox ret = new HBox();
-            ret.prefWidthProperty().bind(menu.widthProperty());
-            ret.getStyleClass().add("sidebar-star-card");
-            ret.getChildren().addAll(
-                    new Text("Nom de l'objet : " + s.name()),
-                    new Text("Identifiant Hipparcos : " + s.hipparcosId())
-            );
-            starComponents.add(ret);
+            final VBox card = new VBox();
+            card.getChildren().addAll(new Text("Nom de l'objet : " + s.name()),
+                    new Text("Identifiant Hipparcos : " + s.hipparcosId()));
+            card.getStyleClass().add("sidebar-star-card");
+            starComponents.add(card);
             if (i != stars.size() - 1) {
                 final Separator sep = new Separator(Orientation.HORIZONTAL);
                 sep.prefWidthProperty().bind(menu.widthProperty());
