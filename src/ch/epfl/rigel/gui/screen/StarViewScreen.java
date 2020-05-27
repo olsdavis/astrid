@@ -375,7 +375,12 @@ public final class StarViewScreen implements Screen {
         for (int i = 0; i < stars.size(); i++) {
             final Star s = stars.get(i);
             final VBox card = new VBox();
-            card.getChildren().addAll(new Text("Nom de l'objet : " + s.name()),
+            final BorderPane firstLine = new BorderPane();
+            final Button favoriteButton = new Button(FAVORITES_CHARACTER);
+            favoriteButton.setFont(BUTTONS_FONT);
+            firstLine.setLeft(new Text("Nom de l'objet : " + s.name()));
+            firstLine.setRight(favoriteButton);
+            card.getChildren().addAll(firstLine,
                     new Text("Identifiant Hipparcos : " + s.hipparcosId()));
             card.getStyleClass().add("sidebar-star-card");
             starComponents.add(card);
