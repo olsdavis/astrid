@@ -26,14 +26,6 @@ import java.util.logging.Logger;
  */
 public class Main extends Application {
 
-    /*
-    The following buttons are used for the custom made window border.
-     */
-
-    private static final String FULL_SCREEN_BUTTON = "\uF055";
-    private static final String MINIMIZE_BUTTON = "\uF056";
-    private static final String CLOSE_BUTTON = "\uF057";
-
     public static void main(String[] args) {
         launch(args);
     }
