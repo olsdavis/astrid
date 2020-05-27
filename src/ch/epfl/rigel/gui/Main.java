@@ -81,10 +81,8 @@ public class Main extends Application {
     private static final Number DEFAULT_LAT = 46.52d;
 
     static {
-        final InputStream stream = Main.class.getResourceAsStream("/Font Awesome 5 Free-Solid-900.otf");
-        BUTTONS_FONT = Font.loadFont(stream, 15);
-        try {
-            stream.close();
+        try (final InputStream stream = Main.class.getResourceAsStream("/Font Awesome 5 Free-Solid-900.otf")) {
+            BUTTONS_FONT = Font.loadFont(stream, 15);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
