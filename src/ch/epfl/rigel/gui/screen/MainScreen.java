@@ -1,4 +1,4 @@
-package ch.epfl.rigel.gui;
+package ch.epfl.rigel.gui.screen;
 
 import ch.epfl.rigel.util.Fonts;
 import javafx.animation.AnimationTimer;
@@ -11,6 +11,7 @@ import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -24,7 +25,7 @@ import javafx.util.Duration;
  * @author Alexandre Doukhan (SCIPER: 316706)
  * Creation date: 27/05/2020
  */
-final class MainScreen implements Screen {
+public final class MainScreen implements Screen {
 
     private static final class BackgroundAnimation extends AnimationTimer {
         final Canvas canvas = new Canvas();
@@ -49,7 +50,12 @@ final class MainScreen implements Screen {
 
     private final StackPane root = new StackPane();
 
-    MainScreen() {
+    /**
+     * Initializes the main screen, the first screen that the user sees.
+     *
+     * @param controller the screen controller of the program
+     */
+    public MainScreen(ScreenController controller) {
         final BorderPane pane = new BorderPane();
         pane.setStyle("-fx-background-color: transparent;");
 
@@ -72,6 +78,12 @@ final class MainScreen implements Screen {
         // middle pane: buttons
         final Button start = button("COMMENCER");
         final Button about = button("A PROPOS");
+        start.setOnMouseClicked(event -> {
+            if (event.getButton() == MouseButton.PRIMARY) {
+                controller.changeScreen(ScreenNames.STAR_VIEW_SCREEN);
+                event.consume();
+            }
+        });
         // TODO: change font of buttons!!
         final VBox buttons = new VBox(start, about);
         buttons.setSpacing(25d);
@@ -92,11 +104,12 @@ final class MainScreen implements Screen {
 
     /**
      * @param text the text of the button
-     * @return a new button with the default font.
+     * @return a new button with the correct style.
      */
     private Button button(String text) {
         final Button ret = new Button(text);
         ret.setFont(MAIN_FONT);
+        ret.getStyleClass().add("main-button");
         return ret;
     }
 
@@ -110,6 +123,11 @@ final class MainScreen implements Screen {
         p.setAlignment(pos);
         p.getChildren().addAll(nodes);
         return p;
+    }
+
+    @Override
+    public String getName() {
+        return ScreenNames.MAIN_SCREEN;
     }
 
     @Override

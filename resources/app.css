@@ -13,7 +13,7 @@
     -fx-text-origin: top;
 }
 
-.button { /* TODO: replace with an ID, here */
+.main-button {
     -fx-pref-width: 300px;
     -fx-pref-height: 50px;
     -fx-font-size: 20px;
@@ -23,6 +23,6 @@
     -fx-background-radius: 8px;
 }
 
-.button:hover {
+.main-button:hover {
     -fx-cursor: hand;
 }
