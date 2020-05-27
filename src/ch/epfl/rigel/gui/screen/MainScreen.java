@@ -93,11 +93,10 @@ public final class MainScreen implements Screen {
         pane.setCenter(center);
         pane.setBackground(Background.EMPTY);
 
-        final BorderPane backgroundPane = new BorderPane();
-        BackgroundAnimation animation = new BackgroundAnimation();
+        final BackgroundAnimation animation = new BackgroundAnimation();
+        final Pane backgroundPane = new Pane(animation.canvas);
         animation.canvas.widthProperty().bind(backgroundPane.widthProperty());
         animation.canvas.heightProperty().bind(backgroundPane.heightProperty());
-        backgroundPane.setCenter(animation.canvas);
         root.getChildren().addAll(backgroundPane, pane);
         animation.start();
     }
