@@ -369,7 +369,7 @@ public final class StarViewScreen implements Screen {
 
         final List<Star> stars = catalogue.stars().subList(0, 20);
         // this was first done with a map() call, React-like style,
-        // but we changed this to a C-style for loop to add easily
+        // but we changed this to a C-style for loop to easily add
         // vertical separators
         final List<Node> starComponents = new ArrayList<>(2 * stars.size() - 1);
         for (int i = 0; i < stars.size(); i++) {
