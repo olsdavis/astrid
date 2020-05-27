@@ -6,6 +6,7 @@ import ch.epfl.rigel.astronomy.HygDatabaseLoader;
 import ch.epfl.rigel.astronomy.StarCatalogue;
 import ch.epfl.rigel.coordinates.GeographicCoordinates;
 import ch.epfl.rigel.coordinates.HorizontalCoordinates;
+import ch.epfl.rigel.util.Fonts;
 import javafx.application.Application;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
@@ -18,12 +19,11 @@ import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.converter.LocalTimeStringConverter;
 import javafx.util.converter.NumberStringConverter;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.UncheckedIOException;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -81,11 +81,7 @@ public class Main extends Application {
     private static final Number DEFAULT_LAT = 46.52d;
 
     static {
-        try (final InputStream stream = Main.class.getResourceAsStream("/Font Awesome 5 Free-Solid-900.otf")) {
-            BUTTONS_FONT = Font.loadFont(stream, 15);
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
+        BUTTONS_FONT = Fonts.loadUnsafe("/Font Awesome 5 Free-Solid-900.otf", 15d);
     }
 
     private final ObserverLocationBean position = new ObserverLocationBean();
@@ -159,14 +155,24 @@ public class Main extends Application {
             }
         });
 
-        final BorderPane root = new BorderPane();
-        manager.canvas().widthProperty().bind(root.widthProperty());
-        manager.canvas().heightProperty().bind(root.heightProperty());
-        root.setTop(controlBar());
-        root.setCenter(new Pane(manager.canvas()));
-        root.setBottom(bottomPane());
-
-        primaryStage.setScene(new Scene(root));
+//        final BorderPane root = new BorderPane();
+//        manager.canvas().widthProperty().bind(root.widthProperty());
+//        manager.canvas().heightProperty().bind(root.heightProperty());
+//        root.setTop(controlBar());
+//        root.setCenter(new Pane(manager.canvas()));
+//        root.setBottom(bottomPane());
+//
+//        primaryStage.setScene(new Scene(root));
+        final Pane pane = new MainScreen().getPane();
+        final BorderPane lastPane = new BorderPane();
+        lastPane.setCenter(pane);
+        final HBox top = new HBox();
+        top.getChildren().addAll(new Button("Test"));
+        lastPane.setTop(top);
+        final Scene scene = new Scene(lastPane);
+        scene.getStylesheets().add(getClass().getResource("/app.css").toExternalForm());
+        primaryStage.initStyle(StageStyle.TRANSPARENT);
+        primaryStage.setScene(scene);
         primaryStage.show();
         manager.canvas().requestFocus();
     }

@@ -1,0 +1,28 @@
+.root {
+    -fx-min-width: 800px;
+    -fx-min-height: 600px;
+}
+
+.title-box {
+    -fx-padding: 50px 0 0 0;
+}
+
+.main-title {
+    -fx-font-size: 80px;
+    -fx-text-alignment: center;
+    -fx-text-origin: top;
+}
+
+.button { /* TODO: replace with an ID, here */
+    -fx-pref-width: 300px;
+    -fx-pref-height: 50px;
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-padding: 20px 0 20px 0;
+    -fx-background-color: linear-gradient(from 0% 93% to 0% 100%, whitesmoke 0%, #3d3d3d 100%);
+    -fx-background-radius: 8px;
+}
+
+.button:hover {
+    -fx-cursor: hand;
+}
