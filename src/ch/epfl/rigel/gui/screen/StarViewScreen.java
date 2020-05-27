@@ -1,6 +1,7 @@
 package ch.epfl.rigel.gui.screen;
 
 import ch.epfl.rigel.astronomy.CelestialObject;
+import ch.epfl.rigel.astronomy.Star;
 import ch.epfl.rigel.astronomy.StarCatalogue;
 import ch.epfl.rigel.coordinates.GeographicCoordinates;
 import ch.epfl.rigel.coordinates.HorizontalCoordinates;
@@ -10,6 +11,7 @@ import javafx.animation.TranslateTransition;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.geometry.Orientation;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -111,6 +113,7 @@ public final class StarViewScreen implements Screen {
         };
     }
 
+    private final StarCatalogue catalogue;
     private final ObserverLocationBean position = new ObserverLocationBean();
     private final DateTimeBean date = new DateTimeBean();
     private final ViewingParametersBean viewingParameters = new ViewingParametersBean();
@@ -124,6 +127,7 @@ public final class StarViewScreen implements Screen {
      * @param catalogue the catalogue of stars to display.
      */
     public StarViewScreen(StarCatalogue catalogue) {
+        this.catalogue = catalogue;
         // initialize beans
         position.setCoordinates(INIT_COORDINATES);
         date.setZonedDateTime(ZonedDateTime.now());
@@ -362,6 +366,31 @@ public final class StarViewScreen implements Screen {
         final Text searchTabTitle = new Text(SEARCH_CHARACTER);
         searchTabTitle.setFont(BUTTONS_FONT);
         searchTab.setGraphic(searchTabTitle);
+
+        final List<Star> stars = catalogue.stars().subList(0, 20);
+        // this was first done with a map() call, React-like style,
+        // but we changed this to a C-style for loop to add easily
+        // vertical separators
+        final List<Node> starComponents = new ArrayList<>(2 * stars.size() - 1);
+        for (int i = 0; i < stars.size(); i++) {
+            final Star s = stars.get(i);
+            final HBox ret = new HBox();
+            ret.prefWidthProperty().bind(menu.widthProperty());
+            ret.getStyleClass().add("sidebar-star-card");
+            ret.getChildren().addAll(
+                    new Text("Nom de l'objet : " + s.name()),
+                    new Text("Identifiant Hipparcos : " + s.hipparcosId())
+            );
+            starComponents.add(ret);
+            if (i != stars.size() - 1) {
+                final Separator sep = new Separator(Orientation.HORIZONTAL);
+                sep.prefWidthProperty().bind(menu.widthProperty());
+                starComponents.add(sep);
+            }
+        }
+        final VBox elements = new VBox();
+        elements.getChildren().addAll(starComponents);
+        searchTab.setContent(new ScrollPane(elements));
 
         final Tab favoritesTab = new Tab();
         favoritesTab.getStyleClass().add("sidebar-tab");
