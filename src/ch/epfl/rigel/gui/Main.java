@@ -55,6 +55,7 @@ public class Main extends Application {
         controller.addScreen(new MainScreen(controller));
         controller.addScreen(new StarViewScreen(catalogue));
 
+        // set to main screen
         controller.changeScreen(ScreenNames.MAIN_SCREEN);
 
         final BorderPane lastPane = new BorderPane();

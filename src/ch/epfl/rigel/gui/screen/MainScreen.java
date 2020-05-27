@@ -81,6 +81,7 @@ public final class MainScreen implements Screen {
         buttons.getStyleClass().add("main-buttons-group");
         final GridPane center = grid(Pos.CENTER, buttons);
         pane.setCenter(center);
+
         pane.setBackground(Background.EMPTY);
 
         final BackgroundAnimation animation = new BackgroundAnimation();
