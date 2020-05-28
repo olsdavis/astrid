@@ -2,7 +2,6 @@ package ch.epfl.rigel.gui;
 
 import ch.epfl.rigel.astronomy.CelestialObject;
 import ch.epfl.rigel.astronomy.ObservedSky;
-import ch.epfl.rigel.astronomy.Star;
 import ch.epfl.rigel.astronomy.StarCatalogue;
 import ch.epfl.rigel.coordinates.CartesianCoordinates;
 import ch.epfl.rigel.coordinates.HorizontalCoordinates;
