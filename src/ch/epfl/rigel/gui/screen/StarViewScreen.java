@@ -7,6 +7,7 @@ import ch.epfl.rigel.coordinates.GeographicCoordinates;
 import ch.epfl.rigel.coordinates.HorizontalCoordinates;
 import ch.epfl.rigel.gui.*;
 import ch.epfl.rigel.util.Fonts;
+import ch.epfl.rigel.util.Texts;
 import javafx.animation.TranslateTransition;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
@@ -422,10 +423,9 @@ public final class StarViewScreen implements Screen {
             final Button favoriteButton = new Button(FAVORITES_CHARACTER);
             favoriteButton.setFont(BUTTONS_FONT);
             // add the text info
-            firstLine.setLeft(new Text("Nom de l'objet : " + s.name()));
+            firstLine.setLeft(Texts.parse("*Nom de l'objet* : " + s.name()));
             firstLine.setRight(new HBox(targetButton, favoriteButton));
-            card.getChildren().addAll(firstLine,
-                    new Text("Identifiant Hipparcos : " + s.hipparcosId()));
+            card.getChildren().addAll(firstLine, Texts.parse("*Identifiant Hipparcos* : " + s.hipparcosId()));
             card.getStyleClass().add("sidebar-star-card");
             starComponents.add(card);
             if (i != stars.size() - 1) {
