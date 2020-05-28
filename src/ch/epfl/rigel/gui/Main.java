@@ -37,6 +37,8 @@ public class Main extends Application {
         primaryStage.setTitle("Rigel");
         primaryStage.setMinWidth(800);
         primaryStage.setMinHeight(600);
+        primaryStage.setWidth(1000);
+        primaryStage.setHeight(750);
 
         // initialize catalogue
         try (final InputStream hs = getClass().getResourceAsStream("/hygdata_v3.csv");

@@ -28,15 +28,15 @@
     -fx-background-radius: 8px;
 }
 
-.sidebar {
+.sideBar {
     -fx-spacing: 20px;
     -fx-background-color: whitesmoke;
 }
 
-.sidebar-tab {
+.sideBar-tab {
     -fx-padding: 0 20px 0 20px;
 }
 
-.sidebar-star-card {
+.sideBar-star-card {
     -fx-padding: 10px 5px 10px 5px;
 }

@@ -79,6 +79,15 @@ public final class StarViewScreen implements Screen {
      */
     private static final String TARGET_CHARACTER = "\uF05B";
     /**
+     * Holds the character used in BUTTONS_FONT font for the button that allows toggling
+     * the sidebar view.
+     */
+    private static final String SIDEBAR_CHARACTER = "\uF0AE";
+    /**
+     * Holds the width of the side bar.
+     */
+    private static final double SIDEBAR_WIDTH = 300d;
+    /**
      * Initial field of view.
      */
     private static final double INIT_FOV = 100d;
@@ -171,9 +180,10 @@ public final class StarViewScreen implements Screen {
 
         manager.canvas().widthProperty().bind(root.widthProperty());
         manager.canvas().heightProperty().bind(root.heightProperty());
-        root.setTop(controlBar());
+        final VBox sideBar = sideBar();
+        root.setTop(controlBar(sideBar));
         root.setCenter(new Pane(manager.canvas()));
-        root.setRight(sideBar());
+        root.setRight(sideBar);
         root.setBottom(bottomPane());
     }
 
@@ -228,9 +238,10 @@ public final class StarViewScreen implements Screen {
     /**
      * @return the upper control bar containing the time box and the animator box.
      */
-    private HBox controlBar() {
+    private HBox controlBar(VBox sideBar) {
         final HBox controlBar = new HBox(createPositionBox(), new Separator(Orientation.VERTICAL),
-                createTimeBox(), new Separator(Orientation.VERTICAL), createAnimatorBox());
+                createTimeBox(), new Separator(Orientation.VERTICAL), createAnimatorBox(),
+                new Separator(Orientation.VERTICAL), createSideBarButton(sideBar));
         controlBar.setStyle("-fx-spacing: 4; -fx-padding: 4;");
         return controlBar;
     }
@@ -358,27 +369,38 @@ public final class StarViewScreen implements Screen {
     }
 
     /**
+     * @param sideBar the side bar (used for toggling its display)
+     * @return a VBox containing the button that toggles the display
+     * of the side bar.
+     */
+    private VBox createSideBarButton(VBox sideBar) {
+        final VBox box = new VBox();
+        final Button button = new Button(SIDEBAR_CHARACTER);
+        button.setFont(BUTTONS_FONT);
+        button.setOnMouseClicked(e -> {
+            if (e.getButton() == MouseButton.PRIMARY) {
+                if (sideBar.getTranslateX() == 0d) { // if not moved
+                    sideBar.setTranslateX(SIDEBAR_WIDTH);
+                } else {
+                    sideBar.setTranslateX(0d);
+                }
+            }
+        });
+        box.getChildren().add(button);
+        return box;
+    }
+
+    /**
      * @return the sidebar that allows searching and adding to favorites
      * the available CelestialObjects.
      */
     private VBox sideBar() {
         // setup the sidebar (slide in, slide out)
         final VBox menu = new VBox();
-        menu.getStyleClass().add("sidebar");
+        menu.getStyleClass().add("sideBar");
         menu.prefHeightProperty().bind(root.heightProperty());
-        menu.setPrefWidth(300d);
-        menu.setTranslateX(280d);
-        final TranslateTransition menuTranslation = new TranslateTransition(Duration.millis(500d), menu);
-        menuTranslation.setFromX(280d);
-        menuTranslation.setToX(0);
-        menu.setOnMouseEntered(event -> {
-            menuTranslation.setRate(1d);
-            menuTranslation.play();
-        });
-        menu.setOnMouseExited(event -> {
-            menuTranslation.setRate(-1d);
-            menuTranslation.play();
-        });
+        menu.setPrefWidth(SIDEBAR_WIDTH);
+        menu.setTranslateX(SIDEBAR_WIDTH);
 
         // finally, add everything
         final TabPane tabPane = new TabPane(searchTab(menu), favoritesTab());
@@ -394,7 +416,7 @@ public final class StarViewScreen implements Screen {
     private Tab searchTab(VBox menu) {
         final Tab searchTab = new Tab();
         searchTab.setClosable(false);
-        searchTab.getStyleClass().add("sidebar-tab");
+        searchTab.getStyleClass().add("sideBar-tab");
         final Text searchTabTitle = new Text(SEARCH_CHARACTER);
         searchTabTitle.setFont(BUTTONS_FONT);
         searchTab.setGraphic(searchTabTitle);
@@ -444,7 +466,7 @@ public final class StarViewScreen implements Screen {
                                     card.getChildren().add(Texts.parse("*Identifiant Hipparcos* : " +
                                             ((Star) s.object()).hipparcosId()));
                                 }
-                                card.getStyleClass().add("sidebar-star-card");
+                                card.getStyleClass().add("sideBar-star-card");
                                 starComponents.add(card);
                                 // do not add a separator after the last item
                                 if (i != stars.size() - 1) {
@@ -494,7 +516,7 @@ public final class StarViewScreen implements Screen {
     private Tab favoritesTab() {
         // generate favorites tab
         final Tab favoritesTab = new Tab();
-        favoritesTab.getStyleClass().add("sidebar-tab");
+        favoritesTab.getStyleClass().add("sideBar-tab");
         favoritesTab.setClosable(false);
         final Text favoritesTabTitle = new Text(FAVORITES_CHARACTER);
         favoritesTabTitle.setFont(BUTTONS_FONT);
