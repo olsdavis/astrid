@@ -10,6 +10,7 @@ import ch.epfl.rigel.util.Fonts;
 import ch.epfl.rigel.util.Texts;
 import javafx.animation.TranslateTransition;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.geometry.Orientation;
 import javafx.scene.Node;
@@ -134,6 +135,7 @@ public final class StarViewScreen implements Screen {
     private final ViewingParametersBean viewingParameters = new ViewingParametersBean();
     private final TimeAnimator animator = new TimeAnimator(date);
     private final SkyCanvasManager manager;
+    private final SimpleObjectProperty<List<Star>> searchObjects = new SimpleObjectProperty<>();
     private final BorderPane root = new BorderPane();
 
     /**
@@ -148,6 +150,7 @@ public final class StarViewScreen implements Screen {
         date.setZonedDateTime(ZonedDateTime.now());
         viewingParameters.setCenter(INIT_PROJ_CENTER);
         viewingParameters.setFieldOfViewDeg(INIT_FOV);
+        searchObjects.set(catalogue.stars());
 
         manager = new SkyCanvasManager(
                 catalogue,
@@ -394,66 +397,95 @@ public final class StarViewScreen implements Screen {
         searchTabTitle.setFont(BUTTONS_FONT);
         searchTab.setGraphic(searchTabTitle);
 
+        final Pagination pagination = new Pagination();
+        pagination.pageCountProperty().bind(
+                Bindings.createIntegerBinding(
+                        () -> (int) Math.ceil((float) searchObjects.get().size() / ELEMENTS_PER_PAGE),
+                        searchObjects
+                )
+        );
+        pagination.pageFactoryProperty().bind(
+                Bindings.createObjectBinding(() -> (index) -> {
+                            if (searchObjects.get().isEmpty()) {
+                                return new Text("Aucun résultat");
+                            }
+                            final List<Star> stars = searchObjects.get().subList(index * ELEMENTS_PER_PAGE,
+                                    Math.min((index + 1) * ELEMENTS_PER_PAGE, searchObjects.get().size()));
+                            // this was first done with a map() call, React-like style,
+                            // but we changed this to a C-style for loop to easily add
+                            // vertical separators
+                            final List<Node> starComponents = new ArrayList<>(2 * stars.size() - 1);
+                            // generate all components
+                            for (int i = 0; i < stars.size(); ++i) {
+                                final Star s = stars.get(i);
+                                final VBox card = new VBox();
+                                final BorderPane firstLine = new BorderPane();
+                                // setup target button
+                                final Button targetButton = new Button(TARGET_CHARACTER);
+                                targetButton.setFont(BUTTONS_FONT);
+                                targetButton.setOnMouseClicked(e -> {
+                                    if (e.getButton() == MouseButton.PRIMARY) {
+                                        if (!manager.focus(s)) { // if the focus could not have been done
+                                            final Alert alert = new Alert(Alert.AlertType.ERROR,
+                                                    "L'étoile n'est pas actuellement visible !");
+                                            alert.setTitle("Rigel");
+                                            alert.setHeaderText("Erreur :");
+                                            alert.show();
+                                            // TODO: highlight the object
+                                            // TODO: handle differently
+                                        }
+                                    }
+                                });
+                                // setup add to favorites button
+                                final Button favoriteButton = new Button(FAVORITES_CHARACTER);
+                                favoriteButton.setFont(BUTTONS_FONT);
+                                favoriteButton.setOnMouseClicked(e -> {
+                                });
+                                // add the text info
+                                firstLine.setLeft(Texts.parse("*Nom de l'objet* : " + s.name()));
+                                firstLine.setRight(new HBox(targetButton, favoriteButton));
+                                card.getChildren().addAll(firstLine, Texts.parse("*Identifiant Hipparcos* : " + s.hipparcosId()));
+                                card.getStyleClass().add("sidebar-star-card");
+                                starComponents.add(card);
+                                // do not add a separator after the last item
+                                if (i != stars.size() - 1) {
+                                    final Separator sep = new Separator(Orientation.HORIZONTAL);
+                                    sep.prefWidthProperty().bind(menu.widthProperty());
+                                    starComponents.add(sep);
+                                }
+                            }
+                            final VBox elements = new VBox();
+                            elements.getChildren().addAll(starComponents);
+                            elements.setStyle("-fx-padding: 10px 0 0 0;");
+                            final ScrollPane pane = new ScrollPane(elements);
+                            pane.setFitToWidth(true);
+                            return pane;
+                        },
+                        searchObjects)
+        );
 
-        final Pagination pagination = new Pagination((int) Math.ceil((float) catalogue.stars().size() / ELEMENTS_PER_PAGE));
-        pagination.setPageFactory(index -> {
-            final List<Star> stars = catalogue.stars().subList(index * ELEMENTS_PER_PAGE,
-                    Math.min((index + 1) * ELEMENTS_PER_PAGE, catalogue.stars().size()));
-            // this was first done with a map() call, React-like style,
-            // but we changed this to a C-style for loop to easily add
-            // vertical separators
-            final List<Node> starComponents = new ArrayList<>(2 * stars.size());
-            final TextField search = new TextField();
-            search.setPromptText("Recherche...");
-            starComponents.add(search);
-            // generate all components
-            for (int i = 0; i < stars.size(); i++) {
-                final Star s = stars.get(i);
-                final VBox card = new VBox();
-                final BorderPane firstLine = new BorderPane();
-                // setup target button
-                final Button targetButton = new Button(TARGET_CHARACTER);
-                targetButton.setFont(BUTTONS_FONT);
-                targetButton.setOnMouseClicked(e -> {
-                    if (e.getButton() == MouseButton.PRIMARY) {
-                        if (!manager.focus(s)) { // if the focus could not have been done
-                            final Alert alert = new Alert(Alert.AlertType.ERROR,
-                                    "L'étoile n'est pas actuellement visible !");
-                            alert.setTitle("Rigel");
-                            alert.setHeaderText("Erreur :");
-                            alert.show();
-                            // TODO: highlight the object
-                            // TODO: handle differently
-                        }
-                    }
-                });
-                // setup add to favorites button
-                final Button favoriteButton = new Button(FAVORITES_CHARACTER);
-                favoriteButton.setFont(BUTTONS_FONT);
-                favoriteButton.setOnMouseClicked(e -> {
-                });
-                // add the text info
-                firstLine.setLeft(Texts.parse("*Nom de l'objet* : " + s.name()));
-                firstLine.setRight(new HBox(targetButton, favoriteButton));
-                card.getChildren().addAll(firstLine, Texts.parse("*Identifiant Hipparcos* : " + s.hipparcosId()));
-                card.getStyleClass().add("sidebar-star-card");
-                starComponents.add(card);
-                // do not add a separator after the last item
-                if (i != stars.size() - 1) {
-                    final Separator sep = new Separator(Orientation.HORIZONTAL);
-                    sep.prefWidthProperty().bind(menu.widthProperty());
-                    starComponents.add(sep);
+        final TextField search = new TextField();
+        search.setPromptText("Recherche...");
+        search.textProperty().addListener((observable, oldValue, newValue) -> {
+            // update the collection that is used for the search tab
+            if (newValue.isBlank()) {
+                if (searchObjects.get().size() != catalogue.stars().size()) {
+                    searchObjects.set(catalogue.stars());
                 }
+            } else {
+                final String lowered = newValue.toLowerCase();
+                searchObjects.set(
+                        catalogue.stars()
+                                .stream()
+                                .filter(s -> s.name().toLowerCase().contains(lowered)) // simple criterion
+                                .collect(Collectors.toList())
+                );
             }
-            final VBox elements = new VBox();
-            elements.getChildren().addAll(starComponents);
-            elements.setStyle("-fx-padding: 10px 0 0 0;");
-            final ScrollPane pane = new ScrollPane(elements);
-            pane.setFitToWidth(true);
-            return pane;
         });
-
-        searchTab.setContent(pagination);
+        final BorderPane lastPane = new BorderPane();
+        lastPane.setTop(search);
+        lastPane.setCenter(pagination);
+        searchTab.setContent(lastPane);
         return searchTab;
     }
 
