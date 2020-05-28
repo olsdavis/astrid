@@ -28,7 +28,10 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
@@ -367,7 +370,18 @@ public final class StarViewScreen implements Screen {
             menuTranslation.play();
         });
 
-        // search tab
+        // finally, add everything
+        final TabPane tabPane = new TabPane(searchTab(menu), favoritesTab());
+        menu.getChildren().add(tabPane);
+
+        return menu;
+    }
+
+    /**
+     * @param menu the menu that contains this tab
+     * @return the search tab used to display the catalogue searches, etc.
+     */
+    private Tab searchTab(VBox menu) {
         final Tab searchTab = new Tab();
         searchTab.setClosable(false);
         searchTab.getStyleClass().add("sidebar-tab");
@@ -379,7 +393,10 @@ public final class StarViewScreen implements Screen {
         // this was first done with a map() call, React-like style,
         // but we changed this to a C-style for loop to easily add
         // vertical separators
-        final List<Node> starComponents = new ArrayList<>(2 * stars.size() - 1);
+        final List<Node> starComponents = new ArrayList<>(2 * stars.size());
+        final TextField search = new TextField();
+        search.setPromptText("Recherche...");
+        starComponents.add(search);
         // generate all components
         for (int i = 0; i < stars.size(); i++) {
             final Star s = stars.get(i);
@@ -397,6 +414,7 @@ public final class StarViewScreen implements Screen {
                         alert.setHeaderText("Erreur :");
                         alert.show();
                         // TODO: highlight the object
+                        // TODO: handle differently
                     }
                 }
             });
@@ -418,20 +436,25 @@ public final class StarViewScreen implements Screen {
         }
         final VBox elements = new VBox();
         elements.getChildren().addAll(starComponents);
-        searchTab.setContent(new ScrollPane(elements));
+        elements.setStyle("-fx-padding: 10px 0 0 0;");
+        final ScrollPane pane = new ScrollPane(elements);
+        pane.setFitToWidth(true);
+        searchTab.setContent(pane);
+        return searchTab;
+    }
 
+    /**
+     * @return the tab containing the favorite elements of the user.
+     */
+    private Tab favoritesTab() {
+        // generate favorites tab
         final Tab favoritesTab = new Tab();
         favoritesTab.getStyleClass().add("sidebar-tab");
         favoritesTab.setClosable(false);
         final Text favoritesTabTitle = new Text(FAVORITES_CHARACTER);
         favoritesTabTitle.setFont(BUTTONS_FONT);
         favoritesTab.setGraphic(favoritesTabTitle);
-
-        // finally, add everything
-        final TabPane tabPane = new TabPane(searchTab, favoritesTab);
-        menu.getChildren().add(tabPane);
-
-        return menu;
+        return favoritesTab;
     }
 
 }

@@ -29,12 +29,12 @@
 }
 
 .sidebar {
-    -fx-spacing: 5;
+    -fx-spacing: 20px;
     -fx-background-color: whitesmoke;
 }
 
 .sidebar-tab {
-    -fx-padding: 0 10px 0 10px;
+    -fx-padding: 0 20px 0 20px;
 }
 
 .sidebar-star-card {
