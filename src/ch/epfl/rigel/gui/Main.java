@@ -33,6 +33,7 @@ import java.util.function.Function;
 import java.util.function.UnaryOperator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 /**
  * The main class, starting up the JavaFX application.
@@ -242,7 +243,7 @@ public class Main extends Application {
         );
         // set up the reset button
         final Button reset = new Button(RESET_CHARACTER);
-        reset.setOnMouseClicked(event -> date.setZonedDateTime(ZonedDateTime.now()));
+        reset.setOnAction(event -> date.setZonedDateTime(ZonedDateTime.now()));
         reset.disableProperty().bind(animator.runningProperty());
         chooseAnimator.disableProperty().bind(animator.runningProperty());
         reset.setFont(BUTTONS_FONT);
@@ -278,16 +279,17 @@ public class Main extends Application {
         hourText.setTextFormatter(timeFormatter);
         timeFormatter.valueProperty().bindBidirectional(date.timeProperty());
 
-        final List<String> zonesAvailable = new ArrayList<>(ZoneId.getAvailableZoneIds());
-        // alphabetical (default) order
-        Collections.sort(zonesAvailable);
-        final ComboBox<String> zonesChoice = new ComboBox<>(FXCollections.observableList(zonesAvailable));
+        final List<ZoneId> zonesAvailable = new ArrayList<>(
+                ZoneId.getAvailableZoneIds()
+                        .stream()
+                        .sorted()
+                        .map(ZoneId::of)
+                        .collect(Collectors.toUnmodifiableList())
+        );
+        final ComboBox<ZoneId> zonesChoice = new ComboBox<>(FXCollections.observableList(zonesAvailable));
         zonesChoice.setStyle("-fx-pref-width: 180;");
 
-        // update zone changes without binding it, because otherwise the animator
-        // will not be able to change the value
-        zonesChoice.valueProperty().addListener((observable, oldValue, newValue) -> date.zoneProperty().set(ZoneId.of(newValue)));
-        zonesChoice.valueProperty().set(date.getZone().getId()); // set up initial value to avoid the blank box
+        zonesChoice.valueProperty().bindBidirectional(date.zoneProperty());
 
         dateText.disableProperty().bind(animator.runningProperty());
         hourText.disableProperty().bind(animator.runningProperty());
