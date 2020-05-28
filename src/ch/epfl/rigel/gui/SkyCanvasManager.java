@@ -275,21 +275,27 @@ public class SkyCanvasManager {
 
     /**
      * Sets the projection center to the provided {@link CelestialObject}
-     * if it is in the current bounds of the view. Returns {@code true}
-     * if the operation succeeded. (The failure means that the object isn't
-     * currently visible.)
+     * if it is in the current bounds of the view; if it is not, it approaches
+     * the object as good as it can.
+     *
+     * TODO: hallo/flare
      *
      * @param o the {@link CelestialObject} to focus on
      */
-    public boolean focus(CelestialObject o) {
+    public void focus(CelestialObject o) {
         final HorizontalCoordinates coordinates = observedSky.get().locate(o);
-        if (AZ_LIM.contains(coordinates.azDeg()) && ALT_LIM.contains(coordinates.altDeg())) {
-            viewingParameters.setCenter(coordinates);
-            return true;
-        }
+            viewingParameters.setCenter(HorizontalCoordinates.ofDeg(
+                    AZ_LIM.reduce(coordinates.azDeg()),
+                    ALT_LIM.clip(coordinates.altDeg())
+                )
+            );
+    }
 
-        // not in bounds
-        return false;
+    /**
+     * @return the instance of {@link ObservedSky} that is in use.
+     */
+    public ObservedSky sky() {
+        return observedSky.get();
     }
 
 }

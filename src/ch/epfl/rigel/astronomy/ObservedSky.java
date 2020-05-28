@@ -211,10 +211,16 @@ public class ObservedSky {
         if (o instanceof Star) {
             final int index = ((Star) o).listIndex();
             return projection.inverseApply(CartesianCoordinates.of(starPositions[2 * index], starPositions[2 * index + 1]));
+        } else if (o instanceof Sun) {
+            return projection.inverseApply(sunProjection);
+        } else if (o instanceof Moon) {
+            return projection.inverseApply(moonProjection);
         } else {
-            final List<CelestialPair> others = allObjects.subList(starPositions.length / 2, allObjects.size());
+            final List<CelestialPair> others = allObjects.subList(0, allObjects.size() - starPositions.length / 2);
             for (CelestialPair other : others) {
-                if (other.object == o) {
+                // this relies on the fact that objects different from stars
+                // have unique names
+                if (other.object.name().equals(o.name())) {
                     return projection.inverseApply(other.position);
                 }
             }
@@ -240,6 +246,13 @@ public class ObservedSky {
             }
         }
         return Optional.ofNullable(closest);
+    }
+
+    /**
+     * @return the collection of all celestial objects.
+     */
+    public List<CelestialPair> all() {
+        return Collections.unmodifiableList(allObjects);
     }
 
 }

@@ -1,6 +1,7 @@
 package ch.epfl.rigel.gui.screen;
 
 import ch.epfl.rigel.astronomy.CelestialObject;
+import ch.epfl.rigel.astronomy.ObservedSky;
 import ch.epfl.rigel.astronomy.Star;
 import ch.epfl.rigel.astronomy.StarCatalogue;
 import ch.epfl.rigel.coordinates.GeographicCoordinates;
@@ -135,7 +136,7 @@ public final class StarViewScreen implements Screen {
     private final ViewingParametersBean viewingParameters = new ViewingParametersBean();
     private final TimeAnimator animator = new TimeAnimator(date);
     private final SkyCanvasManager manager;
-    private final SimpleObjectProperty<List<Star>> searchObjects = new SimpleObjectProperty<>();
+    private final SimpleObjectProperty<List<ObservedSky.CelestialPair>> searchObjects = new SimpleObjectProperty<>();
     private final BorderPane root = new BorderPane();
 
     /**
@@ -150,7 +151,6 @@ public final class StarViewScreen implements Screen {
         date.setZonedDateTime(ZonedDateTime.now());
         viewingParameters.setCenter(INIT_PROJ_CENTER);
         viewingParameters.setFieldOfViewDeg(INIT_FOV);
-        searchObjects.set(catalogue.stars());
 
         manager = new SkyCanvasManager(
                 catalogue,
@@ -158,6 +158,8 @@ public final class StarViewScreen implements Screen {
                 position,
                 viewingParameters
         );
+
+        searchObjects.set(manager.sky().all());
 
         animator.runningProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue) {
@@ -409,7 +411,7 @@ public final class StarViewScreen implements Screen {
                             if (searchObjects.get().isEmpty()) {
                                 return new Text("Aucun résultat");
                             }
-                            final List<Star> stars = searchObjects.get().subList(index * ELEMENTS_PER_PAGE,
+                            final List<ObservedSky.CelestialPair> stars = searchObjects.get().subList(index * ELEMENTS_PER_PAGE,
                                     Math.min((index + 1) * ELEMENTS_PER_PAGE, searchObjects.get().size()));
                             // this was first done with a map() call, React-like style,
                             // but we changed this to a C-style for loop to easily add
@@ -417,7 +419,7 @@ public final class StarViewScreen implements Screen {
                             final List<Node> starComponents = new ArrayList<>(2 * stars.size() - 1);
                             // generate all components
                             for (int i = 0; i < stars.size(); ++i) {
-                                final Star s = stars.get(i);
+                                final ObservedSky.CelestialPair s = stars.get(i);
                                 final VBox card = new VBox();
                                 final BorderPane firstLine = new BorderPane();
                                 // setup target button
@@ -425,26 +427,23 @@ public final class StarViewScreen implements Screen {
                                 targetButton.setFont(BUTTONS_FONT);
                                 targetButton.setOnMouseClicked(e -> {
                                     if (e.getButton() == MouseButton.PRIMARY) {
-                                        if (!manager.focus(s)) { // if the focus could not have been done
-                                            final Alert alert = new Alert(Alert.AlertType.ERROR,
-                                                    "L'étoile n'est pas actuellement visible !");
-                                            alert.setTitle("Rigel");
-                                            alert.setHeaderText("Erreur :");
-                                            alert.show();
-                                            // TODO: highlight the object
-                                            // TODO: handle differently
-                                        }
+                                        manager.focus(s.object());
                                     }
                                 });
                                 // setup add to favorites button
                                 final Button favoriteButton = new Button(FAVORITES_CHARACTER);
                                 favoriteButton.setFont(BUTTONS_FONT);
                                 favoriteButton.setOnMouseClicked(e -> {
+                                    // TODO: add to favorites
                                 });
                                 // add the text info
-                                firstLine.setLeft(Texts.parse("*Nom de l'objet* : " + s.name()));
+                                firstLine.setLeft(Texts.parse("*Nom de l'objet* : " + s.object().name()));
                                 firstLine.setRight(new HBox(targetButton, favoriteButton));
-                                card.getChildren().addAll(firstLine, Texts.parse("*Identifiant Hipparcos* : " + s.hipparcosId()));
+                                card.getChildren().add(firstLine);
+                                if (s.object() instanceof Star) {
+                                    card.getChildren().add(Texts.parse("*Identifiant Hipparcos* : " +
+                                            ((Star) s.object()).hipparcosId()));
+                                }
                                 card.getStyleClass().add("sidebar-star-card");
                                 starComponents.add(card);
                                 // do not add a separator after the last item
@@ -469,15 +468,15 @@ public final class StarViewScreen implements Screen {
         search.textProperty().addListener((observable, oldValue, newValue) -> {
             // update the collection that is used for the search tab
             if (newValue.isBlank()) {
-                if (searchObjects.get().size() != catalogue.stars().size()) {
-                    searchObjects.set(catalogue.stars());
+                if (searchObjects.get().size() != manager.sky().all().size()) {
+                    searchObjects.set(manager.sky().all());
                 }
             } else {
                 final String lowered = newValue.toLowerCase();
                 searchObjects.set(
-                        catalogue.stars()
+                        manager.sky().all()
                                 .stream()
-                                .filter(s -> s.name().toLowerCase().contains(lowered)) // simple criterion
+                                .filter(s -> s.object().name().toLowerCase().contains(lowered)) // simple criterion
                                 .collect(Collectors.toList())
                 );
             }
