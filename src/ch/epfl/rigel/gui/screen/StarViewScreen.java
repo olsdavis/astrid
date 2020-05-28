@@ -63,9 +63,14 @@ public final class StarViewScreen implements Screen {
      */
     private static final String SEARCH_CHARACTER = "\uF002";
     /**
-     * Holds the character used in BUTTONS_FONT font for the favorites tab of the sidebar.
+     * Holds the character used in BUTTONS_FONT font for the favorites tab of the sidebar
+     * and the "add to favorites" button.
      */
     private static final String FAVORITES_CHARACTER = "\uF004";
+    /**
+     * Holds the character used in BUTTONS_FONT font for the "target object" button.
+     */
+    private static final String TARGET_CHARACTER = "\uF05B";
     /**
      * Initial field of view.
      */
@@ -378,10 +383,15 @@ public final class StarViewScreen implements Screen {
             final Star s = stars.get(i);
             final VBox card = new VBox();
             final BorderPane firstLine = new BorderPane();
+            // setup target button
+            final Button targetButton = new Button(TARGET_CHARACTER);
+            targetButton.setFont(BUTTONS_FONT);
+            // setup add to favorites button
             final Button favoriteButton = new Button(FAVORITES_CHARACTER);
             favoriteButton.setFont(BUTTONS_FONT);
+            // add the text info
             firstLine.setLeft(new Text("Nom de l'objet : " + s.name()));
-            firstLine.setRight(favoriteButton);
+            firstLine.setRight(new HBox(targetButton, favoriteButton));
             card.getChildren().addAll(firstLine,
                     new Text("Identifiant Hipparcos : " + s.hipparcosId()));
             card.getStyleClass().add("sidebar-star-card");
