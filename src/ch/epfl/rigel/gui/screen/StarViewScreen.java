@@ -96,6 +96,10 @@ public final class StarViewScreen implements Screen {
      * Holds the default latitude for the observer's position.
      */
     private static final Number DEFAULT_LAT = 46.52d;
+    /**
+     * Holds the number of elements per page when using the search tab.
+     */
+    private static final int ELEMENTS_PER_PAGE = 20;
 
     static {
         BUTTONS_FONT = Fonts.loadUnsafe("/Font Awesome 5 Free-Solid-900.otf", 15d);
@@ -390,59 +394,66 @@ public final class StarViewScreen implements Screen {
         searchTabTitle.setFont(BUTTONS_FONT);
         searchTab.setGraphic(searchTabTitle);
 
-        final List<Star> stars = catalogue.stars().subList(0, 20);
-        // this was first done with a map() call, React-like style,
-        // but we changed this to a C-style for loop to easily add
-        // vertical separators
-        final List<Node> starComponents = new ArrayList<>(2 * stars.size());
-        final TextField search = new TextField();
-        search.setPromptText("Recherche...");
-        starComponents.add(search);
-        // generate all components
-        for (int i = 0; i < stars.size(); i++) {
-            final Star s = stars.get(i);
-            final VBox card = new VBox();
-            final BorderPane firstLine = new BorderPane();
-            // setup target button
-            final Button targetButton = new Button(TARGET_CHARACTER);
-            targetButton.setFont(BUTTONS_FONT);
-            targetButton.setOnMouseClicked(e -> {
-                if (e.getButton() == MouseButton.PRIMARY) {
-                    if (!manager.focus(s)) { // if the focus could not have been done
-                        final Alert alert = new Alert(Alert.AlertType.ERROR,
-                                "L'étoile n'est pas actuellement visible !");
-                        alert.setTitle("Rigel");
-                        alert.setHeaderText("Erreur :");
-                        alert.show();
-                        // TODO: highlight the object
-                        // TODO: handle differently
+
+        final Pagination pagination = new Pagination((int) Math.ceil((float) catalogue.stars().size() / ELEMENTS_PER_PAGE));
+        pagination.setPageFactory(index -> {
+            final List<Star> stars = catalogue.stars().subList(index * ELEMENTS_PER_PAGE,
+                    Math.min((index + 1) * ELEMENTS_PER_PAGE, catalogue.stars().size()));
+            // this was first done with a map() call, React-like style,
+            // but we changed this to a C-style for loop to easily add
+            // vertical separators
+            final List<Node> starComponents = new ArrayList<>(2 * stars.size());
+            final TextField search = new TextField();
+            search.setPromptText("Recherche...");
+            starComponents.add(search);
+            // generate all components
+            for (int i = 0; i < stars.size(); i++) {
+                final Star s = stars.get(i);
+                final VBox card = new VBox();
+                final BorderPane firstLine = new BorderPane();
+                // setup target button
+                final Button targetButton = new Button(TARGET_CHARACTER);
+                targetButton.setFont(BUTTONS_FONT);
+                targetButton.setOnMouseClicked(e -> {
+                    if (e.getButton() == MouseButton.PRIMARY) {
+                        if (!manager.focus(s)) { // if the focus could not have been done
+                            final Alert alert = new Alert(Alert.AlertType.ERROR,
+                                    "L'étoile n'est pas actuellement visible !");
+                            alert.setTitle("Rigel");
+                            alert.setHeaderText("Erreur :");
+                            alert.show();
+                            // TODO: highlight the object
+                            // TODO: handle differently
+                        }
                     }
+                });
+                // setup add to favorites button
+                final Button favoriteButton = new Button(FAVORITES_CHARACTER);
+                favoriteButton.setFont(BUTTONS_FONT);
+                favoriteButton.setOnMouseClicked(e -> {
+                });
+                // add the text info
+                firstLine.setLeft(Texts.parse("*Nom de l'objet* : " + s.name()));
+                firstLine.setRight(new HBox(targetButton, favoriteButton));
+                card.getChildren().addAll(firstLine, Texts.parse("*Identifiant Hipparcos* : " + s.hipparcosId()));
+                card.getStyleClass().add("sidebar-star-card");
+                starComponents.add(card);
+                // do not add a separator after the last item
+                if (i != stars.size() - 1) {
+                    final Separator sep = new Separator(Orientation.HORIZONTAL);
+                    sep.prefWidthProperty().bind(menu.widthProperty());
+                    starComponents.add(sep);
                 }
-            });
-            // setup add to favorites button
-            final Button favoriteButton = new Button(FAVORITES_CHARACTER);
-            favoriteButton.setFont(BUTTONS_FONT);
-            favoriteButton.setOnMouseClicked(e -> {
-            });
-            // add the text info
-            firstLine.setLeft(Texts.parse("*Nom de l'objet* : " + s.name()));
-            firstLine.setRight(new HBox(targetButton, favoriteButton));
-            card.getChildren().addAll(firstLine, Texts.parse("*Identifiant Hipparcos* : " + s.hipparcosId()));
-            card.getStyleClass().add("sidebar-star-card");
-            starComponents.add(card);
-            // do not add a separator after the last item
-            if (i != stars.size() - 1) {
-                final Separator sep = new Separator(Orientation.HORIZONTAL);
-                sep.prefWidthProperty().bind(menu.widthProperty());
-                starComponents.add(sep);
             }
-        }
-        final VBox elements = new VBox();
-        elements.getChildren().addAll(starComponents);
-        elements.setStyle("-fx-padding: 10px 0 0 0;");
-        final ScrollPane pane = new ScrollPane(elements);
-        pane.setFitToWidth(true);
-        searchTab.setContent(pane);
+            final VBox elements = new VBox();
+            elements.getChildren().addAll(starComponents);
+            elements.setStyle("-fx-padding: 10px 0 0 0;");
+            final ScrollPane pane = new ScrollPane(elements);
+            pane.setFitToWidth(true);
+            return pane;
+        });
+
+        searchTab.setContent(pagination);
         return searchTab;
     }
 

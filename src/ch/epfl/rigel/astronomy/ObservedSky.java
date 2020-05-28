@@ -18,24 +18,34 @@ import java.util.stream.Collectors;
 public class ObservedSky {
 
     /**
-     * This small class allows to holds all the objects of the sky
+     * This small class allows to wrap up all the objects of the sky
      * with their coordinates and their CelestialObject representation.
-     * It allows us performing searches in {@link #objectClosestTo(CartesianCoordinates, double)}.
-     * <p>
-     * We allow ourselves, here, to not set the fields and the constructor in private,
-     * since it is a data class and it is only visible here, in ObservedSky.
      */
-    private static final class CelestialPair {
-        final CartesianCoordinates position;
-        final CelestialObject object;
+    public static final class CelestialPair {
+        private final CartesianCoordinates position;
+        private final CelestialObject object;
 
         /**
          * @param position the position of the object
          * @param object   the CelestialObject data
          */
-        CelestialPair(CartesianCoordinates position, CelestialObject object) {
+        private CelestialPair(CartesianCoordinates position, CelestialObject object) {
             this.position = position;
             this.object = object;
+        }
+
+        /**
+         * @return the position, in {@link CartesianCoordinates}, of the current pair.
+         */
+        public CartesianCoordinates position() {
+            return position;
+        }
+
+        /**
+         * @return the {@link CelestialObject} that is wrapped by this pair.
+         */
+        public CelestialObject object() {
+            return object;
         }
     }
 
@@ -195,15 +205,19 @@ public class ObservedSky {
     /**
      * @param o the object to locate
      * @return the position in {@link HorizontalCoordinates} of the provided {@link CelestialObject}
-     * on the current sky.
-     * <p>
-     * TODO
+     * on the current sky. Returns {@code null} if the provided objects is not in the list of objects.
      */
     public HorizontalCoordinates locate(CelestialObject o) {
         if (o instanceof Star) {
             final int index = ((Star) o).listIndex();
             return projection.inverseApply(CartesianCoordinates.of(starPositions[2 * index], starPositions[2 * index + 1]));
         } else {
+            final List<CelestialPair> others = allObjects.subList(starPositions.length / 2, allObjects.size());
+            for (CelestialPair other : others) {
+                if (other.object == o) {
+                    return projection.inverseApply(other.position);
+                }
+            }
             return null;
         }
     }
