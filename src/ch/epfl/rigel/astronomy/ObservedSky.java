@@ -41,6 +41,7 @@ public class ObservedSky {
 
     private final List<CelestialPair> allObjects;
 
+    private final StereographicProjection projection;
     private final StarCatalogue catalogue;
 
     private final Sun sun;
@@ -67,6 +68,7 @@ public class ObservedSky {
      */
     public ObservedSky(ZonedDateTime moment, GeographicCoordinates observer, StereographicProjection projection, StarCatalogue catalogue) {
         this.catalogue = catalogue;
+        this.projection = projection;
         // -1 to exclude Earth, and +2 for the sun and the moon
         allObjects = new ArrayList<>(catalogue.stars().size() + (PlanetModel.ALL.size() - 1) + 2);
         // the conversion used for the current situation
@@ -188,6 +190,22 @@ public class ObservedSky {
      */
     public List<Integer> asterismIndices(Asterism asterism) {
         return catalogue.asterismIndices(asterism);
+    }
+
+    /**
+     * @param o the object to locate
+     * @return the position in {@link HorizontalCoordinates} of the provided {@link CelestialObject}
+     * on the current sky.
+     *
+     * TODO
+     */
+    public HorizontalCoordinates locate(CelestialObject o) {
+        if (o instanceof Star) {
+            final int index = ((Star) o).listIndex();
+            return projection.inverseApply(CartesianCoordinates.of(starPositions[2 * index], starPositions[2 * index + 1]));
+        } else {
+            return null;
+        }
     }
 
     /**

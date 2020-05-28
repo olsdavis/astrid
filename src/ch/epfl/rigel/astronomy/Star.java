@@ -20,8 +20,18 @@ public final class Star extends CelestialObject {
      */
     private static final Interval COLOR_INTERVAL = ClosedInterval.of(-0.5d, 5.5d);
 
+    private final int listIndex; // the index in the list of stars
     private final int hipparcosId;
     private final int colorTemperature;
+
+    /**
+     * @deprecated Warning: this constructor is used for legacy code only that does
+     * not require the indices (i.e. tests).
+     */
+    @Deprecated
+    public Star(int hipparcosId, String name, EquatorialCoordinates equatorialPos, float magnitude, float colorIndex) {
+        this(hipparcosId, name, equatorialPos, magnitude, colorIndex, 0);
+    }
 
     /**
      * @param hipparcosId   the Hipparcos identification code
@@ -29,10 +39,11 @@ public final class Star extends CelestialObject {
      * @param equatorialPos the position represented by EquatorialCoordinates
      * @param magnitude     the magnitude
      * @param colorIndex    the color index
+     * @param listIndex     the index of the star in the list of the StarCatalogue
      * @throws IllegalArgumentException if {@code hipparcosId} is negative
      * @throws IllegalArgumentException if {@code colorIndex} is not between -0.5 and 5.5, inclusive.
      */
-    public Star(int hipparcosId, String name, EquatorialCoordinates equatorialPos, float magnitude, float colorIndex) {
+    public Star(int hipparcosId, String name, EquatorialCoordinates equatorialPos, float magnitude, float colorIndex, int listIndex) {
         super(name, equatorialPos, 0, magnitude);
         checkArgument(hipparcosId >= 0);
         // Here, we do not write: this.colorIndex = checkInInterval(...)
@@ -40,6 +51,7 @@ public final class Star extends CelestialObject {
         checkInInterval(COLOR_INTERVAL, colorIndex);
         this.hipparcosId = hipparcosId;
         colorTemperature = (int) (4600 * (1 / (0.92d * colorIndex + 1.7d) + 1 / (0.92d * colorIndex + 0.62d)));
+        this.listIndex = listIndex;
     }
 
     /**
@@ -56,5 +68,12 @@ public final class Star extends CelestialObject {
      */
     public int colorTemperature() {
         return colorTemperature;
+    }
+
+    /**
+     * @return the index of the star in the list of the StarCatalogue.
+     */
+    public int listIndex() {
+        return listIndex;
     }
 }

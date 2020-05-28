@@ -2,6 +2,7 @@ package ch.epfl.rigel.gui;
 
 import ch.epfl.rigel.astronomy.CelestialObject;
 import ch.epfl.rigel.astronomy.ObservedSky;
+import ch.epfl.rigel.astronomy.Star;
 import ch.epfl.rigel.astronomy.StarCatalogue;
 import ch.epfl.rigel.coordinates.CartesianCoordinates;
 import ch.epfl.rigel.coordinates.HorizontalCoordinates;
@@ -67,6 +68,8 @@ public class SkyCanvasManager {
     // the following values are stored into floats
     private final SimpleObjectProperty<Point2D> mousePosition = new SimpleObjectProperty<>(new Point2D(0, 0));
 
+    private final ViewingParametersBean viewingParameters;
+
     private final ObservableObjectValue<CelestialObject> objectUnderMouse;
     private final ObservableObjectValue<StereographicProjection> projection;
     private final ObservableObjectValue<ObservedSky> observedSky;
@@ -93,7 +96,7 @@ public class SkyCanvasManager {
         Objects.requireNonNull(catalogue);
         Objects.requireNonNull(dateTime);
         Objects.requireNonNull(observerLocation);
-        Objects.requireNonNull(viewingParameters);
+        this.viewingParameters = Objects.requireNonNull(viewingParameters);
 
         projection = Bindings.createObjectBinding(
                 () -> new StereographicProjection(viewingParameters.getCenter()),
@@ -269,6 +272,25 @@ public class SkyCanvasManager {
      */
     public ObservableDoubleValue mouseAltitudeProperty() {
         return mouseAltitude;
+    }
+
+    /**
+     * Sets the projection center to the provided {@link CelestialObject}
+     * if it is in the current bounds of the view. Returns {@code true}
+     * if the operation succeeded. (The failure means that the object isn't
+     * currently visible.)
+     *
+     * @param o the {@link CelestialObject} to focus on
+     */
+    public boolean focus(CelestialObject o) {
+        final HorizontalCoordinates coordinates = observedSky.get().locate(o);
+        if (AZ_LIM.contains(coordinates.azDeg()) && ALT_LIM.contains(coordinates.altDeg())) {
+            viewingParameters.setCenter(coordinates);
+            return true;
+        }
+
+        // not in bounds
+        return false;
     }
 
 }

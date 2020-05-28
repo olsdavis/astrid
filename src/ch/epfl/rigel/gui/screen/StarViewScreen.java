@@ -13,6 +13,7 @@ import javafx.collections.FXCollections;
 import javafx.geometry.Orientation;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -379,6 +380,7 @@ public final class StarViewScreen implements Screen {
         // but we changed this to a C-style for loop to easily add
         // vertical separators
         final List<Node> starComponents = new ArrayList<>(2 * stars.size() - 1);
+        // generate all components
         for (int i = 0; i < stars.size(); i++) {
             final Star s = stars.get(i);
             final VBox card = new VBox();
@@ -386,6 +388,18 @@ public final class StarViewScreen implements Screen {
             // setup target button
             final Button targetButton = new Button(TARGET_CHARACTER);
             targetButton.setFont(BUTTONS_FONT);
+            targetButton.setOnMouseClicked(e -> {
+                if (e.getButton() == MouseButton.PRIMARY) {
+                    if (!manager.focus(s)) { // if the focus could not have been done
+                        final Alert alert = new Alert(Alert.AlertType.ERROR,
+                                "L'étoile n'est pas actuellement visible !");
+                        alert.setTitle("Rigel");
+                        alert.setHeaderText("Erreur :");
+                        alert.show();
+                        // TODO: highlight the object
+                    }
+                }
+            });
             // setup add to favorites button
             final Button favoriteButton = new Button(FAVORITES_CHARACTER);
             favoriteButton.setFont(BUTTONS_FONT);

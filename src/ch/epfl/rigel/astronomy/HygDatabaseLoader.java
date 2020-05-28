@@ -68,6 +68,7 @@ public enum HygDatabaseLoader implements StarCatalogue.Loader {
             String str;
             // skip the first line, since it provides the names of the columns
             reader.readLine();
+            int index = 0;
             while ((str = reader.readLine()) != null && !str.equals("")) {
                 final String[] dataLine = str.split(",");
                 final String properName = dataLine[PROPER].isBlank()
@@ -84,7 +85,8 @@ public enum HygDatabaseLoader implements StarCatalogue.Loader {
                         // magnitude
                         (dataLine[MAG].isBlank() ? 0f : (float) Double.parseDouble(dataLine[MAG])),
                         // color index
-                        (dataLine[CI].isBlank() ? 0f : (float) Double.parseDouble(dataLine[CI]))
+                        (dataLine[CI].isBlank() ? 0f : (float) Double.parseDouble(dataLine[CI])),
+                        index++
                 ));
             }
         }
