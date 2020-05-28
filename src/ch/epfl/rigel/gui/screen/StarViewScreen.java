@@ -422,12 +422,15 @@ public final class StarViewScreen implements Screen {
             // setup add to favorites button
             final Button favoriteButton = new Button(FAVORITES_CHARACTER);
             favoriteButton.setFont(BUTTONS_FONT);
+            favoriteButton.setOnMouseClicked(e -> {
+            });
             // add the text info
             firstLine.setLeft(Texts.parse("*Nom de l'objet* : " + s.name()));
             firstLine.setRight(new HBox(targetButton, favoriteButton));
             card.getChildren().addAll(firstLine, Texts.parse("*Identifiant Hipparcos* : " + s.hipparcosId()));
             card.getStyleClass().add("sidebar-star-card");
             starComponents.add(card);
+            // do not add a separator after the last item
             if (i != stars.size() - 1) {
                 final Separator sep = new Separator(Orientation.HORIZONTAL);
                 sep.prefWidthProperty().bind(menu.widthProperty());

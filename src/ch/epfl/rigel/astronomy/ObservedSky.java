@@ -31,7 +31,7 @@ public class ObservedSky {
 
         /**
          * @param position the position of the object
-         * @param object the CelestialObject data
+         * @param object   the CelestialObject data
          */
         CelestialPair(CartesianCoordinates position, CelestialObject object) {
             this.position = position;
@@ -100,9 +100,9 @@ public class ObservedSky {
     /**
      * Sets up the coordinates of the provided objects in the provided array.
      *
-     * @param objects    the objects
-     * @param positions  the positions to fill in
-     * @param proj the projection to use
+     * @param objects   the objects
+     * @param positions the positions to fill in
+     * @param proj      the projection to use
      */
     private void setupCoordinates(List<? extends CelestialObject> objects, double[] positions,
                                   Function<EquatorialCoordinates, CartesianCoordinates> proj) {
@@ -196,7 +196,7 @@ public class ObservedSky {
      * @param o the object to locate
      * @return the position in {@link HorizontalCoordinates} of the provided {@link CelestialObject}
      * on the current sky.
-     *
+     * <p>
      * TODO
      */
     public HorizontalCoordinates locate(CelestialObject o) {
