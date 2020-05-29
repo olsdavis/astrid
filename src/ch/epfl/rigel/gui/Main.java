@@ -152,14 +152,6 @@ public class Main extends Application {
             System.exit(1); // exit with error
         }
 
-        animator.runningProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue) {
-                animator.start();
-            } else {
-                animator.stop();
-            }
-        });
-
         final BorderPane root = new BorderPane();
         manager.canvas().widthProperty().bind(root.widthProperty());
         manager.canvas().heightProperty().bind(root.heightProperty());
