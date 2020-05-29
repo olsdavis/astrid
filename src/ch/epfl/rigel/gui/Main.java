@@ -307,7 +307,7 @@ public class Main extends Application {
         final NumberStringConverter stringConverter = new NumberStringConverter("#0.00");
 
         // longitude
-        final UnaryOperator<TextFormatter.Change> lonFilter = coordinatesFilter(GeographicCoordinates::isValidLatDeg,
+        final UnaryOperator<TextFormatter.Change> lonFilter = coordinatesFilter(GeographicCoordinates::isValidLonDeg,
                 stringConverter);
         final TextFormatter<Number> lonTextFormatter =
                 new TextFormatter<>(stringConverter, DEFAULT_LON, lonFilter);
