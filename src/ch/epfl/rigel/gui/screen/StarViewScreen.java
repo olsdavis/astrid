@@ -9,7 +9,6 @@ import ch.epfl.rigel.coordinates.HorizontalCoordinates;
 import ch.epfl.rigel.gui.*;
 import ch.epfl.rigel.util.Fonts;
 import ch.epfl.rigel.util.Texts;
-import javafx.animation.TranslateTransition;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
@@ -23,7 +22,6 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import javafx.util.Duration;
 import javafx.util.converter.LocalTimeStringConverter;
 import javafx.util.converter.NumberStringConverter;
 
@@ -139,7 +137,6 @@ public final class StarViewScreen implements Screen {
         };
     }
 
-    private final StarCatalogue catalogue;
     private final ObserverLocationBean position = new ObserverLocationBean();
     private final DateTimeBean date = new DateTimeBean();
     private final ViewingParametersBean viewingParameters = new ViewingParametersBean();
@@ -154,7 +151,6 @@ public final class StarViewScreen implements Screen {
      * @param catalogue the catalogue of stars to display.
      */
     public StarViewScreen(StarCatalogue catalogue) {
-        this.catalogue = catalogue;
         // initialize beans
         position.setCoordinates(INIT_COORDINATES);
         date.setZonedDateTime(ZonedDateTime.now());
