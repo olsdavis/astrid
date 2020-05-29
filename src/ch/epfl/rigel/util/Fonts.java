@@ -15,6 +15,8 @@ import java.io.UncheckedIOException;
  */
 public final class Fonts {
 
+    public static final Font BUTTONS_FONT = Fonts.loadUnsafe("/Font Awesome 5 Free-Solid-900.otf", 15d);
+
     /**
      * Loads "unsafely" the font from the resources folder. This is useful for
      * resources since they must be present, and the operation almost certainly

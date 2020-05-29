@@ -220,7 +220,7 @@ public class ObservedSky {
             for (CelestialPair other : others) {
                 // this relies on the fact that objects different from stars
                 // have unique names
-                if (other.object.name().equals(o.name())) {
+                if (other.object.equals(o)) {
                     return projection.inverseApply(other.position);
                 }
             }

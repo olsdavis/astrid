@@ -7,7 +7,6 @@ import ch.epfl.rigel.astronomy.StarCatalogue;
 import ch.epfl.rigel.coordinates.GeographicCoordinates;
 import ch.epfl.rigel.coordinates.HorizontalCoordinates;
 import ch.epfl.rigel.gui.*;
-import ch.epfl.rigel.util.Fonts;
 import ch.epfl.rigel.util.Texts;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleObjectProperty;
@@ -20,7 +19,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.util.converter.LocalTimeStringConverter;
 import javafx.util.converter.NumberStringConverter;
@@ -37,6 +35,8 @@ import java.util.function.Function;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
+import static ch.epfl.rigel.util.Fonts.*;
+
 /**
  * Represents the screen where the user can see/simulate the sky
  * (the core of the program).
@@ -47,10 +47,6 @@ import java.util.stream.Collectors;
  */
 public final class StarViewScreen implements Screen {
 
-    /**
-     * Holds the font used for buttons, such as the resume/pause button.
-     */
-    private static final Font BUTTONS_FONT;
     /**
      * Holds the character used in the BUTTONS_FONT font for the play button of the animator.
      */
@@ -109,10 +105,6 @@ public final class StarViewScreen implements Screen {
      * Holds the number of elements per page when using the search tab.
      */
     private static final int ELEMENTS_PER_PAGE = 20;
-
-    static {
-        BUTTONS_FONT = Fonts.loadUnsafe("/Font Awesome 5 Free-Solid-900.otf", 15d);
-    }
 
     /**
      * @param checker   a function that returns {@code true} if the passed argument (a double)
