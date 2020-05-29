@@ -134,6 +134,7 @@ public final class StarViewScreen implements Screen {
     private final ViewingParametersBean viewingParameters = new ViewingParametersBean();
     private final TimeAnimator animator = new TimeAnimator(date);
     private final SkyCanvasManager manager;
+    // the following list holds the objects that the user will see in his search tab
     private final SimpleObjectProperty<List<ObservedSky.CelestialPair>> searchObjects = new SimpleObjectProperty<>();
     private final BorderPane root = new BorderPane();
 
