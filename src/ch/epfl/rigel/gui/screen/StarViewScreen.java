@@ -165,14 +165,6 @@ public final class StarViewScreen implements Screen {
 
         searchObjects.set(manager.sky().all());
 
-        animator.runningProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue) {
-                animator.start();
-            } else {
-                animator.stop();
-            }
-        });
-
         manager.canvas().widthProperty().bind(root.widthProperty());
         manager.canvas().heightProperty().bind(root.heightProperty());
         final VBox sideBar = sideBar();
@@ -341,7 +333,7 @@ public final class StarViewScreen implements Screen {
         final NumberStringConverter stringConverter = new NumberStringConverter("#0.00");
 
         // longitude
-        final UnaryOperator<TextFormatter.Change> lonFilter = coordinatesFilter(GeographicCoordinates::isValidLatDeg,
+        final UnaryOperator<TextFormatter.Change> lonFilter = coordinatesFilter(GeographicCoordinates::isValidLonDeg,
                 stringConverter);
         final TextFormatter<Number> lonTextFormatter =
                 new TextFormatter<>(stringConverter, DEFAULT_LON, lonFilter);
