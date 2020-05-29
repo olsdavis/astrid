@@ -215,17 +215,17 @@ public class ObservedSky {
             return projection.inverseApply(sunProjection);
         } else if (o instanceof Moon) {
             return projection.inverseApply(moonProjection);
-        } else {
-            final List<CelestialPair> others = allObjects.subList(0, allObjects.size() - starPositions.length / 2);
-            for (CelestialPair other : others) {
-                // this relies on the fact that objects different from stars
-                // have unique names
-                if (other.object.equals(o)) {
-                    return projection.inverseApply(other.position);
-                }
-            }
-            return null;
         }
+        // this uses the exact order of the objects
+        final List<CelestialPair> others = allObjects.subList(0, allObjects.size() - starPositions.length / 2);
+        for (CelestialPair other : others) {
+            // this relies on the fact that objects different from stars
+            // have unique names
+            if (other.object.equals(o)) {
+                return projection.inverseApply(other.position);
+            }
+        }
+        return null;
     }
 
     /**

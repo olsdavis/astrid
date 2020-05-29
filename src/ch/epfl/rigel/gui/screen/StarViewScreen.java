@@ -7,6 +7,7 @@ import ch.epfl.rigel.astronomy.StarCatalogue;
 import ch.epfl.rigel.coordinates.GeographicCoordinates;
 import ch.epfl.rigel.coordinates.HorizontalCoordinates;
 import ch.epfl.rigel.gui.*;
+import ch.epfl.rigel.storage.FavoritesList;
 import ch.epfl.rigel.util.Texts;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleObjectProperty;
@@ -19,7 +20,9 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.util.converter.LocalTimeStringConverter;
 import javafx.util.converter.NumberStringConverter;
 
@@ -35,7 +38,7 @@ import java.util.function.Function;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
-import static ch.epfl.rigel.util.Fonts.*;
+import static ch.epfl.rigel.util.Fonts.BUTTONS_FONT;
 
 /**
  * Represents the screen where the user can see/simulate the sky
@@ -136,14 +139,17 @@ public final class StarViewScreen implements Screen {
     private final SkyCanvasManager manager;
     // the following list holds the objects that the user will see in his search tab
     private final SimpleObjectProperty<List<ObservedSky.CelestialPair>> searchObjects = new SimpleObjectProperty<>();
+    private final FavoritesList favoritesList;
     private final BorderPane root = new BorderPane();
 
     /**
      * Initializes the "star view" screen --- the core of the program.
      *
-     * @param catalogue the catalogue of stars to display.
+     * @param catalogue     the catalogue of stars to display.
+     * @param favoritesList the list of favorites ({@code null} if it could not have been initialized)
      */
-    public StarViewScreen(StarCatalogue catalogue) {
+    public StarViewScreen(StarCatalogue catalogue, FavoritesList favoritesList) {
+        this.favoritesList = favoritesList;
         // initialize beans
         position.setCoordinates(INIT_COORDINATES);
         date.setZonedDateTime(ZonedDateTime.now());
@@ -392,7 +398,7 @@ public final class StarViewScreen implements Screen {
         menu.setTranslateX(SIDEBAR_WIDTH);
 
         // finally, add everything
-        final TabPane tabPane = new TabPane(searchTab(menu), favoritesTab());
+        final TabPane tabPane = new TabPane(searchTab(menu), favoritesTab(menu));
         menu.getChildren().add(tabPane);
 
         return menu;
@@ -419,59 +425,12 @@ public final class StarViewScreen implements Screen {
         );
         pagination.pageFactoryProperty().bind(
                 Bindings.createObjectBinding(() -> (index) -> {
-                            if (searchObjects.get().isEmpty()) {
-                                return new Text("Aucun résultat");
-                            }
-                            final List<ObservedSky.CelestialPair> stars = searchObjects.get().subList(index * ELEMENTS_PER_PAGE,
-                                    Math.min((index + 1) * ELEMENTS_PER_PAGE, searchObjects.get().size()));
-                            // this was first done with a map() call, React-like style,
-                            // but we changed this to a C-style for loop to easily add
-                            // vertical separators
-                            final List<Node> starComponents = new ArrayList<>(2 * stars.size() - 1);
-                            // generate all components
-                            for (int i = 0; i < stars.size(); ++i) {
-                                final ObservedSky.CelestialPair s = stars.get(i);
-                                final VBox card = new VBox();
-                                final BorderPane firstLine = new BorderPane();
-                                // setup target button
-                                final Button targetButton = new Button(TARGET_CHARACTER);
-                                targetButton.setFont(BUTTONS_FONT);
-                                targetButton.setOnMouseClicked(e -> {
-                                    if (e.getButton() == MouseButton.PRIMARY) {
-                                        manager.focus(s.object());
-                                    }
-                                });
-                                // setup add to favorites button
-                                final Button favoriteButton = new Button(FAVORITES_CHARACTER);
-                                favoriteButton.setFont(BUTTONS_FONT);
-                                favoriteButton.setOnMouseClicked(e -> {
-                                    // TODO: add to favorites
-                                });
-                                // add the text info
-                                firstLine.setLeft(Texts.parse("*Nom de l'objet* : " + s.object().name()));
-                                firstLine.setRight(new HBox(targetButton, favoriteButton));
-                                card.getChildren().add(firstLine);
-                                if (s.object() instanceof Star) {
-                                    card.getChildren().add(Texts.parse("*Identifiant Hipparcos* : " +
-                                            ((Star) s.object()).hipparcosId()));
-                                }
-                                card.getStyleClass().add("sideBar-star-card");
-                                starComponents.add(card);
-                                // do not add a separator after the last item
-                                if (i != stars.size() - 1) {
-                                    final Separator sep = new Separator(Orientation.HORIZONTAL);
-                                    sep.prefWidthProperty().bind(menu.widthProperty());
-                                    starComponents.add(sep);
-                                }
-                            }
-                            final VBox elements = new VBox();
-                            elements.getChildren().addAll(starComponents);
-                            elements.setStyle("-fx-padding: 10px 0 0 0;");
-                            final ScrollPane pane = new ScrollPane(elements);
-                            pane.setFitToWidth(true);
-                            return pane;
-                        },
-                        searchObjects)
+                    if (searchObjects.get().isEmpty()) {
+                        return new Text("Aucun résultat");
+                    }
+                    return makeListContent(searchObjects.get().subList(index * ELEMENTS_PER_PAGE,
+                            Math.min((index + 1) * ELEMENTS_PER_PAGE, searchObjects.get().size())), menu);
+                }, searchObjects)
         );
 
         final TextField search = new TextField();
@@ -502,7 +461,7 @@ public final class StarViewScreen implements Screen {
     /**
      * @return the tab containing the favorite elements of the user.
      */
-    private Tab favoritesTab() {
+    private Tab favoritesTab(VBox menu) {
         // generate favorites tab
         final Tab favoritesTab = new Tab();
         favoritesTab.getStyleClass().add("sideBar-tab");
@@ -510,7 +469,90 @@ public final class StarViewScreen implements Screen {
         final Text favoritesTabTitle = new Text(FAVORITES_CHARACTER);
         favoritesTabTitle.setFont(BUTTONS_FONT);
         favoritesTab.setGraphic(favoritesTabTitle);
+
+        final ScrollPane pane = new ScrollPane();
+        pane.contentProperty().bind(
+                Bindings.createObjectBinding(() -> {
+                    if (favoritesList.isEmpty()) {
+                        final Text text = new Text("Aucun favori.\n Cliquez sur un coeur à côté d'un objet pour l'ajouter.");
+                        text.setTextAlignment(TextAlignment.CENTER);
+                        return text;
+                    }
+                    return new VBox(); // TODO
+//                    return makeListContent(favoritesList.favoritesProperty()
+//                            .stream()
+//                            .map(c -> )
+//                            .collect(Collectors.toUnmodifiableList()), menu);
+                }, favoritesList.favoritesProperty())
+        );
+
+        favoritesTab.setContent(pane);
+
         return favoritesTab;
+    }
+
+    /**
+     * @param stars the collection to display
+     * @param menu  the menu that will holds this data
+     * @return a list describing all the provided content.
+     */
+    private ScrollPane makeListContent(List<ObservedSky.CelestialPair> stars, VBox menu) {
+        // this was first done with a map() call, React-like style,
+        // but we changed this to a C-style for loop to easily add
+        // vertical separators
+        final List<Node> starComponents = new ArrayList<>(2 * stars.size() - 1);
+        // generate all components
+        for (int i = 0; i < stars.size(); ++i) {
+            final ObservedSky.CelestialPair s = stars.get(i);
+            final VBox card = new VBox();
+            final BorderPane firstLine = new BorderPane();
+            // setup target button
+            final Button targetButton = new Button(TARGET_CHARACTER);
+            targetButton.setFont(BUTTONS_FONT);
+            targetButton.setOnMouseClicked(e -> {
+                if (e.getButton() == MouseButton.PRIMARY) {
+                    manager.focus(s);
+                }
+            });
+            // setup add to favorites button
+            final Button favoriteButton = new Button(FAVORITES_CHARACTER);
+            if (favoritesList.contains(s.object())) {
+                favoriteButton.setTextFill(Color.RED);
+            }
+            favoriteButton.setFont(BUTTONS_FONT);
+            favoriteButton.setOnMouseClicked(e -> {
+                if (favoritesList.contains(s.object())) {
+                    favoritesList.remove(s.object());
+                    favoriteButton.setTextFill(Color.BLACK);
+                } else {
+                    favoritesList.add(s.object());
+                    favoriteButton.setTextFill(Color.RED);
+                }
+            });
+            // add the text info
+            firstLine.setLeft(Texts.parse("*Nom de l'objet* : " + s.object().name()));
+            firstLine.setRight(new HBox(targetButton, favoriteButton));
+            card.getChildren().add(firstLine);
+            if (s.object() instanceof Star) {
+                card.getChildren().add(Texts.parse("*Identifiant Hipparcos* : " +
+                        ((Star) s.object()).hipparcosId()));
+            }
+            card.getChildren().add(Texts.parse("*Position* (équatoriale) : " + s.object().equatorialPos()));
+            card.getStyleClass().add("sideBar-star-card");
+            starComponents.add(card);
+            // do not add a separator after the last item
+            if (i != stars.size() - 1) {
+                final Separator sep = new Separator(Orientation.HORIZONTAL);
+                sep.prefWidthProperty().bind(menu.widthProperty());
+                starComponents.add(sep);
+            }
+        }
+        final VBox elements = new VBox();
+        elements.getChildren().addAll(starComponents);
+        elements.setStyle("-fx-padding: 10px 0 0 0;");
+        final ScrollPane pane = new ScrollPane(elements);
+        pane.setFitToWidth(true);
+        return pane;
     }
 
 }

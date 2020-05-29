@@ -7,9 +7,11 @@ import ch.epfl.rigel.gui.screen.MainScreen;
 import ch.epfl.rigel.gui.screen.ScreenController;
 import ch.epfl.rigel.gui.screen.ScreenNames;
 import ch.epfl.rigel.gui.screen.StarViewScreen;
+import ch.epfl.rigel.storage.FavoritesList;
 import javafx.application.Application;
 import javafx.beans.binding.Bindings;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
@@ -30,8 +32,6 @@ public class Main extends Application {
         launch(args);
     }
 
-    private StarCatalogue catalogue;
-
     @Override
     public void start(Stage primaryStage) {
         primaryStage.setTitle("Rigel");
@@ -40,6 +40,7 @@ public class Main extends Application {
         primaryStage.setWidth(1000);
         primaryStage.setHeight(750);
 
+        StarCatalogue catalogue = null;
         // initialize catalogue
         try (final InputStream hs = getClass().getResourceAsStream("/hygdata_v3.csv");
              final InputStream as = getClass().getResourceAsStream("/asterisms.txt")) {
@@ -53,9 +54,17 @@ public class Main extends Application {
             System.exit(1); // exit with error
         }
 
+        FavoritesList list = null;
+        try {
+            list = new FavoritesList();
+        } catch (Exception e) {
+            new Alert(Alert.AlertType.WARNING, "Le fichier des favoris n'a pu être lu." +
+                    " Les modifications que vous apporterez ne seront pas sauvegardées.").show();
+        }
+
         final ScreenController controller = new ScreenController();
         controller.addScreen(new MainScreen(controller));
-        controller.addScreen(new StarViewScreen(catalogue));
+        controller.addScreen(new StarViewScreen(catalogue, list));
 
         // set to main screen
         controller.changeScreen(ScreenNames.MAIN_SCREEN);

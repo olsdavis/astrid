@@ -64,6 +64,13 @@ public abstract class CelestialObject {
     }
 
     /**
+     * @return a unique Object that should represent the current CelestialObject.
+     */
+    public Object identifier() {
+        return name();
+    }
+
+    /**
      * @return information about the CelestialObject.
      */
     public String info() {

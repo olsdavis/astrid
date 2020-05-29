@@ -28,7 +28,6 @@ public final class FileUtil {
         Objects.requireNonNull(object);
         Preconditions.checkArgument(!Objects.requireNonNull(path).isBlank());
 
-
         final File file = initFile(path, override, false, true);
         if (file == null) {
             return; // this means that the file was not to override

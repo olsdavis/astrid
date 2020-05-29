@@ -77,6 +77,12 @@ public final class Star extends CelestialObject {
         return listIndex;
     }
 
+
+    @Override
+    public Object identifier() {
+        return hipparcosId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof Star)) {

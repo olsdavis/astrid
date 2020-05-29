@@ -86,7 +86,6 @@ public class SkyCanvasManager {
      * @param dateTime          the date time of the observation
      * @param observerLocation  observer's location
      * @param viewingParameters the viewing parameters of the user
-     *
      * @throws NullPointerException if one of the parameters is {@code null}
      */
     public SkyCanvasManager(StarCatalogue catalogue, DateTimeBean dateTime,
@@ -277,18 +276,19 @@ public class SkyCanvasManager {
      * Sets the projection center to the provided {@link CelestialObject}
      * if it is in the current bounds of the view; if it is not, it approaches
      * the object as good as it can.
-     *
+     * <p>
      * TODO: hallo/flare
      *
-     * @param o the {@link CelestialObject} to focus on
+     * @param o the {@link ObservedSky.CelestialPair} to focus on
      */
-    public void focus(CelestialObject o) {
-        final HorizontalCoordinates coordinates = observedSky.get().locate(o);
-            viewingParameters.setCenter(HorizontalCoordinates.ofDeg(
-                    AZ_LIM.reduce(coordinates.azDeg()),
-                    ALT_LIM.clip(coordinates.altDeg())
+    public void focus(ObservedSky.CelestialPair o) {
+        final HorizontalCoordinates inv = projection.get().inverseApply(o.position());
+        viewingParameters.setCenter(
+                HorizontalCoordinates.ofDeg(
+                        AZ_LIM.reduce(inv.azDeg()),
+                        ALT_LIM.clip(inv.altDeg())
                 )
-            );
+        );
     }
 
     /**
