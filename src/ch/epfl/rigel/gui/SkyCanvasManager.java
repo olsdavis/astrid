@@ -279,14 +279,14 @@ public class SkyCanvasManager {
      * <p>
      * TODO: hallo/flare
      *
-     * @param o the {@link ObservedSky.CelestialPair} to focus on
+     * @param o the {@link CelestialObject} to focus on
      */
-    public void focus(ObservedSky.CelestialPair o) {
-        final HorizontalCoordinates inv = projection.get().inverseApply(o.position());
+    public void focus(CelestialObject o) {
+        final HorizontalCoordinates pos = observedSky.get().locate(o);
         viewingParameters.setCenter(
                 HorizontalCoordinates.ofDeg(
-                        AZ_LIM.reduce(inv.azDeg()),
-                        ALT_LIM.clip(inv.altDeg())
+                        AZ_LIM.reduce(pos.azDeg()),
+                        ALT_LIM.clip(pos.altDeg())
                 )
         );
     }

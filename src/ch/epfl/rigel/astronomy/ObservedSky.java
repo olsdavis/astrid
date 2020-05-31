@@ -206,26 +206,33 @@ public class ObservedSky {
      * @param o the object to locate
      * @return the position in {@link HorizontalCoordinates} of the provided {@link CelestialObject}
      * on the current sky. Returns {@code null} if the provided objects is not in the list of objects.
+     * @throws NullPointerException if {@code o} is {@code null}
      */
     public HorizontalCoordinates locate(CelestialObject o) {
-        if (o instanceof Star) {
-            final int index = ((Star) o).listIndex();
-            return projection.inverseApply(CartesianCoordinates.of(starPositions[2 * index], starPositions[2 * index + 1]));
-        } else if (o instanceof Sun) {
-            return projection.inverseApply(sunProjection);
-        } else if (o instanceof Moon) {
-            return projection.inverseApply(moonProjection);
+        switch (Objects.requireNonNull(o).getType()) {
+            case SUN:
+                return projection.inverseApply(sunProjection);
+            case MOON:
+                return projection.inverseApply(moonProjection);
+            case STAR:
+                final int listIndex = ((Star) o).listIndex(); //TODO: remove list index
+                return projection.inverseApply(
+                        CartesianCoordinates.of(starPositions[2 * listIndex], starPositions[2 * listIndex +  1])
+                );
+            case PLANET:
+                int index = 0;
+                for (int i = 0; i < planets.size(); i++) {
+                    final Planet planet = planets.get(i);
+                    if (planet.name().equals(o.name())) {
+                        index = i;
+                        break;
+                    }
+                }
+                return projection.inverseApply(
+                        CartesianCoordinates.of(planetPositions[2 * index], planetPositions[2 * index + 1])
+                );
         }
-        // this uses the exact order of the objects
-        final List<CelestialPair> others = allObjects.subList(0, allObjects.size() - starPositions.length / 2);
-        for (CelestialPair other : others) {
-            // this relies on the fact that objects different from stars
-            // have unique names
-            if (other.object.equals(o)) {
-                return projection.inverseApply(other.position);
-            }
-        }
-        return null;
+        return null; // unreachable statement, all the cases have been covered
     }
 
     /**

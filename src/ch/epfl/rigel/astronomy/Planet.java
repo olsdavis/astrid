@@ -23,15 +23,8 @@ public final class Planet extends CelestialObject {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (!(obj instanceof Planet)) {
-            return false;
-        }
-
-        final Planet planet = (Planet) obj;
-        // this uses the assumption that there is only one instance of each planet that is used, per
-        // per moment of observation
-        return planet.name().equals(name());
+    public Type getType() {
+        return Type.PLANET;
     }
 
 }

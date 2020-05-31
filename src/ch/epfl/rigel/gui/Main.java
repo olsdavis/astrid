@@ -28,6 +28,26 @@ import java.util.logging.Logger;
  */
 public class Main extends Application {
 
+    private static final class SaveProcedure implements Runnable {
+        private final FavoritesList list;
+
+        /**
+         * @param list the list to save
+         */
+        SaveProcedure(FavoritesList list) {
+            this.list = list;
+        }
+
+        @Override
+        public void run() {
+            try {
+                list.save();
+            } catch (Exception e) {
+                Logger.getLogger("Rigel").log(Level.SEVERE, "Could not save favorites list, stack trace:", e);
+            }
+        }
+    }
+
     public static void main(String[] args) {
         launch(args);
     }
@@ -57,6 +77,8 @@ public class Main extends Application {
         FavoritesList list = null;
         try {
             list = new FavoritesList();
+            //TODO: handle when not achieved, with an empty favorites list
+            // move file path constant to here
         } catch (Exception e) {
             new Alert(Alert.AlertType.WARNING, "Le fichier des favoris n'a pu être lu." +
                     " Les modifications que vous apporterez ne seront pas sauvegardées.").show();
@@ -77,6 +99,11 @@ public class Main extends Application {
         scene.getStylesheets().add(getClass().getResource("/app.css").toExternalForm());
         primaryStage.setScene(scene);
         primaryStage.show();
+
+        if (list != null) {
+            final SaveProcedure save = new SaveProcedure(list);
+            primaryStage.setOnCloseRequest(event -> save.run());
+        }
     }
 
 }

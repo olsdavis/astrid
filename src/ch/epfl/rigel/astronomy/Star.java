@@ -77,27 +77,9 @@ public final class Star extends CelestialObject {
         return listIndex;
     }
 
-
     @Override
-    public Object identifier() {
-        return hipparcosId;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (!(o instanceof Star)) {
-            return false;
-        }
-
-        final Star star = (Star) o;
-        // this uses the assumption that there is only one instance of each star that is used, per
-        // per moment of observation
-        return star.hipparcosId == hipparcosId && star.listIndex == listIndex;
-    }
-
-    @Override
-    public int hashCode() {
-        return (31 * listIndex) + hipparcosId;
+    public Type getType() {
+        return Type.STAR;
     }
 
 }

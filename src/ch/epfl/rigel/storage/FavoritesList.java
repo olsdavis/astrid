@@ -1,6 +1,7 @@
 package ch.epfl.rigel.storage;
 
-import ch.epfl.rigel.astronomy.*;
+import ch.epfl.rigel.astronomy.CelestialObject;
+import ch.epfl.rigel.astronomy.Star;
 import ch.epfl.rigel.util.FileUtil;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
@@ -21,11 +22,39 @@ import java.util.Objects;
  */
 public class FavoritesList implements Serializable {
 
+    /*
+    The way we chose to store the data is somewhat unclean, but
+    it was a pretty practical solution to not conflict with the code
+    base we already had.
+     */
+
     private static final String FAVORITES_PATH = "rigel/favorites.data";
+
+    /**
+     * @param object the object to identify
+     * @return an Object that allows to differentiate a CelestialObject of a certain type
+     * from the other objects of the same type. Returns {@code null} in the case of {@link ch.epfl.rigel.astronomy.Sun}
+     * an {@link ch.epfl.rigel.astronomy.Moon}, since there is only a single instance of them
+     * per {@link ch.epfl.rigel.astronomy.ObservedSky}. In the case of a {@link ch.epfl.rigel.astronomy.Planet},
+     * the code returns its name. In the case of a {@link Star}, it returns its hipparcos (unique) ID.
+     */
+    private static Serializable identify(CelestialObject object) {
+        //TODO: note that the Hipparcos ID is not unique for zero,
+        // Neither is the name (for the same hipparcos)
+        // So we need to add the ID, name and position
+        switch (object.getType()) {
+            case STAR:
+                return ((Star) object).hipparcosId();
+            case PLANET:
+                return object.name();
+            default:
+                return null;
+        }
+    }
 
     // here we declare the collection as a HashSet (instead of Set), because we need the fact
     // that it is Serializable
-    private final ObservableSet<Object> identifiers;
+    private final ObservableSet<FavoriteItem<?>> identifiers;
 
     /**
      * Reads the data from the favorites file, if it exists. Otherwise,
@@ -35,12 +64,12 @@ public class FavoritesList implements Serializable {
      */
     @SuppressWarnings("unchecked")
     public FavoritesList() throws IOException {
-        // the objects we get are not generic, so we allow ourselves
-        // here to make this unchecked cast, that is safe as long
-        // as we know the contents of our file
         final File file = new File(FAVORITES_PATH);
         if (file.exists()) {
-            identifiers = FXCollections.observableSet(FileUtil.read(HashSet.class, FAVORITES_PATH));
+            // the objects we get are not generic, so we allow ourselves
+            // here to make this unchecked cast, that is safe given that
+            // we know the contents of our file
+            identifiers = FXCollections.observableSet(FileUtil.readObject(HashSet.class, FAVORITES_PATH));
         } else {
             identifiers = FXCollections.observableSet();
         }
@@ -53,7 +82,7 @@ public class FavoritesList implements Serializable {
      * @throws NullPointerException if the provided Object is null
      */
     public void add(CelestialObject object) {
-        identifiers.add(identifier(Objects.requireNonNull(object)));
+        identifiers.add(new FavoriteItem<>(Objects.requireNonNull(object).getType(), identify(object)));
     }
 
     /**
@@ -63,7 +92,7 @@ public class FavoritesList implements Serializable {
      * @throws NullPointerException if the provided Object is null
      */
     public void remove(CelestialObject object) {
-        identifiers.remove(identifier(Objects.requireNonNull(object)));
+        identifiers.remove(new FavoriteItem<>(Objects.requireNonNull(object).getType(), identify(object)));
     }
 
     /**
@@ -72,13 +101,13 @@ public class FavoritesList implements Serializable {
      * @throws NullPointerException if the provided Object is null
      */
     public boolean contains(CelestialObject object) {
-        return identifiers.contains(identifier(Objects.requireNonNull(object)));
+        return identifiers.contains(new FavoriteItem<>(Objects.requireNonNull(object).getType(), identify(object)));
     }
 
     /**
      * @return a property containing the favorites with read-only access.
      */
-    public ObservableSet<Object> favoritesProperty() {
+    public ObservableSet<FavoriteItem<?>> favoritesProperty() {
         return FXCollections.unmodifiableObservableSet(identifiers);
     }
 
@@ -90,29 +119,12 @@ public class FavoritesList implements Serializable {
     }
 
     /**
-     * @param object a {@link CelestialObject}
-     * @return the identifier that should be used for the provided Object.
-     */
-    private Object identifier(CelestialObject object) {
-        if (object instanceof Star) {
-            return ((Star) object).hipparcosId();
-        } else if (object instanceof Sun) {
-            return "Soleil";
-        } else if (object instanceof Moon) {
-            return "Lune";
-        } else if (object instanceof Planet) {
-            return object.name();
-        }
-        return null; // should not occur
-    }
-
-    /**
      * Saves the data of the favorites list.
      *
      * @throws IOException if the data could not have been saved
      */
     public synchronized void save() throws IOException {
-        FileUtil.write(new HashSet<>(identifiers), FAVORITES_PATH, true);
+        FileUtil.writeObject(new HashSet<>(identifiers), FAVORITES_PATH, true);
     }
 
 }

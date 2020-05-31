@@ -2,6 +2,7 @@ package ch.epfl.rigel.astronomy;
 
 import ch.epfl.rigel.coordinates.EclipticCoordinates;
 import ch.epfl.rigel.coordinates.EclipticToEquatorialConversion;
+import ch.epfl.rigel.coordinates.EquatorialCoordinates;
 import ch.epfl.rigel.math.Angle;
 
 import java.util.List;
@@ -176,6 +177,14 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
         final double F = (1 + cos(lambda - l)) / 2d;
         final double m = V0 + 5 * log10(r * rho / sqrt(F));
         return new Planet(name, conversion.apply(EclipticCoordinates.of(lambda, beta)), (float) as, (float) m);
+    }
+
+    /**
+     * @return a {@link Planet} instance empty of properties, except for its name. Useful
+     * to ignore observation-moment-related properties.
+     */
+    public Planet empty() {
+        return new Planet(name, EquatorialCoordinates.of(0, 0), 0f, 0f);
     }
 
 }

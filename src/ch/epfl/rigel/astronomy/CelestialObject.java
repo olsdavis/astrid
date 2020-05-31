@@ -14,6 +14,31 @@ import static java.util.Objects.requireNonNull;
  */
 public abstract class CelestialObject {
 
+    /**
+     * Represents the types of CelestialObjects.
+     */
+    public enum Type {
+        STAR("Étoile"),
+        PLANET("Planète"),
+        MOON("Lune"),
+        SUN("Soleil");
+        private final String name;
+
+        /**
+         * @param name the name of the CelestialObject's type (in French)
+         */
+        Type(String name) {
+            this.name = name;
+        }
+
+        /**
+         * @return the name of the CelestialObject's type (in French).
+         */
+        public String getName() {
+            return name;
+        }
+    }
+
     private final String name;
     private final EquatorialCoordinates equatorialPos;
     private final float angularSize;
@@ -25,7 +50,7 @@ public abstract class CelestialObject {
      * @param angularSize   the angular size
      * @param magnitude     the magnitude
      * @throws IllegalArgumentException if {@code angularSize} is negative
-     * @throws NullPointerException if {@code name} or {@code equatorialPos} is {@code null}
+     * @throws NullPointerException     if {@code name} or {@code equatorialPos} is {@code null}
      */
     CelestialObject(String name, EquatorialCoordinates equatorialPos, float angularSize, float magnitude) {
         checkArgument(angularSize >= 0);
@@ -64,18 +89,23 @@ public abstract class CelestialObject {
     }
 
     /**
-     * @return a unique Object that should represent the current CelestialObject.
-     */
-    public Object identifier() {
-        return name();
-    }
-
-    /**
      * @return information about the CelestialObject.
      */
     public String info() {
         return name();
     }
+
+    /*
+    Here, it would've probably been better to set this as a final method
+    that returns a final field (to avoid dynamic changes of type), but we
+    set this up this way to avoid breaking legacy code by not changing the
+    constructor.
+     */
+
+    /**
+     * @return the type of this CelestialObject.
+     */
+    public abstract Type getType();
 
     @Override
     public String toString() {

@@ -24,14 +24,11 @@ public final class FileUtil {
      * @param <T>      the type of the {@link Serializable} Object
      * @throws IOException if an {@link IOException} occurred for any reason during the writing process
      */
-    public static <T extends Serializable> void write(T object, String path, boolean override) throws IOException {
+    public static <T extends Serializable> void writeObject(T object, String path, boolean override) throws IOException {
         Objects.requireNonNull(object);
         Preconditions.checkArgument(!Objects.requireNonNull(path).isBlank());
 
         final File file = initFile(path, override, false, true);
-        if (file == null) {
-            return; // this means that the file was not to override
-        }
         try (final ObjectOutputStream oos = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(file)))) {
             oos.writeObject(object);
         }
@@ -48,7 +45,7 @@ public final class FileUtil {
      * @throws IllegalStateException if, while reading, the class of the read Object
      *                               could not have been found
      */
-    public static <T extends Serializable> T read(Class<T> clazz, String path) throws IOException {
+    public static <T extends Serializable> T readObject(Class<T> clazz, String path) throws IOException {
         Objects.requireNonNull(clazz);
         Preconditions.checkArgument(!Objects.requireNonNull(path).isBlank());
 
@@ -65,27 +62,22 @@ public final class FileUtil {
 
     /**
      * Initializes the file at the provided path: creates it, as well as the parent folders,
-     * if needed.
+     * if needed, also asserts required preconditions.
      *
      * @param path     the path of the file
      * @param override {@code true} if the file should be overridden for the use writing;
      *                 set this value to {@code false} when reading
      * @param read     {@code true} if the file will be used for reading
      * @param write    {@code true} if the file will be used for writing
-     * @return the file at the provided path. {@code null} if and only if the file should not been overridden
-     * while being used for writing.
+     * @return the file at the provided path.
      * @throws IOException if the file or the parent folder could not have been created, or if
      *                     the required access has not been provided
      */
     private static File initFile(String path, boolean override, boolean read, boolean write) throws IOException {
         final File file = new File(path);
         if (file.exists()) {
-            if (!override && write) {
-                return null;
-            }
-
-            if (write && !file.delete()) {
-                throw new IOException("asking for override, but cannot delete previous file '" + path + "'");
+            if (write && override) {
+                new PrintWriter(file).close();
             }
         } else {
             if (!file.getParentFile().exists()) {

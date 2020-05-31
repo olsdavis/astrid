@@ -1,9 +1,8 @@
 package ch.epfl.rigel.gui.screen;
 
-import ch.epfl.rigel.astronomy.CelestialObject;
-import ch.epfl.rigel.astronomy.ObservedSky;
-import ch.epfl.rigel.astronomy.Star;
-import ch.epfl.rigel.astronomy.StarCatalogue;
+import ch.epfl.rigel.astronomy.*;
+import ch.epfl.rigel.coordinates.EclipticCoordinates;
+import ch.epfl.rigel.coordinates.EquatorialCoordinates;
 import ch.epfl.rigel.coordinates.GeographicCoordinates;
 import ch.epfl.rigel.coordinates.HorizontalCoordinates;
 import ch.epfl.rigel.gui.*;
@@ -30,10 +29,7 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
@@ -132,13 +128,15 @@ public final class StarViewScreen implements Screen {
         };
     }
 
+    private final StarCatalogue catalogue;
     private final ObserverLocationBean position = new ObserverLocationBean();
     private final DateTimeBean date = new DateTimeBean();
     private final ViewingParametersBean viewingParameters = new ViewingParametersBean();
     private final TimeAnimator animator = new TimeAnimator(date);
     private final SkyCanvasManager manager;
     // the following list holds the objects that the user will see in his search tab
-    private final SimpleObjectProperty<List<ObservedSky.CelestialPair>> searchObjects = new SimpleObjectProperty<>();
+    private final SimpleObjectProperty<List<CelestialObject>> searchObjects = new SimpleObjectProperty<>();
+    private final List<CelestialObject> allObjects;
     private final FavoritesList favoritesList;
     private final BorderPane root = new BorderPane();
 
@@ -149,12 +147,24 @@ public final class StarViewScreen implements Screen {
      * @param favoritesList the list of favorites ({@code null} if it could not have been initialized)
      */
     public StarViewScreen(StarCatalogue catalogue, FavoritesList favoritesList) {
+        this.catalogue = catalogue;
         this.favoritesList = favoritesList;
         // initialize beans
         position.setCoordinates(INIT_COORDINATES);
         date.setZonedDateTime(ZonedDateTime.now());
         viewingParameters.setCenter(INIT_PROJ_CENTER);
         viewingParameters.setFieldOfViewDeg(INIT_FOV);
+
+        final List<CelestialObject> all = new ArrayList<>();
+        all.addAll(catalogue.stars());
+        // give dummy values, we are not interested in them for the display (EqCoordinates, angular size, magnitude...)
+        all.addAll(PlanetModel.ALL.stream()
+                .filter(p -> p != PlanetModel.EARTH)
+                .map(PlanetModel::empty)
+                .collect(Collectors.toList()));
+        all.add(new Sun(EclipticCoordinates.of(0, 0), EquatorialCoordinates.of(0, 0), 0f, 0f));
+        all.add(new Moon(EquatorialCoordinates.of(0, 0), 0f, 0f, 0f));
+        allObjects = Collections.unmodifiableList(all);
 
         manager = new SkyCanvasManager(
                 catalogue,
@@ -163,7 +173,7 @@ public final class StarViewScreen implements Screen {
                 viewingParameters
         );
 
-        searchObjects.set(manager.sky().all());
+        searchObjects.set(allObjects);
 
         manager.canvas().widthProperty().bind(root.widthProperty());
         manager.canvas().heightProperty().bind(root.heightProperty());
@@ -409,6 +419,9 @@ public final class StarViewScreen implements Screen {
         searchTab.setGraphic(searchTabTitle);
 
         final Pagination pagination = new Pagination();
+        //TODO: ask why there is a bug when using extensively
+        // the pagination (click a lot everywhere, on the buttons,
+        // move, etc.)
         pagination.pageCountProperty().bind(
                 Bindings.createIntegerBinding(
                         () -> (int) Math.ceil((float) searchObjects.get().size() / ELEMENTS_PER_PAGE),
@@ -431,14 +444,13 @@ public final class StarViewScreen implements Screen {
             // update the collection that is used for the search tab
             if (newValue.isBlank()) {
                 if (searchObjects.get().size() != manager.sky().all().size()) {
-                    searchObjects.set(manager.sky().all());
+                    searchObjects.set(allObjects);
                 }
             } else {
                 final String lowered = newValue.toLowerCase();
                 searchObjects.set(
-                        manager.sky().all()
-                                .stream()
-                                .filter(s -> s.object().name().toLowerCase().contains(lowered)) // simple criterion
+                        allObjects.stream()
+                                .filter(s -> s.name().toLowerCase().contains(lowered)) // simple criterion
                                 .collect(Collectors.toList())
                 );
             }
@@ -462,40 +474,57 @@ public final class StarViewScreen implements Screen {
         favoritesTabTitle.setFont(BUTTONS_FONT);
         favoritesTab.setGraphic(favoritesTabTitle);
 
-        final ScrollPane pane = new ScrollPane();
-        pane.contentProperty().bind(
-                Bindings.createObjectBinding(() -> {
-                    if (favoritesList.isEmpty()) {
-                        final Text text = new Text("Aucun favori.\n Cliquez sur un coeur à côté d'un objet pour l'ajouter.");
-                        text.setTextAlignment(TextAlignment.CENTER);
-                        return text;
-                    }
-                    return new VBox(); // TODO
-//                    return makeListContent(favoritesList.favoritesProperty()
-//                            .stream()
-//                            .map(c -> )
-//                            .collect(Collectors.toUnmodifiableList()), menu);
-                }, favoritesList.favoritesProperty())
-        );
-
-        favoritesTab.setContent(pane);
-
+        final BorderPane contentPane = new BorderPane();
+        contentPane.centerProperty().bind(Bindings.createObjectBinding(() -> {
+            if (favoritesList.isEmpty()) {
+                final Text text = new Text("Aucun favori.\n Cliquez sur un coeur à côté d'un objet pour l'ajouter.");
+                text.setTextAlignment(TextAlignment.CENTER);
+                return text;
+            }
+            return makeListContent(favoritesList.favoritesProperty()
+                    .stream()
+                    .map(c -> {
+                        switch (c.getType()) {
+                            case STAR:
+                                for (Star star : catalogue.stars()) {
+                                    // we use equals, here, to avoid unchecked casts
+                                    if (c.getIdentifier().equals(star.hipparcosId())) {
+                                        return star;
+                                    }
+                                }
+                            case PLANET:
+                                for (PlanetModel planet : PlanetModel.values()) {
+                                    if (planet.name().equals(c.getIdentifier())) {
+                                        return planet.empty();
+                                    }
+                                }
+                            case SUN:
+                                return new Sun(EclipticCoordinates.of(0, 0), EquatorialCoordinates.of(0, 0), 0f, 0f);
+                            case MOON:
+                                return new Moon(EquatorialCoordinates.of(0, 0), 0f, 0f, 0f);
+                        }
+                        return null; // should not be reached, since all types are covered
+                        // and we store correctly our data
+                    })
+                    .collect(Collectors.toUnmodifiableList()), menu);
+        }, favoritesList.favoritesProperty()));
+        favoritesTab.setContent(contentPane);
         return favoritesTab;
     }
 
     /**
-     * @param stars the collection to display
-     * @param menu  the menu that will holds this data
-     * @return a list describing all the provided content.
+     * @param objects the collection to display
+     * @param menu    the menu that will hold this data
+     * @return a pane containing all the provided content.
      */
-    private ScrollPane makeListContent(List<ObservedSky.CelestialPair> stars, VBox menu) {
+    private ScrollPane makeListContent(List<CelestialObject> objects, VBox menu) {
         // this was first done with a map() call, React-like style,
         // but we changed this to a C-style for loop to easily add
         // vertical separators
-        final List<Node> starComponents = new ArrayList<>(2 * stars.size() - 1);
+        final List<Node> starComponents = new ArrayList<>(2 * objects.size() - 1);
         // generate all components
-        for (int i = 0; i < stars.size(); ++i) {
-            final ObservedSky.CelestialPair s = stars.get(i);
+        for (int i = 0; i < objects.size(); ++i) {
+            final CelestialObject s = objects.get(i);
             final VBox card = new VBox();
             final BorderPane firstLine = new BorderPane();
             // setup target button
@@ -504,36 +533,41 @@ public final class StarViewScreen implements Screen {
             targetButton.setOnMouseClicked(e -> {
                 if (e.getButton() == MouseButton.PRIMARY) {
                     manager.focus(s);
+                    e.consume();
                 }
             });
             // setup add to favorites button
             final Button favoriteButton = new Button(FAVORITES_CHARACTER);
-            if (favoritesList.contains(s.object())) {
+            if (favoritesList.contains(s)) {
                 favoriteButton.setTextFill(Color.RED);
             }
             favoriteButton.setFont(BUTTONS_FONT);
             favoriteButton.setOnMouseClicked(e -> {
-                if (favoritesList.contains(s.object())) {
-                    favoritesList.remove(s.object());
-                    favoriteButton.setTextFill(Color.BLACK);
-                } else {
-                    favoritesList.add(s.object());
-                    favoriteButton.setTextFill(Color.RED);
+                //TODO: why, when the favorite button is clicked, in the favorite tab
+                // (only!) the "longitude" text is focused. Yet, the event is consumed
+                if (e.getButton() == MouseButton.PRIMARY) {
+                    if (favoritesList.contains(s)) {
+                        favoritesList.remove(s);
+                        favoriteButton.setTextFill(Color.BLACK);
+                    } else {
+                        favoritesList.add(s);
+                        favoriteButton.setTextFill(Color.RED);
+                    }
+                    e.consume();
                 }
             });
             // add the text info
-            firstLine.setLeft(Texts.parse("*Nom de l'objet* : " + s.object().name()));
+            firstLine.setLeft(Texts.parse("*Nom de l'objet* : " + s.name()));
             firstLine.setRight(new HBox(targetButton, favoriteButton));
             card.getChildren().add(firstLine);
-            if (s.object() instanceof Star) {
+            if (s.getType() == CelestialObject.Type.STAR) {
                 card.getChildren().add(Texts.parse("*Identifiant Hipparcos* : " +
-                        ((Star) s.object()).hipparcosId()));
+                        ((Star) s).hipparcosId()));
             }
-            card.getChildren().add(Texts.parse("*Position* (équatoriale) : " + s.object().equatorialPos()));
             card.getStyleClass().add("sideBar-star-card");
             starComponents.add(card);
             // do not add a separator after the last item
-            if (i != stars.size() - 1) {
+            if (i != objects.size() - 1) {
                 final Separator sep = new Separator(Orientation.HORIZONTAL);
                 sep.prefWidthProperty().bind(menu.widthProperty());
                 starComponents.add(sep);
@@ -541,9 +575,9 @@ public final class StarViewScreen implements Screen {
         }
         final VBox elements = new VBox();
         elements.getChildren().addAll(starComponents);
-        elements.setStyle("-fx-padding: 10px 0 0 0;");
         final ScrollPane pane = new ScrollPane(elements);
         pane.setFitToWidth(true);
+        pane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         return pane;
     }
 

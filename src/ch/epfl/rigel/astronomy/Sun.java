@@ -47,4 +47,9 @@ public final class Sun extends CelestialObject {
         return eclipticPos;
     }
 
+    @Override
+    public Type getType() {
+        return Type.SUN;
+    }
+
 }
