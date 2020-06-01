@@ -424,7 +424,7 @@ public final class StarViewScreen implements Screen {
         // move, etc.)
         pagination.pageCountProperty().bind(
                 Bindings.createIntegerBinding(
-                        () -> (int) Math.ceil((float) searchObjects.get().size() / ELEMENTS_PER_PAGE),
+                        () -> Math.max((int) Math.ceil((float) searchObjects.get().size() / ELEMENTS_PER_PAGE), 1),
                         searchObjects
                 )
         );
@@ -440,21 +440,18 @@ public final class StarViewScreen implements Screen {
 
         final TextField search = new TextField();
         search.setPromptText("Recherche...");
-        search.textProperty().addListener((observable, oldValue, newValue) -> {
-            // update the collection that is used for the search tab
-            if (newValue.isBlank()) {
-                if (searchObjects.get().size() != manager.sky().all().size()) {
-                    searchObjects.set(allObjects);
-                }
-            } else {
-                final String lowered = newValue.toLowerCase();
-                searchObjects.set(
-                        allObjects.stream()
-                                .filter(s -> s.name().toLowerCase().contains(lowered)) // simple criterion
-                                .collect(Collectors.toList())
-                );
-            }
-        });
+        searchObjects.bind(
+                Bindings.createObjectBinding(() -> {
+                    if (search.getText().isBlank()) {
+                        return allObjects;
+                    } else {
+                        final String lowered = search.getText().toLowerCase();
+                        return allObjects.stream()
+                                        .filter(s -> s.name().toLowerCase().contains(lowered)) // simple criterion
+                                        .collect(Collectors.toList());
+                    }
+                }, search.textProperty())
+        );
         final BorderPane lastPane = new BorderPane();
         lastPane.setTop(search);
         lastPane.setCenter(pagination);
@@ -578,6 +575,8 @@ public final class StarViewScreen implements Screen {
         final ScrollPane pane = new ScrollPane(elements);
         pane.setFitToWidth(true);
         pane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        pane.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+        pane.prefHeightProperty().bind(menu.heightProperty());
         return pane;
     }
 
