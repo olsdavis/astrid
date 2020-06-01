@@ -156,14 +156,14 @@ public final class StarViewScreen implements Screen {
         viewingParameters.setFieldOfViewDeg(INIT_FOV);
 
         final List<CelestialObject> all = new ArrayList<>();
-        all.addAll(catalogue.stars());
         // give dummy values, we are not interested in them for the display (EqCoordinates, angular size, magnitude...)
+        all.add(new Sun(EclipticCoordinates.of(0, 0), EquatorialCoordinates.of(0, 0), 0f, 0f));
+        all.add(new Moon(EquatorialCoordinates.of(0, 0), 0f, 0f, 0f));
         all.addAll(PlanetModel.ALL.stream()
                 .filter(p -> p != PlanetModel.EARTH)
                 .map(PlanetModel::empty)
                 .collect(Collectors.toList()));
-        all.add(new Sun(EclipticCoordinates.of(0, 0), EquatorialCoordinates.of(0, 0), 0f, 0f));
-        all.add(new Moon(EquatorialCoordinates.of(0, 0), 0f, 0f, 0f));
+        all.addAll(catalogue.stars());
         allObjects = Collections.unmodifiableList(all);
 
         manager = new SkyCanvasManager(
