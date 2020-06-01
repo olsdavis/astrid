@@ -12,16 +12,15 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.geometry.Orientation;
+import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
+import javafx.stage.Stage;
 import javafx.util.converter.LocalTimeStringConverter;
 import javafx.util.converter.NumberStringConverter;
 
@@ -138,15 +137,17 @@ public final class StarViewScreen implements Screen {
     private final SimpleObjectProperty<List<CelestialObject>> searchObjects = new SimpleObjectProperty<>();
     private final List<CelestialObject> allObjects;
     private final FavoritesList favoritesList;
-    private final BorderPane root = new BorderPane();
+    private final BorderPane mainPane = new BorderPane();
+    private final StackPane root = new StackPane(); // used to make the mouse overlay
 
     /**
      * Initializes the "star view" screen --- the core of the program.
      *
      * @param catalogue     the catalogue of stars to display.
      * @param favoritesList the list of favorites ({@code null} if it could not have been initialized)
+     * @param stage         the stage in use for the program
      */
-    public StarViewScreen(StarCatalogue catalogue, FavoritesList favoritesList) {
+    public StarViewScreen(StarCatalogue catalogue, FavoritesList favoritesList, Stage stage) {
         this.catalogue = catalogue;
         this.favoritesList = favoritesList;
         // initialize beans
@@ -173,15 +174,23 @@ public final class StarViewScreen implements Screen {
                 viewingParameters
         );
 
+        manager.objectUnderMouseProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue == null) {
+                stage.getScene().setCursor(Cursor.DEFAULT);
+            } else {
+                stage.getScene().setCursor(Cursor.HAND);
+            }
+        });
+
         searchObjects.set(allObjects);
 
-        manager.canvas().widthProperty().bind(root.widthProperty());
-        manager.canvas().heightProperty().bind(root.heightProperty());
+        manager.canvas().widthProperty().bind(mainPane.widthProperty());
+        manager.canvas().heightProperty().bind(mainPane.heightProperty());
         final VBox sideBar = sideBar();
-        root.setTop(controlBar(sideBar));
-        root.setCenter(new Pane(manager.canvas()));
-        root.setRight(sideBar);
-        root.setBottom(bottomPane());
+        mainPane.setTop(controlBar(sideBar));
+        mainPane.setCenter(new Pane(manager.canvas()));
+        mainPane.setRight(sideBar);
+        mainPane.setBottom(bottomPane());
     }
 
     @Override
@@ -191,7 +200,7 @@ public final class StarViewScreen implements Screen {
 
     @Override
     public Pane getPane() {
-        return root;
+        return mainPane;
     }
 
     @Override
@@ -395,7 +404,7 @@ public final class StarViewScreen implements Screen {
         // setup the sidebar (slide in, slide out)
         final VBox menu = new VBox();
         menu.getStyleClass().add("sideBar");
-        menu.prefHeightProperty().bind(root.heightProperty());
+        menu.prefHeightProperty().bind(mainPane.heightProperty());
         menu.setPrefWidth(SIDEBAR_WIDTH);
         menu.setTranslateX(SIDEBAR_WIDTH);
 
@@ -447,8 +456,8 @@ public final class StarViewScreen implements Screen {
                     } else {
                         final String lowered = search.getText().toLowerCase();
                         return allObjects.stream()
-                                        .filter(s -> s.name().toLowerCase().contains(lowered)) // simple criterion
-                                        .collect(Collectors.toList());
+                                .filter(s -> s.name().toLowerCase().contains(lowered)) // simple criterion
+                                .collect(Collectors.toList());
                     }
                 }, search.textProperty())
         );
