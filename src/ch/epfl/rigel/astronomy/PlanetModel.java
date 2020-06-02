@@ -187,4 +187,11 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
         return new Planet(name, EquatorialCoordinates.of(0, 0), 0f, 0f);
     }
 
+    /**
+     * @return the French name of the planet.
+     */
+    public String getFrenchName() {
+        return name;
+    }
+
 }

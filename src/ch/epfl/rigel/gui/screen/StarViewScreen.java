@@ -512,12 +512,14 @@ public final class StarViewScreen implements Screen {
                                         return star;
                                     }
                                 }
+                                break;
                             case PLANET:
                                 for (PlanetModel planet : PlanetModel.values()) {
-                                    if (planet.name().equals(c.getIdentifier())) {
+                                    if (planet.getFrenchName().equals(c.getIdentifier())) {
                                         return planet.empty();
                                     }
                                 }
+                                break;
                             case SUN:
                                 return new Sun(EclipticCoordinates.of(0, 0), EquatorialCoordinates.of(0, 0), 0f, 0f);
                             case MOON:

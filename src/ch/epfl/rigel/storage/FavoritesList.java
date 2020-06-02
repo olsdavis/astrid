@@ -43,10 +43,8 @@ public class FavoritesList implements Serializable {
         switch (object.getType()) {
             case STAR:
                 return ((Star) object).hipparcosId();
-            case PLANET:
-                return object.name();
             default:
-                return null;
+                return object.name();
         }
     }
 

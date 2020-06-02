@@ -9,7 +9,6 @@ import java.util.Objects;
  * Represents any object that has been added to the favorites list.
  *
  * @param <T> the type of the identifier of the object
- *
  * @author Oscar Davis (SCIPER: 311193)
  * @author Alexandre Doukhan (SCIPER: 316706)
  * Creation date: 31/05/2020
@@ -43,6 +42,14 @@ public final class FavoriteItem<T extends Serializable> implements Serializable 
      */
     public T getIdentifier() {
         return identifier;
+    }
+
+    @Override
+    public String toString() {
+        return "FavoriteItem{" +
+                "type=" + type +
+                ", identifier=" + identifier +
+                '}';
     }
 
     @Override
