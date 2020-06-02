@@ -28,6 +28,8 @@ import java.util.logging.Logger;
  */
 public class Main extends Application {
 
+    private static final String FAVORITES_PATH = "rigel/favorites.data";
+
     private static final class SaveProcedure implements Runnable {
         private final FavoritesList list;
 
@@ -76,12 +78,18 @@ public class Main extends Application {
 
         FavoritesList list = null;
         try {
-            list = new FavoritesList();
-            //TODO: handle when not achieved, with an empty favorites list
-            // move file path constant to here
+            list = new FavoritesList(FAVORITES_PATH);
         } catch (Exception e) {
             new Alert(Alert.AlertType.WARNING, "Le fichier des favoris n'a pu être lu." +
                     " Les modifications que vous apporterez ne seront pas sauvegardées.").show();
+            try {
+                list = new FavoritesList("");
+            } catch (Exception exc) {
+                // should not happen
+                Logger.getLogger("Rigel").log(Level.SEVERE,
+                        "Could not create a simple non-persistent favorites list, stack trace:", e);
+                System.exit(1);
+            }
         }
 
         final ScreenController controller = new ScreenController();
@@ -100,10 +108,8 @@ public class Main extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
 
-        if (list != null) {
-            final SaveProcedure save = new SaveProcedure(list);
-            primaryStage.setOnCloseRequest(event -> save.run());
-        }
+        final SaveProcedure save = new SaveProcedure(list);
+        primaryStage.setOnCloseRequest(event -> save.run());
     }
 
 }

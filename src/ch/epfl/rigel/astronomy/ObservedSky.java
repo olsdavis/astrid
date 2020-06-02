@@ -215,10 +215,13 @@ public class ObservedSky {
             case MOON:
                 return projection.inverseApply(moonProjection);
             case STAR:
-                final int listIndex = ((Star) o).listIndex(); //TODO: remove list index
-                return projection.inverseApply(
-                        CartesianCoordinates.of(starPositions[2 * listIndex], starPositions[2 * listIndex +  1])
-                );
+                final Star s = (Star) o;
+                for (int i = 0; i < catalogue.stars().size(); ++i) {
+                    final Star other = catalogue.stars().get(i);
+                    if (Objects.equals(other, s)) {
+                        return projection.inverseApply(CartesianCoordinates.of(starPositions[2 * i], starPositions[2 * i + 1]));
+                    }
+                }
             case PLANET:
                 int index = 0;
                 for (int i = 0; i < planets.size(); i++) {

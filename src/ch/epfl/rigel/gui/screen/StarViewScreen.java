@@ -15,8 +15,13 @@ import javafx.geometry.Orientation;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
-import javafx.scene.layout.*;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
@@ -138,7 +143,6 @@ public final class StarViewScreen implements Screen {
     private final List<CelestialObject> allObjects;
     private final FavoritesList favoritesList;
     private final BorderPane mainPane = new BorderPane();
-    private final StackPane root = new StackPane(); // used to make the mouse overlay
 
     /**
      * Initializes the "star view" screen --- the core of the program.
@@ -449,6 +453,16 @@ public final class StarViewScreen implements Screen {
 
         final TextField search = new TextField();
         search.setPromptText("Recherche...");
+        search.addEventFilter(KeyEvent.KEY_TYPED, event -> {
+            if (!search.getSelectedText().isEmpty()) {
+                search.deselect();
+            }
+        });
+        search.addEventFilter(MouseEvent.MOUSE_DRAGGED, event -> {
+            if (!search.getSelectedText().isEmpty()) {
+                search.deselect();
+            }
+        });
         searchObjects.bind(
                 Bindings.createObjectBinding(() -> {
                     if (search.getText().isBlank()) {
