@@ -35,6 +35,8 @@ public class FavoritesList implements Serializable {
      * an {@link ch.epfl.rigel.astronomy.Moon}, since there is only a single instance of them
      * per {@link ch.epfl.rigel.astronomy.ObservedSky}. In the case of a {@link ch.epfl.rigel.astronomy.Planet},
      * the code returns its name. In the case of a {@link Star}, it returns its hipparcos (unique) ID.
+     *
+     * TODO
      */
     private static Serializable identify(CelestialObject object) {
         //TODO: note that the Hipparcos ID is not unique for zero,
