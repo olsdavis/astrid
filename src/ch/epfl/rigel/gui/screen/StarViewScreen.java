@@ -222,9 +222,6 @@ public final class StarViewScreen implements Screen {
             return object == null ? "" : object.info();
         }, manager.objectUnderMouseProperty()));
         final BorderPane bottom = new BorderPane(underMouse);
-        // the following line fixes a small bump over some particular stars
-        // which was very weird
-        bottom.prefHeightProperty().bind(bottom.maxHeightProperty());
         bottom.setStyle("-fx-padding: 4; -fx-background-color: #ffffff;");
         bottom.setCenter(underMouse);
         // set up the field of view text
@@ -542,6 +539,11 @@ public final class StarViewScreen implements Screen {
         // generate all components
         for (int i = 0; i < objects.size(); ++i) {
             final CelestialObject s = objects.get(i);
+            if (s == null) {
+                continue; // to avoid unexpected NullPointerExceptions
+                // these never occur, and never should occur, but it is
+                // here to make sure
+            }
             final VBox card = new VBox();
             final BorderPane firstLine = new BorderPane();
             // setup target button
