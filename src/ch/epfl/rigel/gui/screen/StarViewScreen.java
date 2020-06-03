@@ -498,7 +498,7 @@ public final class StarViewScreen extends Screen {
         final BorderPane contentPane = new BorderPane();
         contentPane.centerProperty().bind(Bindings.createObjectBinding(() -> {
             if (favoritesList.isEmpty()) {
-                final Text text = new Text("Aucun favori.\n Cliquez sur un coeur à côté d'un objet pour l'ajouter.");
+                final Text text = new Text("Aucun favori.\n Cliquez sur un coeur à côté\n d'un objet pour l'ajouter.");
                 text.setTextAlignment(TextAlignment.CENTER);
                 return text;
             }
