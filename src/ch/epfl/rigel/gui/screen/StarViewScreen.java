@@ -80,11 +80,6 @@ public final class StarViewScreen extends Screen {
      */
     private static final String SIDEBAR_CHARACTER = "\uF0AE";
     /**
-     * Holds the character used in BUTTONS_FONT font for the button that allows toggling
-     * displayed values in the top menu.
-     */
-    private static final String CHECK_CHARACTER = "\uF00C";
-    /**
      * Holds the width of the side bar.
      */
     private static final double SIDEBAR_WIDTH = 300d;
@@ -649,19 +644,9 @@ public final class StarViewScreen extends Screen {
      * @return a {@link MenuItem} for the top menu that toggles displayed properties.
      */
     private MenuItem createMenuItem(String name, BooleanProperty property) {
-        final MenuItem item = new MenuItem(name);
-        item.graphicProperty().bind(Bindings.createObjectBinding(() -> {
-            if (property.get()) {
-                final Text check = new Text(CHECK_CHARACTER);
-                check.setFont(ICONS_FONT);
-                return check;
-            }
-            return new Text(""); // nothing to add
-        }, property));
-        item.setOnAction(e -> {
-            property.set(!property.get());
-            e.consume();
-        });
+        final CheckMenuItem item = new CheckMenuItem(name);
+        item.setSelected(true); // default value
+        property.bind(item.selectedProperty());
         return item;
     }
 
