@@ -222,6 +222,9 @@ public final class StarViewScreen implements Screen {
             return object == null ? "" : object.info();
         }, manager.objectUnderMouseProperty()));
         final BorderPane bottom = new BorderPane(underMouse);
+        // the following line fixes a small bump over some particular stars
+        // which was very weird
+        bottom.prefHeightProperty().bind(bottom.maxHeightProperty());
         bottom.setStyle("-fx-padding: 4; -fx-background-color: #ffffff;");
         bottom.setCenter(underMouse);
         // set up the field of view text
