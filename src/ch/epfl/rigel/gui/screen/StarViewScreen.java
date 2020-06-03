@@ -434,9 +434,6 @@ public final class StarViewScreen implements Screen {
         searchTab.setGraphic(searchTabTitle);
 
         final Pagination pagination = new Pagination();
-        //TODO: ask why there is a bug when using extensively
-        // the pagination (click a lot everywhere, on the buttons,
-        // move, etc.)
         pagination.pageCountProperty().bind(
                 Bindings.createIntegerBinding(
                         () -> Math.max((int) Math.ceil((float) searchObjects.get().size() / ELEMENTS_PER_PAGE), 1),
@@ -454,6 +451,7 @@ public final class StarViewScreen implements Screen {
         );
 
         final TextField search = new TextField();
+        search.setOnKeyTyped(e -> search.requestFocus());
         search.setPromptText("Recherche...");
         searchObjects.bind(
                 Bindings.createObjectBinding(() -> {
