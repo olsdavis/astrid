@@ -15,9 +15,7 @@ import javafx.geometry.Orientation;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -190,7 +188,7 @@ public final class StarViewScreen implements Screen {
 
         manager.canvas().widthProperty().bind(mainPane.widthProperty());
         manager.canvas().heightProperty().bind(mainPane.heightProperty());
-        final VBox sideBar = sideBar();
+        final VBox sideBar = sideBar(stage);
         mainPane.setTop(controlBar(sideBar));
         mainPane.setCenter(new Pane(manager.canvas()));
         mainPane.setRight(sideBar);
@@ -221,7 +219,7 @@ public final class StarViewScreen implements Screen {
         final Text underMouse = new Text("");
         underMouse.textProperty().bind(Bindings.createStringBinding(() -> {
             final CelestialObject object = manager.objectUnderMouseProperty().get();
-            return object == null ? "" : object.info();
+            return object == null ? " " : object.info();
         }, manager.objectUnderMouseProperty()));
         final BorderPane bottom = new BorderPane(underMouse);
         bottom.setStyle("-fx-padding: 4; -fx-background-color: #ffffff;");
@@ -401,10 +399,11 @@ public final class StarViewScreen implements Screen {
     }
 
     /**
+     * @param stage the stage in use
      * @return the sidebar that allows searching and adding to favorites
      * the available CelestialObjects.
      */
-    private VBox sideBar() {
+    private VBox sideBar(Stage stage) {
         // setup the sidebar (slide in, slide out)
         final VBox menu = new VBox();
         menu.getStyleClass().add("sideBar");
@@ -415,6 +414,9 @@ public final class StarViewScreen implements Screen {
         // finally, add everything
         final TabPane tabPane = new TabPane(searchTab(menu), favoritesTab(menu));
         menu.getChildren().add(tabPane);
+        // sometimes, the mouse enters as a hand cursor, because of the closest object
+        // under it
+        tabPane.setOnMouseEntered(e -> stage.getScene().setCursor(Cursor.DEFAULT));
 
         return menu;
     }
@@ -453,16 +455,6 @@ public final class StarViewScreen implements Screen {
 
         final TextField search = new TextField();
         search.setPromptText("Recherche...");
-        search.addEventFilter(KeyEvent.KEY_TYPED, event -> {
-            if (!search.getSelectedText().isEmpty()) {
-                search.deselect();
-            }
-        });
-        search.addEventFilter(MouseEvent.MOUSE_DRAGGED, event -> {
-            if (!search.getSelectedText().isEmpty()) {
-                search.deselect();
-            }
-        });
         searchObjects.bind(
                 Bindings.createObjectBinding(() -> {
                     if (search.getText().isBlank()) {
@@ -508,7 +500,7 @@ public final class StarViewScreen implements Screen {
                             case STAR:
                                 for (Star star : catalogue.stars()) {
                                     // we use equals, here, to avoid unchecked casts
-                                    if (c.getIdentifier().equals(star.hipparcosId())) {
+                                    if (c.getIdentifier().equals(FavoritesList.identify(star))) {
                                         return star;
                                     }
                                 }
@@ -552,6 +544,7 @@ public final class StarViewScreen implements Screen {
             // setup target button
             final Button targetButton = new Button(TARGET_CHARACTER);
             targetButton.setFont(BUTTONS_FONT);
+            targetButton.setFocusTraversable(false);
             targetButton.setOnMouseClicked(e -> {
                 if (e.getButton() == MouseButton.PRIMARY) {
                     manager.focus(s);
@@ -578,7 +571,7 @@ public final class StarViewScreen implements Screen {
                         favoritesList.add(s);
                         favoriteButton.setTextFill(Color.RED);
                     }
-
+                    menu.requestFocus();
                     e.consume();
                 }
             });

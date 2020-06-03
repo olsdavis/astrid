@@ -30,24 +30,17 @@ public class FavoritesList implements Serializable {
 
     /**
      * @param object the object to identify
-     * @return an Object that allows to differentiate a CelestialObject of a certain type
-     * from the other objects of the same type. Returns {@code null} in the case of {@link ch.epfl.rigel.astronomy.Sun}
-     * an {@link ch.epfl.rigel.astronomy.Moon}, since there is only a single instance of them
-     * per {@link ch.epfl.rigel.astronomy.ObservedSky}. In the case of a {@link ch.epfl.rigel.astronomy.Planet},
-     * the code returns its name. In the case of a {@link Star}, it returns its hipparcos (unique) ID.
-     *
-     * TODO
+     * @return an Object that allows to distinguish a CelestialObject of a certain type
+     * from the other objects of the same type. Returns the name of the object for any type,
+     * except for the Stars, where multiple stars can have the same Hipparcos ID and the same
+     * name (at the same time: <em>e.g.</em> for Hipparcos 0); thus, we return a String containing
+     * more data about the star.
      */
-    private static Serializable identify(CelestialObject object) {
-        //TODO: note that the Hipparcos ID is not unique for zero,
-        // Neither is the name (for the same hipparcos)
-        // So we need to add the ID, name and position
-        switch (object.getType()) {
-            case STAR:
-                return ((Star) object).hipparcosId();
-            default:
-                return object.name();
+    public static Serializable identify(CelestialObject object) {
+        if (object.getType() == CelestialObject.Type.STAR) {
+            return ((Star) object).hipparcosId() + "," + object.name() + "," + object.equatorialPos().ra() + "," + object.equatorialPos().dec();
         }
+        return object.name();
     }
 
     private final String path;
