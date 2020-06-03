@@ -219,7 +219,7 @@ public final class StarViewScreen implements Screen {
         final Text underMouse = new Text("");
         underMouse.textProperty().bind(Bindings.createStringBinding(() -> {
             final CelestialObject object = manager.objectUnderMouseProperty().get();
-            return object == null ? " " : object.info();
+            return object == null ? "" : object.info();
         }, manager.objectUnderMouseProperty()));
         final BorderPane bottom = new BorderPane(underMouse);
         bottom.setStyle("-fx-padding: 4; -fx-background-color: #ffffff;");
