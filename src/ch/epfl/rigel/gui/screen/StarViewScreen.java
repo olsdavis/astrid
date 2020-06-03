@@ -564,9 +564,12 @@ public final class StarViewScreen implements Screen {
                 favoriteButton.setTextFill(Color.RED);
             }
             favoriteButton.setFont(BUTTONS_FONT);
+            // the following line allowed us to prevent the favorite button
+            // to set the focus on the "longitude" field, whenever it was clicked
+            // in the favorites tab. This problem occurred because of the fact
+            // that this same item is, after the click, removed
+            favoriteButton.setFocusTraversable(false);
             favoriteButton.setOnMouseClicked(e -> {
-                //TODO: why, when the favorite button is clicked, in the favorite tab
-                // (only!) the "longitude" text is focused. Yet, the event is consumed
                 if (e.getButton() == MouseButton.PRIMARY) {
                     if (favoritesList.contains(s)) {
                         favoritesList.remove(s);
@@ -575,6 +578,7 @@ public final class StarViewScreen implements Screen {
                         favoritesList.add(s);
                         favoriteButton.setTextFill(Color.RED);
                     }
+
                     e.consume();
                 }
             });
@@ -597,7 +601,18 @@ public final class StarViewScreen implements Screen {
         }
         final VBox elements = new VBox();
         elements.getChildren().addAll(starComponents);
-        final ScrollPane pane = new ScrollPane(elements);
+        final ScrollPane pane = new ScrollPane(elements) {
+            @Override
+            public void requestFocus() {
+                /*
+                we disallow the scroll pane to request the focus
+                because of the same problem of the favorites button:
+                the focusTraversable property set to false, fixed the problem,
+                except when the pane was focused; it then produced the same problem
+                of focus change
+                */
+            }
+        };
         pane.setFitToWidth(true);
         pane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         pane.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
