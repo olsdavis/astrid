@@ -26,7 +26,12 @@ public final class ScreenController {
     );
 
     {
-        currentScreen.addListener(((observable, oldValue, newValue) -> newValue.onChange()));
+        currentScreen.addListener(((observable, oldValue, newValue) -> {
+            if (oldValue != null) {
+                oldValue.onLeave();
+            }
+            newValue.onEnter();
+        }));
     }
 
     /**

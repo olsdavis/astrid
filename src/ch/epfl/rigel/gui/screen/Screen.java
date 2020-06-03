@@ -9,23 +9,30 @@ import javafx.scene.layout.Pane;
  * @author Alexandre Doukhan (SCIPER: 316706)
  * Creation date: 27/05/2020
  */
-public interface Screen {
+public abstract class Screen {
 
     /**
      * @return the name of the screen.
      */
-    String getName();
+    public abstract String getName();
 
     /**
      * @return the pane of the current screen.
      */
-    Pane getPane();
+    public abstract Pane getPane();
 
     /**
      * This method is called as an event whenever this screen
      * becomes the displayed screen.
      */
-    default void onChange() {
+    public void onEnter() {
+    }
+
+    /**
+     * This method is called as an event whenever this screen
+     * is no more the displayed screen
+     */
+    public void onLeave() {
     }
 
 }

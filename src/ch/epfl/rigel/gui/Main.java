@@ -3,7 +3,7 @@ package ch.epfl.rigel.gui;
 import ch.epfl.rigel.astronomy.AsterismLoader;
 import ch.epfl.rigel.astronomy.HygDatabaseLoader;
 import ch.epfl.rigel.astronomy.StarCatalogue;
-import ch.epfl.rigel.gui.screen.MainScreen;
+import ch.epfl.rigel.gui.screen.EntranceScreen;
 import ch.epfl.rigel.gui.screen.ScreenController;
 import ch.epfl.rigel.gui.screen.ScreenNames;
 import ch.epfl.rigel.gui.screen.StarViewScreen;
@@ -29,6 +29,14 @@ import java.util.logging.Logger;
 public class Main extends Application {
 
     private static final String FAVORITES_PATH = "rigel/favorites.data";
+    /**
+     * The initial width of the screen.
+     */
+    public static final float INITIAL_WIDTH = 1000f;
+    /**
+     * The initial height of the screen.
+     */
+    public static final float INITIAL_HEIGHT = 750f;
 
     private static final class SaveProcedure implements Runnable {
         private final FavoritesList list;
@@ -59,8 +67,8 @@ public class Main extends Application {
         primaryStage.setTitle("Rigel");
         primaryStage.setMinWidth(800);
         primaryStage.setMinHeight(600);
-        primaryStage.setWidth(1000);
-        primaryStage.setHeight(750);
+        primaryStage.setWidth(INITIAL_WIDTH);
+        primaryStage.setHeight(INITIAL_HEIGHT);
 
         StarCatalogue catalogue = null;
         // initialize catalogue
@@ -93,7 +101,7 @@ public class Main extends Application {
         }
 
         final ScreenController controller = new ScreenController();
-        controller.addScreen(new MainScreen(controller));
+        controller.addScreen(new EntranceScreen(controller));
         controller.addScreen(new StarViewScreen(catalogue, list, primaryStage));
 
         // set to main screen

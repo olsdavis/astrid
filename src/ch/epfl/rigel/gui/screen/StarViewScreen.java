@@ -46,7 +46,7 @@ import static ch.epfl.rigel.util.Fonts.BUTTONS_FONT;
  * @author Alexandre Doukhan (SCIPER: 316706)
  * Creation date: 27/05/2020
  */
-public final class StarViewScreen implements Screen {
+public final class StarViewScreen extends Screen {
 
     /**
      * Holds the character used in the BUTTONS_FONT font for the play button of the animator.
@@ -206,7 +206,7 @@ public final class StarViewScreen implements Screen {
     }
 
     @Override
-    public void onChange() {
+    public void onEnter() {
         manager.canvas().requestFocus();
     }
 
