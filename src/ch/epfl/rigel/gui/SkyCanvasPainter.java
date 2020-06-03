@@ -64,7 +64,6 @@ public class SkyCanvasPainter {
 
     /**
      * @param canvas the canvas to draw to
-     *
      * @throws NullPointerException if {@code canvas} is {@code null}
      */
     public SkyCanvasPainter(Canvas canvas) {
@@ -84,13 +83,14 @@ public class SkyCanvasPainter {
     /**
      * Draws the stars and the asterisms to the canvas.
      *
-     * @param sky        the observed sky to draw
-     * @param projection the projection used to calculate the coordinates
-     * @param transform  the transform to apply to all coordinates
-     *
+     * @param sky              the observed sky to draw
+     * @param projection       the projection used to calculate the coordinates
+     * @param transform        the transform to apply to all coordinates
+     * @param displayStars     {@code true} if the stars should be rendered
+     * @param displayAsterisms {@code true} if the asterisms should be rendered
      * @throws NullPointerException if one of the parameters is {@code null}
      */
-    public void drawStars(ObservedSky sky, StereographicProjection projection, Transform transform) {
+    public void drawStars(ObservedSky sky, StereographicProjection projection, Transform transform, boolean displayStars, boolean displayAsterisms) {
         Objects.requireNonNull(sky);
         Objects.requireNonNull(projection);
         Objects.requireNonNull(transform);
@@ -100,32 +100,36 @@ public class SkyCanvasPainter {
         // apply the transform
         transform.transform2DPoints(starPositions, 0, starPositions, 0, starPositions.length / 2);
 
-        // draw asterisms first, then stars
-        // set the stroke for all lines
-        gfx.setStroke(Color.BLUE);
-        gfx.setLineWidth(1d);
-        for (Asterism asterism : sky.asterisms()) {
-            final List<Integer> indices = asterism.indices(sky);
-            gfx.beginPath();
-            for (int i = 0; i < indices.size() - 1; i++) {
-                final int current = indices.get(i);
-                final int next = indices.get(i + 1);
-                final Point2D pointA = new Point2D(starPositions[2 * current], starPositions[2 * current + 1]);
-                final Point2D pointB = new Point2D(starPositions[2 * next], starPositions[2 * next + 1]);
-                if (canvas.contains(pointA) || canvas.contains(pointB)) {
-                    gfx.moveTo(pointA.getX(), pointA.getY());
-                    gfx.lineTo(pointB.getX(), pointB.getY());
-                    gfx.stroke();
+        if (displayAsterisms) {
+            // draw asterisms first, then stars
+            // set the stroke for all lines
+            gfx.setStroke(Color.BLUE);
+            gfx.setLineWidth(1d);
+            for (Asterism asterism : sky.asterisms()) {
+                final List<Integer> indices = asterism.indices(sky);
+                gfx.beginPath();
+                for (int i = 0; i < indices.size() - 1; i++) {
+                    final int current = indices.get(i);
+                    final int next = indices.get(i + 1);
+                    final Point2D pointA = new Point2D(starPositions[2 * current], starPositions[2 * current + 1]);
+                    final Point2D pointB = new Point2D(starPositions[2 * next], starPositions[2 * next + 1]);
+                    if (canvas.contains(pointA) || canvas.contains(pointB)) {
+                        gfx.moveTo(pointA.getX(), pointA.getY());
+                        gfx.lineTo(pointB.getX(), pointB.getY());
+                        gfx.stroke();
+                    }
                 }
+                gfx.closePath();
             }
-            gfx.closePath();
         }
 
-        // draw stars
-        for (int i = 0; i < sky.stars().size(); i++) {
-            final Star star = sky.stars().get(i);
-            gfx.setFill(BlackBodyColor.fromTemperature(star.colorTemperature()));
-            drawUsual(star, starPositions[2 * i], starPositions[2 * i + 1], transform, projection);
+        if (displayStars) {
+            // draw stars
+            for (int i = 0; i < sky.stars().size(); i++) {
+                final Star star = sky.stars().get(i);
+                gfx.setFill(BlackBodyColor.fromTemperature(star.colorTemperature()));
+                drawUsual(star, starPositions[2 * i], starPositions[2 * i + 1], transform, projection);
+            }
         }
     }
 
@@ -135,7 +139,6 @@ public class SkyCanvasPainter {
      * @param sky        the observed sky to draw
      * @param projection the projection used to calculate the coordinates
      * @param transform  the transform to apply to all coordinates
-     *
      * @throws NullPointerException if one of the parameters is {@code null}
      */
     public void drawPlanets(ObservedSky sky, StereographicProjection projection, Transform transform) {
@@ -178,7 +181,6 @@ public class SkyCanvasPainter {
      * @param sky        the observed sky to draw
      * @param projection the projection used to calculate the coordinates
      * @param transform  the transform to apply to all coordinates
-     *
      * @throws NullPointerException if one of the parameters is {@code null}
      */
     public void drawMoon(ObservedSky sky, StereographicProjection projection, Transform transform) {
@@ -201,7 +203,6 @@ public class SkyCanvasPainter {
      * @param sky        the observed sky to draw
      * @param projection the projection used to calculate the coordinates
      * @param transform  the transform to apply to all coordinates
-     *
      * @throws NullPointerException if one of the parameters is {@code null}
      */
     public void drawSun(ObservedSky sky, StereographicProjection projection, Transform transform) {
@@ -230,7 +231,6 @@ public class SkyCanvasPainter {
      * @param sky        the observed sky to draw
      * @param projection the projection used to calculate the coordinates
      * @param transform  the transform to apply to all coordinates
-     *
      * @throws NullPointerException if one of the parameters is {@code null}
      */
     public void drawHorizon(ObservedSky sky, StereographicProjection projection, Transform transform) {

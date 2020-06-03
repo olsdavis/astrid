@@ -9,6 +9,7 @@ import ch.epfl.rigel.gui.*;
 import ch.epfl.rigel.storage.FavoritesList;
 import ch.epfl.rigel.util.Texts;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.geometry.Orientation;
@@ -36,7 +37,7 @@ import java.util.function.Function;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
-import static ch.epfl.rigel.util.Fonts.BUTTONS_FONT;
+import static ch.epfl.rigel.util.Fonts.ICONS_FONT;
 
 /**
  * Represents the screen where the user can see/simulate the sky
@@ -78,6 +79,11 @@ public final class StarViewScreen extends Screen {
      * the sidebar view.
      */
     private static final String SIDEBAR_CHARACTER = "\uF0AE";
+    /**
+     * Holds the character used in BUTTONS_FONT font for the button that allows toggling
+     * displayed values in the top menu.
+     */
+    private static final String CHECK_CHARACTER = "\uF00C";
     /**
      * Holds the width of the side bar.
      */
@@ -134,6 +140,7 @@ public final class StarViewScreen extends Screen {
     private final ObserverLocationBean position = new ObserverLocationBean();
     private final DateTimeBean date = new DateTimeBean();
     private final ViewingParametersBean viewingParameters = new ViewingParametersBean();
+    private final DisplayParametersBean displayParameters = new DisplayParametersBean();
     private final TimeAnimator animator = new TimeAnimator(date);
     private final SkyCanvasManager manager;
     // the following list holds the objects that the user will see in his search tab
@@ -141,6 +148,7 @@ public final class StarViewScreen extends Screen {
     private final List<CelestialObject> allObjects;
     private final FavoritesList favoritesList;
     private final BorderPane mainPane = new BorderPane();
+    private final BorderPane finalPane = new BorderPane();
 
     /**
      * Initializes the "star view" screen --- the core of the program.
@@ -173,7 +181,8 @@ public final class StarViewScreen extends Screen {
                 catalogue,
                 date,
                 position,
-                viewingParameters
+                viewingParameters,
+                displayParameters
         );
 
         manager.objectUnderMouseProperty().addListener((observable, oldValue, newValue) -> {
@@ -193,6 +202,8 @@ public final class StarViewScreen extends Screen {
         mainPane.setCenter(new Pane(manager.canvas()));
         mainPane.setRight(sideBar);
         mainPane.setBottom(bottomPane());
+        finalPane.setCenter(mainPane);
+        finalPane.setTop(createMenu());
     }
 
     @Override
@@ -202,7 +213,7 @@ public final class StarViewScreen extends Screen {
 
     @Override
     public Pane getPane() {
-        return mainPane;
+        return finalPane;
     }
 
     @Override
@@ -276,7 +287,7 @@ public final class StarViewScreen extends Screen {
                 animator.start();
             }
         });
-        play.setFont(BUTTONS_FONT);
+        play.setFont(ICONS_FONT);
         play.textProperty().bind(
                 Bindings.when(animator.runningProperty()).then(PAUSE_CHARACTER).otherwise(PLAY_CHARACTER)
         );
@@ -285,7 +296,7 @@ public final class StarViewScreen extends Screen {
         reset.setOnAction(event -> date.setZonedDateTime(ZonedDateTime.now()));
         reset.disableProperty().bind(animator.runningProperty());
         chooseAnimator.disableProperty().bind(animator.runningProperty());
-        reset.setFont(BUTTONS_FONT);
+        reset.setFont(ICONS_FONT);
         // finally, assemble all the elements
         final HBox animatorBox = new HBox(chooseAnimator, reset, play);
         animatorBox.setStyle("-fx-spacing: inherit;");
@@ -384,7 +395,7 @@ public final class StarViewScreen extends Screen {
     private VBox createSideBarButton(VBox sideBar) {
         final VBox box = new VBox();
         final Button button = new Button(SIDEBAR_CHARACTER);
-        button.setFont(BUTTONS_FONT);
+        button.setFont(ICONS_FONT);
         button.setOnMouseClicked(e -> {
             if (e.getButton() == MouseButton.PRIMARY) {
                 if (sideBar.getTranslateX() == 0d) { // if not moved
@@ -430,7 +441,7 @@ public final class StarViewScreen extends Screen {
         searchTab.setClosable(false);
         searchTab.getStyleClass().add("sideBar-tab");
         final Text searchTabTitle = new Text(SEARCH_CHARACTER);
-        searchTabTitle.setFont(BUTTONS_FONT);
+        searchTabTitle.setFont(ICONS_FONT);
         searchTab.setGraphic(searchTabTitle);
 
         final Pagination pagination = new Pagination();
@@ -481,7 +492,7 @@ public final class StarViewScreen extends Screen {
         favoritesTab.getStyleClass().add("sideBar-tab");
         favoritesTab.setClosable(false);
         final Text favoritesTabTitle = new Text(FAVORITES_CHARACTER);
-        favoritesTabTitle.setFont(BUTTONS_FONT);
+        favoritesTabTitle.setFont(ICONS_FONT);
         favoritesTab.setGraphic(favoritesTabTitle);
 
         final BorderPane contentPane = new BorderPane();
@@ -546,7 +557,7 @@ public final class StarViewScreen extends Screen {
             final BorderPane firstLine = new BorderPane();
             // setup target button
             final Button targetButton = new Button(TARGET_CHARACTER);
-            targetButton.setFont(BUTTONS_FONT);
+            targetButton.setFont(ICONS_FONT);
             targetButton.setFocusTraversable(false);
             targetButton.setOnMouseClicked(e -> {
                 if (e.getButton() == MouseButton.PRIMARY) {
@@ -559,7 +570,7 @@ public final class StarViewScreen extends Screen {
             if (favoritesList.contains(s)) {
                 favoriteButton.setTextFill(Color.RED);
             }
-            favoriteButton.setFont(BUTTONS_FONT);
+            favoriteButton.setFont(ICONS_FONT);
             // the following line allowed us to prevent the favorite button
             // to set the focus on the "longitude" field, whenever it was clicked
             // in the favorites tab. This problem occurred because of the fact
@@ -614,6 +625,44 @@ public final class StarViewScreen extends Screen {
         pane.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
         pane.prefHeightProperty().bind(menu.heightProperty());
         return pane;
+    }
+
+    /**
+     * @return the top menu bar for some miscellaneous settings.
+     */
+    private MenuBar createMenu() {
+        final Menu menu = new Menu("Paramètres");
+        menu.getItems().addAll(
+                createMenuItem("Astérismes", displayParameters.displayAsterismsProperty()),
+                createMenuItem("Étoiles", displayParameters.displayStarsProperty()),
+                createMenuItem("Ligne d'horizon", displayParameters.displayHorizonProperty()),
+                createMenuItem("Planètes", displayParameters.displayPlanetsProperty()),
+                createMenuItem("Soleil", displayParameters.displaySunProperty()),
+                createMenuItem("Lune", displayParameters.displayMoonProperty())
+        );
+        return new MenuBar(menu);
+    }
+
+    /**
+     * @param name     the name of the item
+     * @param property the property associated to the item
+     * @return a {@link MenuItem} for the top menu that toggles displayed properties.
+     */
+    private MenuItem createMenuItem(String name, BooleanProperty property) {
+        final MenuItem item = new MenuItem(name);
+        item.graphicProperty().bind(Bindings.createObjectBinding(() -> {
+            if (property.get()) {
+                final Text check = new Text(CHECK_CHARACTER);
+                check.setFont(ICONS_FONT);
+                return check;
+            }
+            return new Text(""); // nothing to add
+        }, property));
+        item.setOnAction(e -> {
+            property.set(!property.get());
+            e.consume();
+        });
+        return item;
     }
 
 }

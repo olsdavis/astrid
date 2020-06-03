@@ -58,7 +58,7 @@ public final class DrawSky extends Application {
 
             painter.clear();
             // true order: stars, planets, sun, moon, horizon
-            painter.drawStars(sky, projection, t);
+            painter.drawStars(sky, projection, t, true, true);
             painter.drawPlanets(sky, projection, t);
             painter.drawSun(sky, projection, t);
             painter.drawMoon(sky, projection, t);

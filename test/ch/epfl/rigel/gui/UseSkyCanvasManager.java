@@ -56,7 +56,7 @@ public class UseSkyCanvasManager extends Application {
                     catalogue,
                     dateTimeBean,
                     observerLocationBean,
-                    viewingParametersBean);
+                    viewingParametersBean, new DisplayParametersBean());
 
             canvasManager.objectUnderMouseProperty().addListener(
                     (p, o, n) -> {

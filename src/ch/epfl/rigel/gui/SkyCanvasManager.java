@@ -86,14 +86,17 @@ public class SkyCanvasManager {
      * @param dateTime          the date time of the observation
      * @param observerLocation  observer's location
      * @param viewingParameters the viewing parameters of the user
+     * @param displayParameters the display parameters of the user
      * @throws NullPointerException if one of the parameters is {@code null}
      */
     public SkyCanvasManager(StarCatalogue catalogue, DateTimeBean dateTime,
-                            ObserverLocationBean observerLocation, ViewingParametersBean viewingParameters) {
+                            ObserverLocationBean observerLocation, ViewingParametersBean viewingParameters,
+                            DisplayParametersBean displayParameters) {
         // first assert all prerequisites, in order to avoid heavy syntax
         Objects.requireNonNull(catalogue);
         Objects.requireNonNull(dateTime);
         Objects.requireNonNull(observerLocation);
+        Objects.requireNonNull(displayParameters);
         this.viewingParameters = Objects.requireNonNull(viewingParameters);
 
         projection = Bindings.createObjectBinding(
@@ -232,14 +235,28 @@ public class SkyCanvasManager {
             final StereographicProjection p = projection.get();
             final Transform t = transform.get();
             painter.clear();
-            painter.drawStars(s, p, t);
-            painter.drawPlanets(s, p, t);
-            painter.drawSun(s, p, t);
-            painter.drawMoon(s, p, t);
-            painter.drawHorizon(s, p, t);
+            painter.drawStars(s, p, t, displayParameters.isDisplayStars(), displayParameters.isDisplayAsterisms());
+            if (displayParameters.isDisplayPlanets()) {
+                painter.drawPlanets(s, p, t);
+            }
+            if (displayParameters.isDisplaySun()) {
+                painter.drawSun(s, p, t);
+            }
+            if (displayParameters.isDisplayMoon()) {
+                painter.drawMoon(s, p, t);
+            }
+            if (displayParameters.isDisplayHorizon()) {
+                painter.drawHorizon(s, p, t);
+            }
         };
         observedSky.addListener(listener);
         transform.addListener(listener);
+        displayParameters.displayAsterismsProperty().addListener(listener);
+        displayParameters.displayHorizonProperty().addListener(listener);
+        displayParameters.displayPlanetsProperty().addListener(listener);
+        displayParameters.displayStarsProperty().addListener(listener);
+        displayParameters.displayMoonProperty().addListener(listener);
+        displayParameters.displaySunProperty().addListener(listener);
         // we do not add a listener to projection, because its value change
         // updates transform anyway
     }
