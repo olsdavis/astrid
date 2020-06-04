@@ -101,7 +101,7 @@ public class Main extends Application {
 
         final ScreenController controller = new ScreenController();
         controller.addScreen(new EntranceScreen(controller));
-        controller.addScreen(new StarViewScreen(catalogue, list, primaryStage));
+        controller.addScreen(new StarViewScreen(catalogue, list));
 
         // set to main screen
         controller.changeScreen(ScreenNames.ENTRANCE_SCREEN);

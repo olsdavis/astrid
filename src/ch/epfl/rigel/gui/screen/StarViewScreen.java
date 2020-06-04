@@ -13,7 +13,6 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.geometry.Orientation;
-import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
@@ -24,7 +23,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
-import javafx.stage.Stage;
 import javafx.util.converter.LocalTimeStringConverter;
 import javafx.util.converter.NumberStringConverter;
 
@@ -152,9 +150,8 @@ public final class StarViewScreen extends Screen {
      *
      * @param catalogue     the catalogue of stars to display.
      * @param favoritesList the list of favorites ({@code null} if it could not have been initialized)
-     * @param stage         the stage in use for the program
      */
-    public StarViewScreen(StarCatalogue catalogue, FavoritesList favoritesList, Stage stage) {
+    public StarViewScreen(StarCatalogue catalogue, FavoritesList favoritesList) {
         super(ScreenNames.STAR_VIEW_SCREEN);
         this.catalogue = catalogue;
         this.favoritesList = favoritesList;
@@ -183,19 +180,11 @@ public final class StarViewScreen extends Screen {
                 displayParameters
         );
 
-        manager.objectUnderMouseProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue == null) {
-                stage.getScene().setCursor(Cursor.DEFAULT);
-            } else {
-                stage.getScene().setCursor(Cursor.HAND);
-            }
-        });
-
         searchObjects.set(allObjects);
 
         manager.canvas().widthProperty().bind(mainPane.widthProperty());
         manager.canvas().heightProperty().bind(mainPane.heightProperty());
-        final VBox sideBar = sideBar(stage);
+        final VBox sideBar = sideBar();
         mainPane.setTop(controlBar(sideBar));
         mainPane.setCenter(new Pane(manager.canvas()));
         mainPane.setRight(sideBar);
@@ -403,11 +392,10 @@ public final class StarViewScreen extends Screen {
     }
 
     /**
-     * @param stage the stage in use
      * @return the sidebar that allows searching and adding to favorites
      * the available CelestialObjects.
      */
-    private VBox sideBar(Stage stage) {
+    private VBox sideBar() {
         // setup the sidebar (slide in, slide out)
         final VBox menu = new VBox();
         menu.getStyleClass().add("sideBar");
@@ -418,9 +406,6 @@ public final class StarViewScreen extends Screen {
         // finally, add everything
         final TabPane tabPane = new TabPane(searchTab(menu), favoritesTab(menu));
         menu.getChildren().add(tabPane);
-        // sometimes, the mouse enters as a hand cursor, because of the closest object
-        // under it
-        tabPane.setOnMouseEntered(e -> stage.getScene().setCursor(Cursor.DEFAULT));
 
         return menu;
     }
