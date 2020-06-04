@@ -609,7 +609,7 @@ public final class StarViewScreen extends Screen {
                 /*
                 we disallow the scroll pane to request the focus
                 because of the same problem of the favorites button:
-                the focusTraversable property set to false, fixed the problem,
+                the focusTraversable property set to false fixed the problem,
                 except when the pane was focused; it then produced the same problem
                 of focus change
                 */
