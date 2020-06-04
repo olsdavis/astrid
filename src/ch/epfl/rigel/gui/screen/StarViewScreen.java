@@ -139,6 +139,8 @@ public final class StarViewScreen extends Screen {
     private final TimeAnimator animator = new TimeAnimator(date);
     private final SkyCanvasManager manager;
     // the following list holds the objects that the user will see in his search tab
+    // we do not use here an ObservableList, because we often need to modify the entire
+    // collection, and we do that by using the set() method (to update the held value)
     private final SimpleObjectProperty<List<CelestialObject>> searchObjects = new SimpleObjectProperty<>();
     private final List<CelestialObject> allObjects;
     private final FavoritesList favoritesList;
