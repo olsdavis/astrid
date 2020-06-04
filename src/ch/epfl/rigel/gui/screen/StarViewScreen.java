@@ -554,7 +554,9 @@ public final class StarViewScreen extends Screen {
             targetButton.setFocusTraversable(false);
             targetButton.setOnMouseClicked(e -> {
                 if (e.getButton() == MouseButton.PRIMARY) {
-                    manager.focus(s);
+                    if (!manager.focus(s)) {
+                        new Alert(Alert.AlertType.INFORMATION, "L'objet n'est pas actuellement visible !").show();
+                    }
                     e.consume();
                 }
             });

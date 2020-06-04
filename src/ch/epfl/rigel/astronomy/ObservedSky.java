@@ -51,7 +51,6 @@ public class ObservedSky {
 
     private final List<CelestialPair> allObjects;
 
-    private final StereographicProjection projection;
     private final StarCatalogue catalogue;
 
     private final Sun sun;
@@ -78,7 +77,6 @@ public class ObservedSky {
      */
     public ObservedSky(ZonedDateTime moment, GeographicCoordinates observer, StereographicProjection projection, StarCatalogue catalogue) {
         this.catalogue = catalogue;
-        this.projection = projection;
         // -1 to exclude Earth, and +2 for the sun and the moon
         allObjects = new ArrayList<>(catalogue.stars().size() + (PlanetModel.ALL.size() - 1) + 2);
         // the conversion used for the current situation
@@ -208,18 +206,18 @@ public class ObservedSky {
      * on the current sky. Returns {@code null} if the provided objects is not in the list of objects.
      * @throws NullPointerException if {@code o} is {@code null}
      */
-    public HorizontalCoordinates locate(CelestialObject o) {
+    public CartesianCoordinates locate(CelestialObject o) {
         switch (Objects.requireNonNull(o).getType()) {
             case SUN:
-                return projection.inverseApply(sunProjection);
+                return sunProjection;
             case MOON:
-                return projection.inverseApply(moonProjection);
+                return moonProjection;
             case STAR:
                 final Star s = (Star) o;
                 for (int i = 0; i < catalogue.stars().size(); ++i) {
                     final Star other = catalogue.stars().get(i);
                     if (Objects.equals(other, s)) {
-                        return projection.inverseApply(CartesianCoordinates.of(starPositions[2 * i], starPositions[2 * i + 1]));
+                        return CartesianCoordinates.of(starPositions[2 * i], starPositions[2 * i + 1]);
                     }
                 }
             case PLANET:
@@ -231,9 +229,7 @@ public class ObservedSky {
                         break;
                     }
                 }
-                return projection.inverseApply(
-                        CartesianCoordinates.of(planetPositions[2 * index], planetPositions[2 * index + 1])
-                );
+                return CartesianCoordinates.of(planetPositions[2 * index], planetPositions[2 * index + 1]);
         }
         return null; // unreachable statement, all the cases have been covered
     }
