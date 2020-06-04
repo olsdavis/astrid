@@ -16,7 +16,9 @@ import javafx.beans.value.ObservableDoubleValue;
 import javafx.beans.value.ObservableObjectValue;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.MouseButton;
+import javafx.scene.paint.Color;
 import javafx.scene.transform.NonInvertibleTransformException;
 import javafx.scene.transform.Transform;
 
@@ -60,6 +62,18 @@ public class SkyCanvasManager {
      * The maximal distance for the object under mouse search.
      */
     private static final double MAX_DISTANCE = 10d;
+    /**
+     * The radius of the circle drawn around the focused CelestialObject.
+     */
+    private static final double FOCUS_RADIUS = 20d;
+    /**
+     * The color of the circle drawn around the focused CelestialObject.
+     */
+    private static final Color FOCUS_COLOR = Color.GREEN;
+    /**
+     * The width of the circle drawn around the focused CelestialObject.
+     */
+    private static final double FOCUS_WIDTH = 2d;
 
     private final Canvas canvas = new Canvas();
     private final SkyCanvasPainter painter = new SkyCanvasPainter(canvas);
@@ -291,21 +305,37 @@ public class SkyCanvasManager {
 
     /**
      * Sets the projection center to the provided {@link CelestialObject}
-     * if it is in the current bounds of the view; if it is not, it approaches
-     * the object as good as it can.
-     * <p>
-     * TODO: hallo/flare
+     * if it is in the current bounds of the view, and adds a {@code FOCUS_COLOR}-colored
+     * circle around the object.
+     *
+     * @return {@code true} if the CelestialObject has been successfully focused on,
+     * otherwise returns {@code false}. (Happens when the CelestialObject is not in range
+     * too see.)
      *
      * @param o the {@link CelestialObject} to focus on
      */
-    public void focus(CelestialObject o) {
-        final HorizontalCoordinates pos = observedSky.get().locate(o);
+    public boolean focus(CelestialObject o) {
+        final CartesianCoordinates pos = observedSky.get().locate(o);
+        final HorizontalCoordinates coordinates = projection.get().inverseApply(pos);
+        if (!ALT_LIM.contains(coordinates.altDeg())) {
+            return false;
+        }
         viewingParameters.setCenter(
                 HorizontalCoordinates.ofDeg(
-                        AZ_LIM.reduce(pos.azDeg()),
-                        ALT_LIM.clip(pos.altDeg())
+                        AZ_LIM.reduce(coordinates.azDeg()),
+                        ALT_LIM.clip(coordinates.altDeg())
                 )
         );
+        // we need the updated coordinates after the change of center
+        final CartesianCoordinates updated = observedSky.get().locate(o);
+        final Transform t = transform.get();
+        final Point2D canvasPosition = t.transform(updated.x(), updated.y());
+        final GraphicsContext context = canvas.getGraphicsContext2D();
+        context.setStroke(FOCUS_COLOR);
+        context.setLineWidth(FOCUS_WIDTH);
+        context.strokeOval(canvasPosition.getX() - FOCUS_RADIUS / 2d, canvasPosition.getY() - FOCUS_RADIUS / 2d,
+                FOCUS_RADIUS, FOCUS_RADIUS);
+        return true;
     }
 
     /**

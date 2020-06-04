@@ -65,7 +65,14 @@ public class FavoritesList implements Serializable {
                 // the objects we get are not generic, so we allow ourselves
                 // here to make this unchecked cast, that is safe given that
                 // we know the contents of our file
-                identifiers = FXCollections.observableSet(FileUtil.readObject(HashSet.class, path));
+                try {
+                    identifiers = FXCollections.observableSet(FileUtil.readObject(HashSet.class, path));
+                } catch (IOException e) {
+                    throw e; // if it is an IOException, propagate it
+                } catch (Exception e) {
+                    // otherwise, there is a problem with the data
+                    throw new IOException("corrupt data");
+                }
             } else {
                 identifiers = FXCollections.observableSet();
             }

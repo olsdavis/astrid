@@ -554,7 +554,9 @@ public final class StarViewScreen extends Screen {
             targetButton.setFocusTraversable(false);
             targetButton.setOnMouseClicked(e -> {
                 if (e.getButton() == MouseButton.PRIMARY) {
-                    manager.focus(s);
+                    if (!manager.focus(s)) {
+                        new Alert(Alert.AlertType.INFORMATION, "L'objet n'est pas actuellement visible !").show();
+                    }
                     e.consume();
                 }
             });
@@ -607,7 +609,7 @@ public final class StarViewScreen extends Screen {
                 /*
                 we disallow the scroll pane to request the focus
                 because of the same problem of the favorites button:
-                the focusTraversable property set to false, fixed the problem,
+                the focusTraversable property set to false fixed the problem,
                 except when the pane was focused; it then produced the same problem
                 of focus change
                 */
