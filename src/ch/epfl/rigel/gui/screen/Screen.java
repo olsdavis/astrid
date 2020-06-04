@@ -4,6 +4,11 @@ import javafx.scene.layout.Pane;
 
 /**
  * Represents a screen that can be accessed by the user.
+ * <p>
+ * Given that all that this abstract class holds are methods, this could
+ * have been an interface; yet, by design, we preferred to restrict the
+ * subclasses to only inherit from this class. (Because a screen should
+ * only represent a screen, and nothing else.)
  *
  * @author Oscar Davis (SCIPER: 311193)
  * @author Alexandre Doukhan (SCIPER: 316706)
