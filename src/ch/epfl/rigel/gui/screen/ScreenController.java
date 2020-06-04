@@ -67,7 +67,7 @@ public final class ScreenController {
     /**
      * @return the current screen that the user should see.
      */
-    public ObservableObjectValue<Screen> getCurrentScreen() {
+    public ObservableObjectValue<Screen> currentScreenProperty() {
         return currentScreen;
     }
 

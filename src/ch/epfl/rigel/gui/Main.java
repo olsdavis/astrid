@@ -12,7 +12,6 @@ import javafx.application.Application;
 import javafx.beans.binding.Bindings;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
 import java.io.InputStream;
@@ -107,11 +106,11 @@ public class Main extends Application {
         // set to main screen
         controller.changeScreen(ScreenNames.ENTRANCE_SCREEN);
 
-        final BorderPane lastPane = new BorderPane();
-        lastPane.centerProperty().bind(Bindings.createObjectBinding(
-                () -> controller.getCurrentScreen().get().getPane(), controller.getCurrentScreen()
-        ));
-        final Scene scene = new Scene(lastPane);
+        final Scene scene = new Scene(controller.currentScreenProperty().get().getPane());
+        scene.rootProperty().bind(Bindings.createObjectBinding(
+                () -> controller.currentScreenProperty().get().getPane(),
+                controller.currentScreenProperty())
+        );
         scene.getStylesheets().add(getClass().getResource("/app.css").toExternalForm());
         primaryStage.setScene(scene);
         primaryStage.show();
