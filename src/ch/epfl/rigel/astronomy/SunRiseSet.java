@@ -1,5 +1,6 @@
 package ch.epfl.rigel.astronomy;
 
+import ch.epfl.rigel.coordinates.EclipticToEquatorialConversion;
 import ch.epfl.rigel.coordinates.EquatorialCoordinates;
 import ch.epfl.rigel.coordinates.GeographicCoordinates;
 
@@ -58,8 +59,11 @@ public class SunRiseSet {
      * @param when     the date at which we observe.
      * @return the time of the sunrise.
      */
-    public static LocalTime sunrise(Sun sun, GeographicCoordinates position, ZonedDateTime when) {
-        return RiseSet.rise(sun.equatorialPos(), position, when);
+    public static LocalTime sunrise(GeographicCoordinates position, ZonedDateTime when) {
+        ZonedDateTime midday = ZonedDateTime.of(when.toLocalDate(), LocalTime.NOON, when.getZone());
+        EclipticToEquatorialConversion conversion = new EclipticToEquatorialConversion(midday);
+        double D = Epoch.J2010.daysUntil(midday);
+        return RiseSet.rise(SunModel.SUN.at(D, conversion).equatorialPos(), position, when);
     }
 
     /**

@@ -28,11 +28,11 @@ public class SunRiseSetTest {
         double days = Epoch.J2010.daysUntil(book);
         Sun sun = SunModel.SUN.at(days, new EclipticToEquatorialConversion(book));
         GeographicCoordinates positionLauz = GeographicCoordinates.ofDeg(6.6667, 46.5333);
-        LocalTime sunriseLauz = SunRiseSet.sunrise(sun, positionLauz, ZonedDateTime.now());
+        LocalTime sunriseLauz = SunRiseSet.sunrise(positionLauz, ZonedDateTime.now());
         LocalTime realSunriseLauz = LocalTime.of(5, 43);
 
         GeographicCoordinates positionBook = GeographicCoordinates.ofDeg(64, 30);
-        LocalTime sunriseBook = SunRiseSet.sunrise(sun, positionBook, book);
+        LocalTime sunriseBook = SunRiseSet.sunrise(positionBook, book);
         LocalTime realSunriseBook = LocalTime.of(14, 16, 0);
 
         //assertEquals(LocalTime.of(0, 0, 0), sunriseBook);
