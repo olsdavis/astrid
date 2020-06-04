@@ -30,7 +30,7 @@ public enum Epoch {
     );
 
     private static final double DAYS_PER_MILLISECOND =  1 / 1000d / 3600d / 24d;
-    static final double DAYS_PER_JULIAN_CENTURY = 36525d;
+    private static final double DAYS_PER_JULIAN_CENTURY = 36525d;
 
     private final ZonedDateTime epochStart;
 
