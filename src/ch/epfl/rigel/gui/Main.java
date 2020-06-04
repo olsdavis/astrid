@@ -27,7 +27,7 @@ import java.util.logging.Logger;
  */
 public class Main extends Application {
 
-    private static final String FAVORITES_PATH = "rigel/favorites.data";
+    private static final String FAVORITES_PATH = "favorites.data";
     /**
      * The initial width of the screen.
      */
