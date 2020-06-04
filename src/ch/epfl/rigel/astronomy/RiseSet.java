@@ -144,7 +144,7 @@ public class RiseSet {
      * @param time the hour to convert
      * @return the decimal hour
      */
-    private static double toDecimalHour(LocalTime time) {
+    public static double toDecimalHour(LocalTime time) {
         return time.getHour() + time.getMinute() / 60d + time.getSecond() / 3600d;
     }
 

@@ -29,8 +29,11 @@ public class SunRiseSet {
      * @param when     the date at which we observe.
      * @return the time of the zenith.
      */
-    public static LocalTime zenithTime(Sun sun, GeographicCoordinates position, ZonedDateTime when) {
-        final EquatorialCoordinates coordinates = sun.equatorialPos();
+    public static LocalTime zenithTime(GeographicCoordinates position, ZonedDateTime when) {
+        ZonedDateTime midday = ZonedDateTime.of(when.toLocalDate(), LocalTime.NOON, when.getZone());
+        EclipticToEquatorialConversion conversion = new EclipticToEquatorialConversion(midday);
+        double D = Epoch.J2010.daysUntil(midday);
+        EquatorialCoordinates coordinates = SunModel.SUN.at(D, conversion).equatorialPos();
         LocalTime rise = RiseSet.rise(coordinates, position, when);
         LocalTime set = RiseSet.rise(coordinates, position, when);
 
@@ -54,7 +57,6 @@ public class SunRiseSet {
     /**
      * Gives the time at which the sun rises on a given day, at a given position.
      *
-     * @param sun      the Sun.
      * @param position the position at which we observe.
      * @param when     the date at which we observe.
      * @return the time of the sunrise.
@@ -74,8 +76,11 @@ public class SunRiseSet {
      * @param when     the date at which we observe.
      * @return the time of the sunset.
      */
-    public static LocalTime sunset(Sun sun, GeographicCoordinates position, ZonedDateTime when) {
-        return RiseSet.set(sun.equatorialPos(), position, when);
+    public static LocalTime sunset(GeographicCoordinates position, ZonedDateTime when) {
+        ZonedDateTime midday = ZonedDateTime.of(when.toLocalDate(), LocalTime.NOON, when.getZone());
+        EclipticToEquatorialConversion conversion = new EclipticToEquatorialConversion(midday);
+        double D = Epoch.J2010.daysUntil(midday);
+        return RiseSet.set(SunModel.SUN.at(D, conversion).equatorialPos(), position, when);
     }
 
 }

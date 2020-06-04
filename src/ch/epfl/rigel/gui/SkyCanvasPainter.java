@@ -1,10 +1,8 @@
 package ch.epfl.rigel.gui;
 
-import ch.epfl.rigel.astronomy.Asterism;
-import ch.epfl.rigel.astronomy.CelestialObject;
-import ch.epfl.rigel.astronomy.ObservedSky;
-import ch.epfl.rigel.astronomy.Star;
+import ch.epfl.rigel.astronomy.*;
 import ch.epfl.rigel.coordinates.CartesianCoordinates;
+import ch.epfl.rigel.coordinates.GeographicCoordinates;
 import ch.epfl.rigel.coordinates.HorizontalCoordinates;
 import ch.epfl.rigel.coordinates.StereographicProjection;
 import ch.epfl.rigel.math.Angle;
@@ -17,6 +15,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.transform.Transform;
 
+import java.time.LocalTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -48,6 +48,15 @@ public class SkyCanvasPainter {
      * in between the bounds of this interval.
      */
     private static final ClosedInterval MAGNITUDE_CLIP = ClosedInterval.of(-2d, 5d);
+    private final Canvas canvas;
+
+    /**
+     * @param canvas the canvas to draw to
+     * @throws NullPointerException if {@code canvas} is {@code null}
+     */
+    public SkyCanvasPainter(Canvas canvas) {
+        this.canvas = Objects.requireNonNull(canvas);
+    }
 
     /**
      * @param magnitude the magnitude of a CelestialObject
@@ -60,20 +69,45 @@ public class SkyCanvasPainter {
         return scaleFactor * projection.applyToAngle(SUN_ANGLE);
     }
 
-    private final Canvas canvas;
+    private static Color sunRiseSetAnimator(GeographicCoordinates coordinates, ZonedDateTime when) {
+        LocalTime rise = SunRiseSet.sunrise(coordinates, when);
+        LocalTime set = SunRiseSet.sunset(coordinates, when);
+        LocalTime now = when.toLocalTime();
+        LocalTime zenith = SunRiseSet.zenithTime(coordinates, when);
+        LocalTime startTime;
+        LocalTime endTime;
+        Color color1;
+        Color color2;
+        LocalTime midnight = LocalTime.of(0, 0, 0);
+        if (now.isAfter(rise) && now.isBefore(zenith)) {
+            color1 = Color.LIGHTSALMON;
+            color2 = Color.LIGHTBLUE;
+            startTime = rise;
+            endTime = zenith;
+        } else if (now.isAfter(zenith) && now.isBefore(set)) {
+            color1 = Color.LIGHTBLUE;
+            color2 = Color.DARKORANGE;
+            startTime = zenith;
+            endTime = set;
+        } else if (now.isAfter(set) && now.isBefore(midnight)) {
+            color1 = Color.DARKORANGE;
+            color2 = Color.BLACK;
+            startTime = set;
+            endTime = midnight;
+        } else {
+            color1 = Color.BLACK;
+            color2 = Color.LIGHTSALMON;
+            startTime = midnight;
+            endTime = rise;
+        }
 
-    /**
-     * @param canvas the canvas to draw to
-     * @throws NullPointerException if {@code canvas} is {@code null}
-     */
-    public SkyCanvasPainter(Canvas canvas) {
-        this.canvas = Objects.requireNonNull(canvas);
+        double
     }
 
     /**
      * Clears the canvas and paints the black background.
      */
-    public void clear() {
+    public void clear(GeographicCoordinates coordinates, ZonedDateTime when) {
         final GraphicsContext gfx = canvas.getGraphicsContext2D();
         gfx.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         gfx.setFill(Color.BLACK);
