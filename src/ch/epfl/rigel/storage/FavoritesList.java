@@ -44,8 +44,6 @@ public class FavoritesList implements Serializable {
     }
 
     private final String path;
-    // here we declare the collection as a HashSet (instead of Set), because we need the fact
-    // that it is Serializable
     private final ObservableSet<FavoriteItem<?>> identifiers;
 
     /**
