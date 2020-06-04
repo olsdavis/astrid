@@ -628,7 +628,7 @@ public final class StarViewScreen extends Screen {
      * @return the top menu bar for some miscellaneous settings.
      */
     private MenuBar createMenu() {
-        final Menu menu = new Menu("Paramètres");
+        final Menu menu = new Menu("Affichage");
         menu.getItems().addAll(
                 createMenuItem("Astérismes", displayParameters.displayAsterismsProperty()),
                 createMenuItem("Étoiles", displayParameters.displayStarsProperty()),
