@@ -189,6 +189,7 @@ public final class EntranceScreen extends Screen {
      * @param controller the screen controller of the program
      */
     public EntranceScreen(ScreenController controller) {
+        super(ScreenNames.ENTRANCE_SCREEN);
         final BorderPane pane = new BorderPane();
         pane.setStyle("-fx-background-color: transparent;");
 
@@ -253,11 +254,6 @@ public final class EntranceScreen extends Screen {
         p.setAlignment(pos);
         p.getChildren().addAll(nodes);
         return p;
-    }
-
-    @Override
-    public String getName() {
-        return ScreenNames.MAIN_SCREEN;
     }
 
     @Override

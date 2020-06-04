@@ -155,6 +155,7 @@ public final class StarViewScreen extends Screen {
      * @param stage         the stage in use for the program
      */
     public StarViewScreen(StarCatalogue catalogue, FavoritesList favoritesList, Stage stage) {
+        super(ScreenNames.STAR_VIEW_SCREEN);
         this.catalogue = catalogue;
         this.favoritesList = favoritesList;
         // initialize beans
@@ -201,11 +202,6 @@ public final class StarViewScreen extends Screen {
         mainPane.setBottom(bottomPane());
         finalPane.setCenter(mainPane);
         finalPane.setTop(createMenu());
-    }
-
-    @Override
-    public String getName() {
-        return ScreenNames.STAR_VIEW_SCREEN;
     }
 
     @Override
