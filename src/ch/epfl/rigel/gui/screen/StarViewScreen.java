@@ -80,11 +80,6 @@ public final class StarViewScreen extends Screen {
      */
     private static final String SIDEBAR_CHARACTER = "\uF0AE";
     /**
-     * Holds the character used in BUTTONS_FONT font for the button that allows toggling
-     * displayed values in the top menu.
-     */
-    private static final String CHECK_CHARACTER = "\uF00C";
-    /**
      * Holds the width of the side bar.
      */
     private static final double SIDEBAR_WIDTH = 300d;
@@ -144,6 +139,8 @@ public final class StarViewScreen extends Screen {
     private final TimeAnimator animator = new TimeAnimator(date);
     private final SkyCanvasManager manager;
     // the following list holds the objects that the user will see in his search tab
+    // we do not use here an ObservableList, because we often need to modify the entire
+    // collection, and we do that by using the set() method (to update the held value)
     private final SimpleObjectProperty<List<CelestialObject>> searchObjects = new SimpleObjectProperty<>();
     private final List<CelestialObject> allObjects;
     private final FavoritesList favoritesList;
@@ -158,6 +155,7 @@ public final class StarViewScreen extends Screen {
      * @param stage         the stage in use for the program
      */
     public StarViewScreen(StarCatalogue catalogue, FavoritesList favoritesList, Stage stage) {
+        super(ScreenNames.STAR_VIEW_SCREEN);
         this.catalogue = catalogue;
         this.favoritesList = favoritesList;
         // initialize beans
@@ -204,11 +202,6 @@ public final class StarViewScreen extends Screen {
         mainPane.setBottom(bottomPane());
         finalPane.setCenter(mainPane);
         finalPane.setTop(createMenu());
-    }
-
-    @Override
-    public String getName() {
-        return ScreenNames.STAR_VIEW_SCREEN;
     }
 
     @Override
@@ -498,7 +491,7 @@ public final class StarViewScreen extends Screen {
         final BorderPane contentPane = new BorderPane();
         contentPane.centerProperty().bind(Bindings.createObjectBinding(() -> {
             if (favoritesList.isEmpty()) {
-                final Text text = new Text("Aucun favori.\n Cliquez sur un coeur à côté d'un objet pour l'ajouter.");
+                final Text text = new Text("Aucun favori.\n Cliquez sur un coeur à côté\n d'un objet pour l'ajouter.");
                 text.setTextAlignment(TextAlignment.CENTER);
                 return text;
             }
@@ -631,7 +624,7 @@ public final class StarViewScreen extends Screen {
      * @return the top menu bar for some miscellaneous settings.
      */
     private MenuBar createMenu() {
-        final Menu menu = new Menu("Paramètres");
+        final Menu menu = new Menu("Affichage");
         menu.getItems().addAll(
                 createMenuItem("Astérismes", displayParameters.displayAsterismsProperty()),
                 createMenuItem("Étoiles", displayParameters.displayStarsProperty()),
@@ -649,19 +642,9 @@ public final class StarViewScreen extends Screen {
      * @return a {@link MenuItem} for the top menu that toggles displayed properties.
      */
     private MenuItem createMenuItem(String name, BooleanProperty property) {
-        final MenuItem item = new MenuItem(name);
-        item.graphicProperty().bind(Bindings.createObjectBinding(() -> {
-            if (property.get()) {
-                final Text check = new Text(CHECK_CHARACTER);
-                check.setFont(ICONS_FONT);
-                return check;
-            }
-            return new Text(""); // nothing to add
-        }, property));
-        item.setOnAction(e -> {
-            property.set(!property.get());
-            e.consume();
-        });
+        final CheckMenuItem item = new CheckMenuItem(name);
+        item.setSelected(true); // default value
+        property.bind(item.selectedProperty());
         return item;
     }
 

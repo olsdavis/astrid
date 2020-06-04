@@ -21,60 +21,6 @@ public class DisplayParametersBean {
     private final SimpleBooleanProperty displayHorizon = new SimpleBooleanProperty(true);
 
     /**
-     * Updates the value of whether the asterisms should be displayed or not.
-     *
-     * @param value the new value
-     */
-    public void setDisplayAsterisms(boolean value) {
-        displayAsterisms.set(value);
-    }
-
-    /**
-     * Updates the value of whether the stars should be displayed or not.
-     *
-     * @param value the new value
-     */
-    public void setDisplayStars(boolean value) {
-        displayStars.set(value);
-    }
-
-    /**
-     * Updates the value of whether the horizon line should be displayed or not.
-     *
-     * @param value the new value
-     */
-    public void setDisplayHorizon(boolean value) {
-        displayHorizon.set(value);
-    }
-
-    /**
-     * Updates the value of whether the moon should be displayed or not.
-     *
-     * @param value the new value
-     */
-    public void setDisplayMoon(boolean value) {
-        this.displayMoon.set(value);
-    }
-
-    /**
-     * Updates the value of whether the sun should be displayed or not.
-     *
-     * @param value the new value
-     */
-    public void setDisplaySun(boolean value) {
-        this.displaySun.set(value);
-    }
-
-    /**
-     * Updates the value of whether the planets should be displayed or not.
-     *
-     * @param value the new value
-     */
-    public void setDisplayPlanets(boolean value) {
-        this.displayPlanets.set(value);
-    }
-
-    /**
      * @return {@code true} if and onlly if the asterisms should be displayed.
      */
     public boolean isDisplayAsterisms() {

@@ -11,10 +11,21 @@ import javafx.scene.layout.Pane;
  */
 public abstract class Screen {
 
+    private final String name;
+
+    /**
+     * @param name the name of the screen
+     */
+    public Screen(String name) {
+        this.name = name;
+    }
+
     /**
      * @return the name of the screen.
      */
-    public abstract String getName();
+    public final String getName() {
+        return name;
+    }
 
     /**
      * @return the pane of the current screen.

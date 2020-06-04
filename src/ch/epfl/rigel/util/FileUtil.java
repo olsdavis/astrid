@@ -80,7 +80,7 @@ public final class FileUtil {
                 new PrintWriter(file).close();
             }
         } else {
-            if (!file.getParentFile().exists()) {
+            if (file.getParentFile() != null && !file.getParentFile().exists()) {
                 if (!file.getParentFile().mkdirs()) {
                     throw new IOException("could not create folder(s) for '" + path + "'");
                 }
