@@ -275,7 +275,10 @@ public final class StarViewScreen extends Screen {
         );
         // set up the reset button
         final Button reset = new Button(RESET_CHARACTER);
-        reset.setOnAction(event -> date.setZonedDateTime(ZonedDateTime.now()));
+        reset.setOnAction(event -> {
+            date.setZonedDateTime(ZonedDateTime.now());
+            viewingParameters.setCenter(INIT_PROJ_CENTER);
+        });
         reset.disableProperty().bind(animator.runningProperty());
         chooseAnimator.disableProperty().bind(animator.runningProperty());
         reset.setFont(ICONS_FONT);
