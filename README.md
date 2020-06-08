@@ -1,6 +1,5 @@
-Added functionalities, bonuses, etc.
+Rigel, projet de première année, deuxième semestre, EPFL
 =
-Optimization
--
-1. Found (not discovered) and implemented an algorithm
-much faster than linear search for `ObservedSky#objectClosestTo`
+Version écrite par Oscar Davis et Alexandre Doukhan.
+
+Logiciel sous license GNU GPL v3.0.
